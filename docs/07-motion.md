@@ -88,6 +88,8 @@ Animate `transform`, `opacity` and SVG `stroke-dashoffset` only. Never animate l
 3. **Field signal** (E-state). The answer field gets a 2 px coral outline that fades in over 160 ms, plus text such as "Not quite — 2 tries left". **No shaking** (vestibular safety), and colour is never the only signal.
 4. After exhaustion, the **correct state** is shown as a **ghost overlay** next to the student's state, so the difference is visible.
 
+*As built in Phase 2 (D-055):* consequences are template cue lists played on the same live model (`stop-at` brakes the car to the distance the student gave and reports the deceleration that needs; `land-at` finds the launch speed the student's range implies; `student-tangent` draws the student's f′ as a tangent; the free-body board plays the student's forces against the box's observed constant velocity). The correct state appears only through the template's `resolution` cues once the question ends, and in the worked solution. Typed values move the model immediately (no 200 ms tween yet); this is a known gap.
+
 ### Correct answers
 
 The resolution is brief: ≤ 700 ms total.
@@ -160,6 +162,6 @@ There is no confetti and no sound by default. A slightly larger bloom is reserve
 | LCP (dashboard, 4G, mid phone) | < 2.5 s | Lighthouse CI mobile preset |
 | Initial JS (dashboard route) | ≤ 200 KB gzip | bundle analyser budget in CI |
 | Per-widget chunk | ≤ 80 KB gzip, lazy-loaded | budget |
-| Checking worker (Compute Engine + mathjs units) | loaded on first answer input, ≤ 450 KB gzip, off main thread | budget |
+| Checking worker (own parser + units, D-048) | warmed when a question opens, ≤ 450 KB gzip, off main thread | Phase 2 measured about 15 KB gzip |
 | Animations in background tabs | paused (`visibilitychange`) | unit test |
 | Glow/blur | No `backdrop-filter` or animated `filter: blur` on phones. Glows are pre-rendered radial gradients animated by opacity only. | code review rule |

@@ -42,7 +42,8 @@ test.describe("navigation", () => {
     await expect(p).toContainText("System of Particles and Rotational Motion");
     await expect(p).toContainText("0/8 skills tried");
     await expect(p.getByRole("button", { name: "Try a question" })).toBeDisabled();
-    await expect(p).toContainText("arrive in a later phase");
+    await expect(p).toContainText("coming soon");
+    await expect(p).not.toContainText(/\bphase\b|awaiting|content review/i);
     await expect(page.getByTestId("node-ecf")).toContainText("Preview only");
     await page.keyboard.press("Escape");
     await expect(p).toHaveCount(0);
@@ -144,35 +145,36 @@ test.describe("diagnostic attempt and persistence", () => {
     await page.goto("/?view=physics12");
     await page.getByTestId("node-cur").click();
     await page.getByTestId("try-question").click();
-    await expect(page.getByRole("heading", { name: "Diagnostic question · Medium" })).toBeVisible();
+    await expect(page.getByTestId("intro")).toHaveText("This question helps us find the best place for you to begin.");
     // invalid input does not use a try
-    await page.getByTestId("answer").fill("3");
+    await page.getByTestId("answer-input").fill("3");
     await page.getByTestId("check").click();
-    await expect(page.locator("#answer-help")).toContainText("Add a unit");
-    await expect(page.locator("#tries")).toContainText("3 tries left");
+    await expect(page.getByTestId("notice")).toContainText("doesn't use up a try");
+    await expect(page.getByTestId("tries")).toContainText("3 tries left");
+    const unit = (await page.getByTestId("stem").innerText()).includes("voltmeter") ? "V" : "A";
     for (let i = 0; i < 3; i++) {
-      await page.getByTestId("answer").fill("0.001 A".replace("A", (await page.locator(".stem").innerText()).includes("voltmeter") ? "V" : "A"));
+      await page.getByTestId("answer-input").fill(`0.00${i + 1} ${unit}`);
       await page.getByTestId("check").click();
     }
-    await expect(page.getByTestId("saved-note")).toContainText("Needs review");
-    await page.getByTestId("done-back").click();
+    await expect(page.getByTestId("feedback-exhausted")).toBeVisible();
+    await expect(page.getByTestId("saved")).toContainText("Saved to this device");
+    await page.getByTestId("back-to-map").click();
     await expect(page.getByTestId("node-cur")).toHaveAttribute("data-state", "needs-review");
     await expect(page.getByTestId("stat-medium")).toContainText("1");
     await page.reload();
     await expect(page.getByTestId("node-cur")).toHaveAttribute("data-state", "needs-review");
-    await expect(page.getByTestId("progress-panel")).toContainText("1 more scheduled");
+    await expect(page.getByTestId("progress-panel")).toContainText("scheduled");
   });
 
   test("a correct first try records an independent answer and the chapter becomes Learning", async ({ page }) => {
-    await page.goto("/chapter/kin/try");
-    const stem = await page.locator(".stem").innerText();
+    await page.goto("/chapter/kin/try?q=kin.acceleration.m.vt-area&seed=7");
+    const stem = await page.getByTestId("stem").innerText();
     const n = (stem.match(/\d+(\.\d+)?/g) ?? []).map(Number);
-    const answer = stem.includes("cyclist") ? ((n[0]! + n[1]!) / 2) * n[2]! : (n[0]! * n[0]!) / (2 * n[1]!);
-    await page.getByTestId("answer").fill(`${answer} m`);
+    await page.getByTestId("answer-input").fill(`${((n[0]! + n[1]!) / 2) * n[2]!} m`);
     await page.getByTestId("check").click();
-    await expect(page.getByTestId("feedback")).toContainText("Correct, first try.");
-    await expect(page.getByTestId("saved-note")).toContainText("Saved");
-    await page.getByTestId("done-back").click();
+    await expect(page.getByTestId("feedback-correct")).toContainText("Correct.");
+    await expect(page.getByTestId("saved")).toContainText("Saved");
+    await page.getByTestId("back-to-map").click();
     await expect(page.getByTestId("node-kin")).toHaveAttribute("data-state", "learning");
     await expect(page.getByTestId("stat-medium")).toContainText("1 first try");
     // the progress underline animates from the last-seen value to the new one
@@ -236,8 +238,12 @@ test.describe("accessibility (axe)", () => {
     await page.waitForTimeout(1500);
     await check(page);
     await page.getByTestId("node-kin").click();
+    // let the preview's opening transition finish: axe measures contrast mid-fade otherwise
+    await expect(page.getByTestId("chapter-preview")).toBeVisible();
+    await page.evaluate(() => Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().iterations !== Infinity).map((a) => a.finished)));
     await check(page);
     await page.keyboard.press("Escape");
+    await expect(page.getByTestId("chapter-preview")).toHaveCount(0); // closing transition finished
     await page.keyboard.press("l");
     await check(page);
     await page.goto("/chapter/set/try");

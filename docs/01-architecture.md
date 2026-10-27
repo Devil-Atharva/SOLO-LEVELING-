@@ -1,5 +1,7 @@
 # 01 · Architecture
 
+**Implementation status (2026-10-28):** this architecture combines the implemented Phase 1–2 foundation with later design targets. The adaptive XState engine, runtime config reader, persisted session stack, tutor providers and separate drafting package are planned. Authored hints currently run directly in the player. The [phase plan](phase-plan.md) distinguishes working features and future prompts.
+
 ## Repository inspection (Phase 0)
 
 `~/AI/noesis` was created empty for this project. Nothing existed to preserve or migrate, so the stack was chosen fresh to satisfy the brief and the Phase 0 decisions. Phase 0 adds only documentation, curriculum data, configuration and two dependency-free check scripts. No application code is scaffolded; that is Phase 1.
@@ -15,29 +17,29 @@
 | Simulations | Pure TypeScript models with a fixed-timestep integrator, rendered to **SVG** (default) or **Canvas 2D** (field lines, dense plots) | Deterministic models make simulations scrubbable and replayable, and unit-testable against analytic results. |
 | Roadmap pan/zoom | `d3-zoom` + `d3-selection` only | Mature wheel, drag and pinch handling. Nodes stay as React-rendered SVG and HTML buttons, so they remain accessible. |
 | Roadmap layout | Deterministic layered layout in `src/domain/roadmapLayout.ts` (pure, memoised, unit-tested) (D-039) | Six chapters per view need no layout engine; results are identical on every device and are checked by tests. |
-| Adaptive engine | **XState v5** state machine over pure domain functions | Detours are recursive child actors. The machine is inspectable and every transition is testable. |
+| Adaptive engine (planned, Phase 4) | **XState v5** state machine over pure domain functions | Detours are recursive child actors. The machine is inspectable and every transition is testable. |
 | Persistence | **IndexedDB via Dexie**, versioned schema, JSON export/import | Browser-only progress for v1 (decision U-10). Survives reloads. Supports quitting mid-detour. |
 | Schemas | **Zod** for content, config, persistence records and API payloads | One schema serves build-time validation, runtime guards and route input validation. |
 | Maths display | **KaTeX** | Fast, server-renderable, no layout shift. |
-| Maths input | **MathLive** `<math-field>` with on-screen keyboard; plain-text fallback | Phone-friendly entry of fractions, roots and powers. |
-| Expression parsing / CAS | **CortexJS Compute Engine** (MathJSON) plus our own equivalence layer | See docs/05. Equivalence uses multi-point sampling with symbolic canonicalisation, not string matching. |
-| Physical units | **mathjs** (units module) | Unit parsing, dimension checks, SI conversion. |
-| Heavy checking | Runs in a **Web Worker** (Comlink), loaded on first use | Keeps parsing and sampling off the main thread. Enforces a time budget. |
-| Student AI | **None by default.** Provider-neutral `TutorProvider` contract in `src/tutor/`; the only shipped implementation is `AuthoredHintsProvider` (no network) | Student-facing AI stays disabled until a provider is chosen after legal review (OQ-1). No AI vendor SDK in the app. See docs/09. |
-| Offline drafting | Separate package `tools/content-drafting/` (may use `@google/genai`) | Adult developers only; never imported by the app; outputs drafts that need human approval. |
+| Maths input | Text field with a symbol keypad and a live KaTeX "Reads as" preview (D-049, replaces MathLive) | Works with every screen reader and phone keyboard; the preview catches misreads before checking. |
+| Expression parsing | Our own safe parser and closure compiler in `src/checking/expr/` (D-048, replaces Compute Engine) | Hard input limits, no code execution; equivalence by seeded multi-point sampling (docs/05). |
+| Physical units | Our own unit system in `src/checking/units.ts` (D-048, replaces mathjs) | Dimension vectors, SI prefixes, compound units, °C as absolute or difference. |
+| Heavy checking | Runs in a **Web Worker** (`src/checking/worker.ts`, plain `postMessage`), warmed when a question opens | Keeps parsing and sampling off the main thread. 300 ms budget; on timeout the worker restarts and the result is `indeterminate` (D-050). |
+| Student AI | **None.** Authored hints run directly in the player. `src/tutor/`, `TutorProvider` and `AuthoredHintsProvider` are planned for Phase 7 | Student-facing AI stays disabled until a provider is chosen after legal review (OQ-1). No AI vendor SDK in the app. See docs/09. |
+| Offline drafting (planned, Phase 7) | Separate package `tools/content-drafting/` (may use `@google/genai`) | Adult developers only; never imported by the app; outputs drafts that need human approval. |
 | Tests | **Vitest** (unit), **fast-check** (property), **Playwright** (e2e, visual), **@axe-core/playwright** (a11y) | Covers pure logic, checkers, flows and accessibility. |
-| Quality | ESLint, Prettier, `tsc --noEmit` in CI | Standard. |
+| Quality | `tsc --noEmit` and repository validation/test scripts are present; ESLint, Prettier and CI enforcement remain planned | Separate installed tooling from the target quality policy. |
 | Fonts (self-hosted, `@fontsource-variable/instrument-sans`) | Instrument Sans for everything, with tabular numerals for readouts and stats; KaTeX fonts for maths from Phase 2 (D-041, supersedes D-022) | One family, so there are no third-party font requests and no separate monospace face. |
 
 Versions are pinned at Phase 1 install time to the latest stable releases. The lockfile is committed.
 
-## Module layout (as built in Phase 1; later phases add to it)
+## Module layout (Phase 2 baseline; planned entries labelled)
 
 ```
 noesis/
   app/                         Next.js routes
     page.tsx                   Roadmap dashboard (Phase 1)
-    chapter/[chapterId]/try/   Diagnostic question (Phase 1); full session player later
+    chapter/[chapterId]/try/   Phase 2 demonstration lesson player; adaptive session later
     globals.css                tokens, motion tokens, all styles, reduced-motion rules
     api/features/              (later) feature flags; api/tutor/* only if student AI is enabled (docs/09)
   src/
@@ -46,11 +48,11 @@ noesis/
       roadmapLayout.ts         deterministic per-view layout + cross-view edges
       progress.ts              records, chapter/skill states, recommendations, panel stats, Leitner
       engine/                  (Phase 4) XState machines, selection, mastery, detour planner
-      checking/                (Phase 2) full checking engine (docs/05 §3)
-    questions/                 Phase 1 diagnostic templates, safe parser and checkers, seeded RNG
+    checking/                  worker/checkers, units and safe expression parser (Phase 2)
+    content/                   schema, catalog, seeded instantiation, solvers, generated manifests
     persistence/               Dexie db + memory fallback, shared store, export/import/erase
-    ui/                        roadmap/ (Dashboard, Roadmap, ChapterPreview, ProgressPanel, Chrome), question/ (screen, visuals), motion
-    widgets/<type>/            (Phase 2+) model.ts (pure) · view.tsx · controls.tsx · describe.ts · cues.ts
+    ui/                        roadmap/ (dashboard, map, preview, progress), player/ (lesson), motion
+    widgets/<type>/            model.ts (pure) and View.tsx; shared controls/transport and registry
     tutor/                     (Phase 7) provider-neutral contract, AuthoredHintsProvider
   content/curriculum/          chapters, skills, foundations, related links (+ generated)
   content/misconceptions/, content/templates/   JSON content (Phase 2+)
@@ -61,7 +63,7 @@ noesis/
   docs/
 ```
 
-**Dependency rule:** `src/domain` and each widget's `model.ts` must not import React, the DOM, Dexie or AI code. ESLint `no-restricted-imports` enforces this. The engine, checkers and simulation models are therefore testable in Node and reusable from the content CLI.
+**Dependency rule:** `src/domain` and each widget's `model.ts` must not import React, the DOM, Dexie or AI code. ESLint `no-restricted-imports` enforcement is planned, not configured in the current checkout. Pure checkers and simulation models are testable in Node and reusable from the content CLI.
 
 ## Runtime data flow
 
@@ -71,9 +73,9 @@ flowchart LR
     UI[React UI + widgets] <--> M[XState session actor]
     M --> SEL[selection / mastery / detour planner<br/>pure domain]
     M <--> DB[(IndexedDB<br/>Dexie)]
-    UI --> W[checking worker<br/>Compute Engine · mathjs]
+    UI --> W[checking worker<br/>safe parser · units · checkers]
     W --> M
-    C[(static content bundle<br/>approved templates only)] --> M
+    C[(student manifest<br/>validated in-review + approved templates)] --> M
   end
   subgraph Server["Next.js server (Node)"]
     F["/api/features<br/>studentAi: false"]
@@ -109,4 +111,4 @@ CI fails if the app's dependency tree contains an AI vendor SDK, or if the clien
 - Content-Security-Policy:
   - `connect-src 'self'` only. An AI host can be added only with the feature flag plus an approved adapter, recorded in the decision log.
   - No third-party scripts and no analytics in v1.
-- Expression input is never `eval`'d. It is parsed into MathJSON or mathjs AST with length and depth limits (docs/05).
+- Expression input is never `eval`'d. Our parser builds a small AST with length, token, node and depth limits (docs/05), and evaluation compiles it to closures. There is no `eval` or `Function` anywhere in the app.

@@ -37,7 +37,6 @@ export function ChapterPreview({
   const related = relatedOf(c.id);
   const foundations = foundationsUsedBy(c.id);
   const headingRef = useRef<HTMLHeadingElement>(null);
-  const view = viewOfChapter(c.id);
 
   useEffect(() => {
     headingRef.current?.focus();
@@ -146,12 +145,12 @@ export function ChapterPreview({
         {playable ? (
           <>
             <Link className="btn btn--primary" href={`/chapter/${c.id}/try`} data-testid="try-question">Try a question</Link>
-            <p className="preview__note">You can try it even if the earlier chapters are new to you. This first question shows where to start.</p>
+            <p className="preview__note">This question helps us find the best place for you to begin. You can try it even if the earlier chapters are new to you.</p>
           </>
         ) : (
           <>
             <button className="btn" aria-disabled="true" disabled>Try a question</button>
-            <p className="preview__note">Questions for {c.title} arrive in a later phase. You can still explore its skills and links. ({view.label})</p>
+            <p className="preview__note">Questions for this chapter are coming soon. You can still explore its skills and how it connects to other chapters.</p>
           </>
         )}
       </footer>

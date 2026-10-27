@@ -12,11 +12,11 @@ Only questions that would **materially change the student experience** are liste
 - The privacy review in docs/10 must be complete.
 - The adapter must pass the conformance suite in docs/09.
 
-Until then, Help gives authored hints and visual cues, which are fully functional.
+Until then, Help gives authored hints and visual cues directly in the player. The provider-neutral contract, offline drafting package and voice client remain planned work in Phases 7–8.
 
 ## OQ-2 · Class 11 student inside a Class 12 chapter hits a Class 12 prerequisite gap — please confirm the default
 
-**Rule (U-03):** no forward routing. **Implemented default:** the student sees a one-line notice naming the Class 12 prerequisite and its chapter, then the worked solution, and the session continues. The student may open that chapter themselves from the map. The engine never sends them there.
+**Rule (U-03):** no forward routing. **Proposed default for Phase 4 (not yet implemented):** the student sees a one-line notice naming the Class 12 prerequisite and its chapter, then the worked solution, and the session continues. The student may open that chapter themselves from the map. The engine never sends them there.
 
 **Effect:** a Class 11 student exploring, for example, *Applications of Derivatives* may be unable to reach mastery there without first choosing *Continuity and Differentiability* themselves. The generated report lists, for each Class 12 chapter, which Class 12 prerequisites this affects. Electric Charges and Fields, Ray Optics, Continuity and Differentiability, and Vector Algebra have none.
 

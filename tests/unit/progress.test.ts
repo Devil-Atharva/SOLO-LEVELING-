@@ -43,9 +43,14 @@ describe("chapter states", () => {
 
 describe("skill states", () => {
   it("independent needs two unaided medium+ answers in the last four", () => {
-    expect(skillState("kin.acceleration", [att({})])).toBe("practising");
-    expect(skillState("kin.acceleration", [att({}), att({ at: NOW })])).toBe("independent");
-    expect(skillState("kin.acceleration", [att({}), att({ at: NOW, difficulty: "easy" })])).toBe("practising");
+    const ok = { countsTowardMastery: true };
+    expect(skillState("kin.acceleration", [att(ok)])).toBe("practising");
+    expect(skillState("kin.acceleration", [att(ok), att({ ...ok, at: NOW })])).toBe("independent");
+    expect(skillState("kin.acceleration", [att(ok), att({ ...ok, at: NOW, difficulty: "easy" })])).toBe("practising");
+  });
+  it("answers to questions that are not human-approved never show independence", () => {
+    expect(skillState("kin.acceleration", [att({}), att({ at: NOW })])).toBe("practising");
+    expect(skillState("kin.acceleration", [att({ countsTowardMastery: false }), att({ at: NOW, countsTowardMastery: false })])).toBe("practising");
   });
 });
 

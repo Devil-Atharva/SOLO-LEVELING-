@@ -5,7 +5,7 @@ import { chapters, getChapter, isViewId, viewIdOf, VIEWS, type ViewId } from "@/
 import { chapterProgress, chapterState, recommendation, STATE_LABEL, type Recommendation } from "@/src/domain/progress";
 import { layoutView } from "@/src/domain/roadmapLayout";
 import { useProgress } from "@/src/persistence/store";
-import { PLAYABLE_CHAPTERS } from "@/src/questions/templates";
+import { PLAYABLE_CHAPTERS } from "@/src/content/playable";
 import { applyStoredMotionSetting, useMotion } from "../motion";
 import { ChapterPreview } from "./ChapterPreview";
 import { Legend, ListView, SearchBox, ViewTabs } from "./Chrome";

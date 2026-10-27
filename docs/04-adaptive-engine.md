@@ -1,6 +1,10 @@
 # 04 · Adaptive engine: questions, detours and mastery
 
-Every number in this document comes from `config/learning.config.json` and can be changed without touching code.
+**Implementation status (2026-10-28):** this document specifies the Phase 4–5 target engine. The current app plays seeded demonstration questions; it does not yet implement `practiceLoop`, a persisted detour stack, class routing or chapter mastery. Single-question retries, hints, attempts and basic flashcard review already exist. See [phase-plan.md](phase-plan.md) for implementation prompts and dependencies.
+
+The target thresholds are defined in `config/learning.config.json`. A validated runtime config reader is still to be built in Phase 4; retry, skill-state and Leitner values are currently hard-coded. Config changes cannot yet be assumed to affect runtime behavior.
+
+**Content eligibility:** the current demonstration catalog permits validated in-review templates under proposed D-053; only unchanged human-approved content may count toward mastery. References below to approved-only sessions describe the target adaptive content policy, not the current demo catalog. D-053 remains unresolved.
 
 ## Vocabulary
 

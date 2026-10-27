@@ -1,0 +1,5209 @@
+{
+  "generatedBy": "npm run content:validate",
+  "templates": [
+    {
+      "template": {
+        "id": "cur.emf.m.internal-resistance-current",
+        "version": 2,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "migratedFrom": "src/questions/templates.ts cur.emf.m.internal-resistance-current@1 (Phase 1 diagnostic; same review status)",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "cur",
+        "skillIds": [
+          "cur.emf",
+          "cur.drift-ohm"
+        ],
+        "primarySkillId": "cur.emf",
+        "difficulty": "medium",
+        "format": "quantity",
+        "estimatedSeconds": 90,
+        "parameters": {
+          "E": {
+            "kind": "choice",
+            "values": [
+              6,
+              9,
+              12
+            ]
+          },
+          "r": {
+            "kind": "choice",
+            "values": [
+              0.5,
+              1,
+              1.5,
+              2
+            ]
+          },
+          "R": {
+            "kind": "int",
+            "min": 2,
+            "max": 10
+          }
+        },
+        "constraints": [],
+        "solver": "cur.internalCurrent",
+        "answer": {
+          "dimension": "current",
+          "tolerance": {
+            "relative": 0.01
+          }
+        },
+        "misconceptionRules": [
+          {
+            "tags": [
+              "ignores-internal-resistance"
+            ],
+            "match": {
+              "buggySolver": "ignoresInternal"
+            }
+          },
+          {
+            "tags": [
+              "only-internal-resistance"
+            ],
+            "match": {
+              "buggySolver": "onlyInternal"
+            }
+          }
+        ],
+        "acceptExamples": [
+          "{{I*1000|raw}} mA",
+          "{{E|raw}}/{{Rt|raw}} A"
+        ],
+        "widget": {
+          "type": "figure",
+          "config": {
+            "figure": "circuit",
+            "E": "{{E}}",
+            "r": "{{r}}",
+            "R": "{{R}}",
+            "showVoltmeter": false
+          },
+          "instructions": "The circuit diagram highlights what your answer leaves out, and follows each step of the worked solution."
+        },
+        "consequence": {
+          "cue": "student",
+          "args": {
+            "value": "$value",
+            "tags": "$tags"
+          }
+        },
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "A cell of emf {{E}} V and internal resistance {{r}} Ω is connected across a {{R}} Ω resistor.",
+          "What current flows in the circuit?"
+        ],
+        "answerText": "{{I}} A",
+        "hints": [
+          {
+            "text": "The current has to pass through two resistances. Where is the second one?"
+          },
+          {
+            "text": "The internal resistance is in series with the external resistor.",
+            "cue": {
+              "cue": "solution-step",
+              "args": {
+                "step": 0
+              }
+            }
+          },
+          {
+            "text": "I = E ÷ (R + r) = {{E}} ÷ ({{R}} + {{r}})."
+          }
+        ],
+        "feedback": {
+          "ignores-internal-resistance": {
+            "text": "You divided by the external resistor only. The current also flows through the cell's own internal resistance, highlighted inside the cell."
+          },
+          "only-internal-resistance": {
+            "text": "You used only the internal resistance. The current also passes through the external resistor."
+          },
+          "dimension-mismatch": {
+            "text": "Current is measured in amperes. Check your unit."
+          },
+          "generic": {
+            "text": "Add up every resistance the current passes through, then divide the emf by the total."
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "The cell's internal resistance r and the external resistor R are in series.",
+            "cue": {
+              "cue": "solution-step",
+              "args": {
+                "step": 0
+              }
+            }
+          },
+          {
+            "text": "Total resistance = R + r = {{R}} + {{r}} = {{Rt}} Ω.",
+            "cue": {
+              "cue": "solution-step",
+              "args": {
+                "step": 1
+              }
+            }
+          },
+          {
+            "text": "I = E ÷ (R + r) = {{E}} ÷ {{Rt}} = {{I}} A.",
+            "cue": {
+              "cue": "solution-step",
+              "args": {
+                "step": 2
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "ignores-internal-resistance": {
+            "front": "A cell has emf E and internal resistance r. What current flows through an external resistor R?",
+            "back": "I = E/(R + r). The internal resistance is in series with R."
+          },
+          "only-internal-resistance": {
+            "front": "When is the current E/r?",
+            "back": "Only when the terminals are shorted (R = 0). Otherwise I = E/(R + r)."
+          },
+          "generic": {
+            "front": "Current from a real cell into a resistor R?",
+            "back": "I = E/(R + r)."
+          }
+        },
+        "input": {
+          "label": "Current",
+          "placeholder": "for example 1.5 A",
+          "keypad": "none"
+        },
+        "accessibility": {
+          "altText": "Circuit: a cell of emf {{E}} V with internal resistance {{r}} Ω drawn inside it, connected to a {{R}} Ω resistor and an ammeter."
+        }
+      },
+      "hash": "sha256:f05c63623a85fa3ac8b3359af58580f29c5ea7fd45338b1e6d80513d9ca5176e",
+      "countsTowardMastery": false
+    },
+    {
+      "template": {
+        "id": "cur.emf.m.terminal-voltage",
+        "version": 2,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "migratedFrom": "src/questions/templates.ts cur.emf.m.terminal-voltage@1 (Phase 1 diagnostic; same review status)",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "cur",
+        "skillIds": [
+          "cur.emf"
+        ],
+        "primarySkillId": "cur.emf",
+        "difficulty": "medium",
+        "format": "quantity",
+        "estimatedSeconds": 90,
+        "parameters": {
+          "E": {
+            "kind": "choice",
+            "values": [
+              6,
+              9,
+              12
+            ]
+          },
+          "r": {
+            "kind": "choice",
+            "values": [
+              0.5,
+              1,
+              1.5,
+              2
+            ]
+          },
+          "R": {
+            "kind": "int",
+            "min": 3,
+            "max": 10
+          }
+        },
+        "constraints": [],
+        "solver": "cur.terminalVoltage",
+        "answer": {
+          "dimension": "voltage",
+          "tolerance": {
+            "relative": 0.01
+          }
+        },
+        "misconceptionRules": [
+          {
+            "tags": [
+              "terminal-equals-emf"
+            ],
+            "match": {
+              "buggySolver": "terminalEqualsEmf"
+            }
+          },
+          {
+            "tags": [
+              "drop-across-internal"
+            ],
+            "match": {
+              "buggySolver": "dropAcrossInternal"
+            }
+          },
+          {
+            "tags": [
+              "added-internal-drop"
+            ],
+            "match": {
+              "buggySolver": "addedInternalDrop"
+            }
+          }
+        ],
+        "acceptExamples": [
+          "{{V*1000|raw}} mV",
+          "{{V|raw}} volts"
+        ],
+        "widget": {
+          "type": "figure",
+          "config": {
+            "figure": "circuit",
+            "E": "{{E}}",
+            "r": "{{r}}",
+            "R": "{{R}}",
+            "showVoltmeter": true
+          },
+          "instructions": "The circuit and its potential ladder show where the emf is used up. They follow each step of the worked solution."
+        },
+        "consequence": {
+          "cue": "student",
+          "args": {
+            "value": "$value",
+            "tags": "$tags"
+          }
+        },
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "A cell of emf {{E}} V and internal resistance {{r}} Ω drives current through a {{R}} Ω resistor.",
+          "What does a voltmeter connected across the cell's terminals read?"
+        ],
+        "answerText": "{{V}} V",
+        "hints": [
+          {
+            "text": "Is the voltmeter's reading the full emf while current flows? What happens inside the cell?"
+          },
+          {
+            "text": "Find the current first, then subtract the voltage lost across the internal resistance: V = E − Ir.",
+            "cue": {
+              "cue": "solution-step",
+              "args": {
+                "step": 1
+              }
+            }
+          },
+          {
+            "text": "I = {{E}} ÷ ({{R}} + {{r}}). Then V = {{E}} − I × {{r}}."
+          }
+        ],
+        "feedback": {
+          "terminal-equals-emf": {
+            "text": "The emf is the reading only when no current flows. With current flowing, some voltage is used up inside the cell. Watch the potential drop across r."
+          },
+          "drop-across-internal": {
+            "text": "That is the voltage lost inside the cell (Ir). The voltmeter reads what is left: E − Ir."
+          },
+          "added-internal-drop": {
+            "text": "The internal drop should be subtracted from the emf, not added. Potential falls across every resistance the current passes through."
+          },
+          "dimension-mismatch": {
+            "text": "A voltmeter reads volts. Check your unit."
+          },
+          "generic": {
+            "text": "Find the current, then subtract the drop across the internal resistance from the emf."
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "Current: I = E ÷ (R + r) = {{E}} ÷ {{Rt}} = {{I}} A.",
+            "cue": {
+              "cue": "solution-step",
+              "args": {
+                "step": 0
+              }
+            }
+          },
+          {
+            "text": "Voltage lost inside the cell: Ir = {{I}} × {{r}} = {{drop}} V.",
+            "cue": {
+              "cue": "solution-step",
+              "args": {
+                "step": 1
+              }
+            }
+          },
+          {
+            "text": "Terminal voltage: V = E − Ir = {{E}} − {{drop}} = {{V}} V. This equals IR across the external resistor.",
+            "cue": {
+              "cue": "solution-step",
+              "args": {
+                "step": 2
+              }
+            }
+          }
+        ],
+        "alternativeSolution": {
+          "title": "Using the external resistor",
+          "steps": [
+            {
+              "text": "The voltmeter across the terminals reads the same as one across the external resistor.",
+              "cue": {
+                "cue": "solution-step",
+                "args": {
+                  "step": 2
+                }
+              }
+            },
+            {
+              "text": "V = IR = {{I}} × {{R}} = {{V}} V.",
+              "cue": {
+                "cue": "solution-step",
+                "args": {
+                  "step": 2
+                }
+              }
+            }
+          ]
+        },
+        "flashcards": {
+          "terminal-equals-emf": {
+            "front": "When does a voltmeter across a cell read its full emf?",
+            "back": "Only when no current flows. Otherwise it reads V = E − Ir."
+          },
+          "drop-across-internal": {
+            "front": "What is Ir for a cell delivering current I?",
+            "back": "The voltage lost inside the cell. The terminal voltage is E − Ir."
+          },
+          "added-internal-drop": {
+            "front": "Terminal voltage of a cell delivering current: E + Ir or E − Ir?",
+            "back": "E − Ir (while the cell is discharging)."
+          },
+          "generic": {
+            "front": "Terminal voltage of a cell with internal resistance r supplying current I?",
+            "back": "V = E − Ir = IR."
+          }
+        },
+        "input": {
+          "label": "Terminal voltage",
+          "placeholder": "for example 8.4 V",
+          "keypad": "none"
+        },
+        "accessibility": {
+          "altText": "Circuit with a voltmeter across a cell of emf {{E}} V and internal resistance {{r}} Ω, driving a {{R}} Ω resistor, with a diagram of potential around the loop."
+        }
+      },
+      "hash": "sha256:b5739187013017bdbac189533166f3f82cf0c3d5b48d2b54dbe583f70273ac11",
+      "countsTowardMastery": false
+    },
+    {
+      "template": {
+        "id": "int.antiderivative.m.polynomial",
+        "version": 1,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "int",
+        "skillIds": [
+          "int.antiderivative"
+        ],
+        "primarySkillId": "int.antiderivative",
+        "difficulty": "medium",
+        "format": "antiderivative",
+        "estimatedSeconds": 90,
+        "parameters": {
+          "a": {
+            "kind": "int",
+            "min": 2,
+            "max": 3
+          },
+          "b": {
+            "kind": "int",
+            "min": -3,
+            "max": 3
+          },
+          "c": {
+            "kind": "int",
+            "min": -4,
+            "max": 4
+          }
+        },
+        "constraints": [
+          "b != 0",
+          "c != 0",
+          "abs(b) != 1"
+        ],
+        "solver": "int.polyAntiderivative",
+        "answer": {
+          "variable": "x",
+          "domain": {
+            "x": [
+              -3,
+              3
+            ]
+          }
+        },
+        "misconceptionRules": [
+          {
+            "tags": [
+              "forgot-to-divide"
+            ],
+            "match": {
+              "buggySolver": "forgotDivide"
+            }
+          },
+          {
+            "tags": [
+              "differentiated-instead"
+            ],
+            "match": {
+              "buggySolver": "differentiated"
+            }
+          },
+          {
+            "tags": [
+              "constant-term-not-integrated"
+            ],
+            "match": {
+              "buggySolver": "constantNotIntegrated"
+            }
+          }
+        ],
+        "acceptExamples": [
+          "{{Fref}}"
+        ],
+        "widget": {
+          "type": "graph-plot",
+          "config": {
+            "xRange": [
+              -3,
+              3
+            ],
+            "yRange": [
+              "{{ylo}}",
+              "{{yhi}}"
+            ],
+            "functions": [
+              {
+                "id": "f",
+                "expr": "{{A3|raw}}*x^2 + {{B2|raw}}*x + {{c|raw}}"
+              }
+            ],
+            "points": [
+              {
+                "id": "X",
+                "label": "X",
+                "on": "f",
+                "x": 1,
+                "draggable": true,
+                "step": 0.25
+              }
+            ],
+            "areas": [
+              {
+                "id": "acc",
+                "top": "f",
+                "bottom": 0,
+                "from": 0,
+                "to": "X",
+                "tone": "neutral",
+                "label": "Signed area from 0 to X"
+              }
+            ],
+            "equation": {
+              "fn": "f"
+            }
+          },
+          "instructions": "Drag point X along the curve. The shaded area from 0 to X grows like the antiderivative: that is the link between integrals and areas."
+        },
+        "consequence": {
+          "cue": "add-function",
+          "args": {
+            "id": "student",
+            "expr": "$input",
+            "tone": "bad",
+            "label": "your antiderivative",
+            "constants": [
+              "C"
+            ]
+          }
+        },
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "Find ∫ ({{A3}}x² {{B2|signed}}x {{c|signed}}) dx."
+        ],
+        "answerText": "{{a}}x³ {{b|signed}}x² {{c|signed}}x + C",
+        "hints": [
+          {
+            "text": "Integration undoes differentiation: you need a function whose derivative is the integrand."
+          },
+          {
+            "text": "∫ xⁿ dx = xⁿ⁺¹ ÷ (n + 1) + C. Raise the power, then divide by the new power. The antiderivative measures the area building up under the curve.",
+            "cue": {
+              "cue": "sweep-area",
+              "args": {
+                "id": "acc2",
+                "top": "f",
+                "bottom": 0,
+                "from": 0,
+                "to": 2,
+                "tone": "neutral"
+              }
+            }
+          },
+          {
+            "text": "∫ {{A3}}x² dx = {{a}}x³. Do the same for the other two terms."
+          }
+        ],
+        "feedback": {
+          "forgot-to-divide": {
+            "text": "After raising each power by one, divide by the new power: ∫ x² dx = x³/3. Differentiate your answer to check: it should give back the integrand."
+          },
+          "differentiated-instead": {
+            "text": "That's the derivative of the integrand, not its antiderivative. Integration raises powers; differentiation lowers them."
+          },
+          "constant-term-not-integrated": {
+            "text": "The constant {{c}} integrates to {{c}}x, not {{c}}: its antiderivative must have derivative {{c}}."
+          },
+          "generic": {
+            "text": "Check by differentiating your answer: it must give back the integrand exactly. Your curve (dashed, coral) is compared with the true antiderivative after the solution."
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "Integrate term by term with ∫ xⁿ dx = xⁿ⁺¹/(n + 1).",
+            "cue": {
+              "cue": "sweep-area",
+              "args": {
+                "id": "acc2",
+                "top": "f",
+                "bottom": 0,
+                "from": 0,
+                "to": 2,
+                "tone": "good"
+              }
+            }
+          },
+          {
+            "text": "∫ {{A3}}x² dx = {{a}}x³; ∫ {{B2}}x dx = {{b}}x²; ∫ {{c}} dx = {{c}}x."
+          },
+          {
+            "text": "So ∫ f dx = {{a}}x³ {{b|signed}}x² {{c|signed}}x + C. The solid amber curve is this antiderivative with C = 0.",
+            "cue": {
+              "cue": "add-function",
+              "args": {
+                "id": "F",
+                "expr": "{{Fref}}",
+                "tone": "good",
+                "label": "antiderivative"
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "forgot-to-divide": {
+            "front": "∫ x² dx?",
+            "back": "x³/3 + C: raise the power, then divide by the new power."
+          },
+          "differentiated-instead": {
+            "front": "Integration vs differentiation: which raises powers?",
+            "back": "Integration raises the power by one; differentiation lowers it."
+          },
+          "constant-term-not-integrated": {
+            "front": "∫ 5 dx?",
+            "back": "5x + C."
+          },
+          "generic": {
+            "front": "How can you check an antiderivative?",
+            "back": "Differentiate it: you should get the integrand back."
+          }
+        },
+        "input": {
+          "label": "Antiderivative",
+          "placeholder": "for example x³ + 2x + C",
+          "keypad": "maths"
+        },
+        "accessibility": {
+          "altText": "Graph of y = {{A3}}x² {{B2|signed}}x {{c|signed}} with the area from 0 to a movable point X shaded.",
+          "nonDragAlternative": "Type an x value for X in Precise controls, or focus X and use the arrow keys."
+        }
+      },
+      "hash": "sha256:38bba2a1bf77b6ebd2fca63eef3970cbc402daa078a8167d719a2f92f14b8f12",
+      "countsTowardMastery": false
+    },
+    {
+      "template": {
+        "id": "kin.acceleration.m.vt-area",
+        "version": 2,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "migratedFrom": "src/questions/templates.ts kin.acceleration.m.vt-area@1 (Phase 1 diagnostic; same review status)",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "kin",
+        "skillIds": [
+          "kin.acceleration",
+          "kin.xt-graphs"
+        ],
+        "primarySkillId": "kin.acceleration",
+        "difficulty": "medium",
+        "format": "quantity",
+        "estimatedSeconds": 90,
+        "parameters": {
+          "u": {
+            "kind": "int",
+            "min": 2,
+            "max": 9
+          },
+          "k": {
+            "kind": "int",
+            "min": 2,
+            "max": 7
+          },
+          "t": {
+            "kind": "choice",
+            "values": [
+              4,
+              5,
+              6,
+              8,
+              10
+            ]
+          }
+        },
+        "constraints": [],
+        "solver": "kin.vtArea",
+        "answer": {
+          "dimension": "length",
+          "tolerance": {
+            "relative": 0.01
+          }
+        },
+        "misconceptionRules": [
+          {
+            "tags": [
+              "area-uses-final-velocity"
+            ],
+            "match": {
+              "buggySolver": "areaUsesFinalVelocity"
+            }
+          },
+          {
+            "tags": [
+              "area-ignores-acceleration"
+            ],
+            "match": {
+              "buggySolver": "areaIgnoresAcceleration"
+            }
+          },
+          {
+            "tags": [
+              "area-misses-rectangle"
+            ],
+            "match": {
+              "buggySolver": "areaMissesRectangle"
+            }
+          },
+          {
+            "tags": [
+              "slope-instead-of-area"
+            ],
+            "match": {
+              "buggySolver": "slopeInsteadOfArea"
+            }
+          }
+        ],
+        "acceptExamples": [
+          "{{s/1000|raw}} km",
+          "{{s*100|raw}} cm",
+          "{{s|raw}}m",
+          "{{s|raw}} metres"
+        ],
+        "widget": {
+          "type": "graph-plot",
+          "config": {
+            "xRange": [
+              0,
+              "{{t}}"
+            ],
+            "yRange": [
+              0,
+              "{{vmax}}"
+            ],
+            "xLabel": "t (s)",
+            "yLabel": "v (m/s)",
+            "functions": [
+              {
+                "id": "line",
+                "expr": "{{u|raw}} + {{acc|raw}}*x",
+                "label": "velocity"
+              },
+              {
+                "id": "flatU",
+                "expr": "{{u|raw}}",
+                "tone": "hidden"
+              },
+              {
+                "id": "flatV",
+                "expr": "{{v|raw}}",
+                "tone": "hidden"
+              }
+            ],
+            "points": [
+              {
+                "id": "P",
+                "label": "P",
+                "on": "line",
+                "x": "{{t/2}}",
+                "draggable": true,
+                "step": 0.5
+              }
+            ]
+          },
+          "instructions": "Drag point P along the line, or focus it and use the arrow keys, to read the velocity at any moment."
+        },
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "A cyclist's velocity rises steadily from {{u}} m/s to {{v}} m/s over {{t}} s, as the velocity–time graph shows.",
+          "How far does the cyclist travel in those {{t}} seconds?"
+        ],
+        "answerText": "{{s}} m",
+        "hints": [
+          {
+            "text": "On a velocity–time graph, what does the area under the line stand for?"
+          },
+          {
+            "text": "Split the region under the line into a rectangle and a triangle.",
+            "cue": [
+              {
+                "cue": "clear-overlay"
+              },
+              {
+                "cue": "area",
+                "args": {
+                  "id": "rect",
+                  "top": "flatU",
+                  "bottom": 0,
+                  "from": 0,
+                  "to": "{{t}}",
+                  "tone": "neutral",
+                  "showValue": false
+                }
+              },
+              {
+                "cue": "area",
+                "args": {
+                  "id": "tri",
+                  "top": "line",
+                  "bottom": "flatU",
+                  "from": 0,
+                  "to": "{{t}}",
+                  "tone": "good",
+                  "showValue": false
+                }
+              }
+            ]
+          },
+          {
+            "text": "Rectangle: {{u}} × {{t}}. Triangle: ½ × ({{v}} − {{u}}) × {{t}}. Add them."
+          }
+        ],
+        "feedback": {
+          "area-uses-final-velocity": {
+            "text": "{{v}} m/s × {{t}} s assumes the cyclist moved at the final speed the whole time. The coral region is what you counted; the cyclist only covered the orange area under the line.",
+            "cue": [
+              {
+                "cue": "area",
+                "args": {
+                  "id": "over",
+                  "top": "flatV",
+                  "bottom": 0,
+                  "from": 0,
+                  "to": "{{t}}",
+                  "tone": "bad",
+                  "label": "Your answer, v × t"
+                }
+              },
+              {
+                "cue": "area",
+                "args": {
+                  "id": "full",
+                  "top": "line",
+                  "bottom": 0,
+                  "from": 0,
+                  "to": "{{t}}",
+                  "tone": "good",
+                  "showValue": false
+                }
+              }
+            ]
+          },
+          "area-ignores-acceleration": {
+            "text": "{{u}} m/s × {{t}} s is only the rectangle under the starting speed. The cyclist sped up, so the coral triangle on top counts too.",
+            "cue": [
+              {
+                "cue": "area",
+                "args": {
+                  "id": "rect",
+                  "top": "flatU",
+                  "bottom": 0,
+                  "from": 0,
+                  "to": "{{t}}",
+                  "tone": "neutral",
+                  "label": "Your answer, u × t"
+                }
+              },
+              {
+                "cue": "area",
+                "args": {
+                  "id": "tri",
+                  "top": "line",
+                  "bottom": "flatU",
+                  "from": 0,
+                  "to": "{{t}}",
+                  "tone": "bad",
+                  "showValue": false
+                }
+              }
+            ]
+          },
+          "area-misses-rectangle": {
+            "text": "That's only the triangle. The cyclist was already moving at the start, so the coral rectangle underneath counts as well.",
+            "cue": [
+              {
+                "cue": "area",
+                "args": {
+                  "id": "tri",
+                  "top": "line",
+                  "bottom": "flatU",
+                  "from": 0,
+                  "to": "{{t}}",
+                  "tone": "good",
+                  "label": "Your answer, the triangle"
+                }
+              },
+              {
+                "cue": "area",
+                "args": {
+                  "id": "rect",
+                  "top": "flatU",
+                  "bottom": 0,
+                  "from": 0,
+                  "to": "{{t}}",
+                  "tone": "bad",
+                  "showValue": false
+                }
+              }
+            ]
+          },
+          "slope-instead-of-area": {
+            "text": "That's the slope of the line (rise over run), which is the acceleration. Distance is the area under a velocity–time graph, not its slope.",
+            "cue": {
+              "cue": "slope-triangle",
+              "args": {
+                "fn": "line",
+                "x1": 0,
+                "x2": "{{t}}",
+                "tone": "bad"
+              }
+            }
+          },
+          "dimension-mismatch": {
+            "text": "Distance is a length. Check your unit."
+          },
+          "unit-conversion-error": {
+            "text": "Check your unit conversion. The graph uses metres and seconds."
+          },
+          "generic": {
+            "text": "Distance on a velocity–time graph is the area under the line. Which shapes make up that area?",
+            "cue": {
+              "cue": "sweep-area",
+              "args": {
+                "id": "full",
+                "top": "line",
+                "bottom": 0,
+                "from": 0,
+                "to": "{{t}}",
+                "tone": "good",
+                "showValue": false
+              }
+            }
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "Displacement equals the area under the velocity–time graph from 0 to {{t}} s.",
+            "cue": {
+              "cue": "sweep-area",
+              "args": {
+                "id": "full",
+                "top": "line",
+                "bottom": 0,
+                "from": 0,
+                "to": "{{t}}",
+                "tone": "good"
+              }
+            }
+          },
+          {
+            "text": "Rectangle under the starting speed: {{u}} m/s × {{t}} s = {{rect}} m.",
+            "cue": [
+              {
+                "cue": "clear-overlay"
+              },
+              {
+                "cue": "area",
+                "args": {
+                  "id": "rect",
+                  "top": "flatU",
+                  "bottom": 0,
+                  "from": 0,
+                  "to": "{{t}}",
+                  "tone": "neutral",
+                  "label": "u × t"
+                }
+              }
+            ]
+          },
+          {
+            "text": "Triangle for the gain in speed: ½ × ({{v}} − {{u}}) m/s × {{t}} s = {{tri}} m.",
+            "cue": {
+              "cue": "area",
+              "args": {
+                "id": "tri",
+                "top": "line",
+                "bottom": "flatU",
+                "from": 0,
+                "to": "{{t}}",
+                "tone": "good",
+                "label": "½(v − u)t"
+              }
+            }
+          },
+          {
+            "text": "Total distance: {{rect}} + {{tri}} = {{s}} m.",
+            "cue": [
+              {
+                "cue": "clear-overlay"
+              },
+              {
+                "cue": "area",
+                "args": {
+                  "id": "full",
+                  "top": "line",
+                  "bottom": 0,
+                  "from": 0,
+                  "to": "{{t}}",
+                  "tone": "good",
+                  "label": "Distance"
+                }
+              }
+            ]
+          }
+        ],
+        "alternativeSolution": {
+          "title": "Using the average velocity",
+          "steps": [
+            {
+              "text": "For steady acceleration the average velocity is halfway between the start and end: ({{u}} + {{v}})/2 = {{(u+v)/2}} m/s.",
+              "cue": {
+                "cue": "marker",
+                "args": {
+                  "x": "{{t/2}}",
+                  "y": "{{(u+v)/2}}",
+                  "label": "average velocity"
+                }
+              }
+            },
+            {
+              "text": "Distance = average velocity × time = {{(u+v)/2}} × {{t}} = {{s}} m. The rectangle under the average-velocity line has the same area as the region under the graph.",
+              "cue": {
+                "cue": "area",
+                "args": {
+                  "id": "avg",
+                  "top": "{{(u+v)/2}}",
+                  "bottom": 0,
+                  "from": 0,
+                  "to": "{{t}}",
+                  "tone": "neutral",
+                  "label": "average × time"
+                }
+              }
+            }
+          ]
+        },
+        "flashcards": {
+          "area-uses-final-velocity": {
+            "front": "Velocity rises from u to v in time t. Why isn't the distance v × t?",
+            "back": "The body was slower earlier. Distance is the area under the v–t line: rectangle u·t plus triangle ½(v − u)t."
+          },
+          "area-ignores-acceleration": {
+            "front": "Speeding up from u to v: is the distance u × t?",
+            "back": "No. That is only the rectangle. Add the triangle ½(v − u)t for the speed gained."
+          },
+          "area-misses-rectangle": {
+            "front": "Which shapes make up the area under a rising v–t line that starts at u > 0?",
+            "back": "A rectangle u·t under the starting speed plus a triangle ½(v − u)t on top."
+          },
+          "slope-instead-of-area": {
+            "front": "On a v–t graph, what do the slope and the area tell you?",
+            "back": "Slope = acceleration. Area under the line = displacement."
+          },
+          "generic": {
+            "front": "How do you get distance from a velocity–time graph?",
+            "back": "Find the area under the line between the two times."
+          }
+        },
+        "input": {
+          "label": "Distance travelled",
+          "placeholder": "for example 42 m",
+          "keypad": "none"
+        },
+        "accessibility": {
+          "altText": "Velocity–time graph: a straight line rising from {{u}} m/s at t = 0 to {{v}} m/s at t = {{t}} s.",
+          "nonDragAlternative": "Type a time for point P in Precise controls, or focus P and use the arrow keys."
+        }
+      },
+      "hash": "sha256:5412715dcf6b8aa71a1b80b73aeb31d0d4c1853438bd9cccdcc5a995e38e8509",
+      "countsTowardMastery": false
+    },
+    {
+      "template": {
+        "id": "kin.suvat.m.braking-distance",
+        "version": 2,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "migratedFrom": "src/questions/templates.ts kin.suvat.m.braking-distance@1 (Phase 1 diagnostic; same review status)",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "kin",
+        "skillIds": [
+          "kin.suvat"
+        ],
+        "primarySkillId": "kin.suvat",
+        "difficulty": "medium",
+        "format": "quantity",
+        "estimatedSeconds": 90,
+        "parameters": {
+          "k": {
+            "kind": "int",
+            "min": 6,
+            "max": 15
+          },
+          "a": {
+            "kind": "choice",
+            "values": [
+              2,
+              2.5,
+              4,
+              5
+            ]
+          }
+        },
+        "constraints": [],
+        "solver": "kin.brakingDistance",
+        "answer": {
+          "dimension": "length",
+          "tolerance": {
+            "relative": 0.01
+          }
+        },
+        "misconceptionRules": [
+          {
+            "tags": [
+              "missing-half"
+            ],
+            "match": {
+              "buggySolver": "missingHalf"
+            }
+          },
+          {
+            "tags": [
+              "dropped-square"
+            ],
+            "match": {
+              "buggySolver": "droppedSquare"
+            }
+          },
+          {
+            "tags": [
+              "time-instead-of-distance"
+            ],
+            "match": {
+              "buggySolver": "timeInsteadOfDistance"
+            }
+          }
+        ],
+        "acceptExamples": [
+          "{{s/1000|raw}} km"
+        ],
+        "widget": {
+          "type": "motion-track",
+          "config": {
+            "mode": "1d",
+            "lanes": [
+              {
+                "id": "car",
+                "label": "Car",
+                "x0": 0,
+                "v0": "{{u}}",
+                "a": "{{-a}}"
+              }
+            ],
+            "stopAtRest": true,
+            "xRange": [
+              0,
+              "{{xmax}}"
+            ],
+            "hideNumbers": true
+          },
+          "instructions": "Press Play to watch the car brake. Pause, step or scrub the timeline; dots mark equal time intervals and bunch up as it slows."
+        },
+        "consequence": [
+          {
+            "cue": "flag",
+            "args": {
+              "x": "$value",
+              "label": "your answer",
+              "tone": "bad"
+            }
+          },
+          {
+            "cue": "stop-at",
+            "args": {
+              "x": "$value"
+            }
+          }
+        ],
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "A car moving at {{u}} m/s brakes with a steady deceleration of {{a}} m/s².",
+          "How far does it travel from the moment the brakes are applied until it stops?"
+        ],
+        "answerText": "{{s}} m",
+        "hints": [
+          {
+            "text": "You know the starting speed, the final speed and the deceleration. Which equation links those three with distance and leaves out time?"
+          },
+          {
+            "text": "The distance is the area under the velocity–time graph. Use v² = u² − 2as, with v = 0 when the car stops.",
+            "cue": {
+              "cue": "area",
+              "args": {
+                "t": "{{T}}"
+              }
+            }
+          },
+          {
+            "text": "0 = {{u}}² − 2 × {{a}} × s. Solve for s."
+          }
+        ],
+        "feedback": {
+          "missing-half": {
+            "text": "That distance is twice too large: it is what the car would cover at {{u}} m/s for the whole stopping time (the dashed car). The real car slows down, so its average speed is only half the starting speed.",
+            "cue": {
+              "cue": "ghost-lane",
+              "args": {
+                "lane": {
+                  "id": "const",
+                  "label": "at {{u}} m/s throughout",
+                  "x0": 0,
+                  "v0": "{{u}}",
+                  "a": 0
+                }
+              }
+            }
+          },
+          "dropped-square": {
+            "text": "The starting speed should be squared. Stopping distance grows with the square of speed."
+          },
+          "time-instead-of-distance": {
+            "text": "That number is the stopping time (u ÷ a), not the distance."
+          },
+          "dimension-mismatch": {
+            "text": "Distance is a length. Check your unit."
+          },
+          "unit-conversion-error": {
+            "text": "Check your unit conversion: the speeds are in metres per second."
+          },
+          "generic": {
+            "text": "Try the equation that links speeds, deceleration and distance without time. The car now brakes so that it stops at your flag: compare the deceleration that needs with the {{a}} m/s² the brakes really give."
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "The car stops, so its final speed v = 0. Time isn't given, so use v² = u² − 2as.",
+            "cue": {
+              "cue": "play"
+            }
+          },
+          {
+            "text": "0 = {{u}}² − 2 × {{a}} × s"
+          },
+          {
+            "text": "s = {{u}}² ÷ (2 × {{a}}) = {{u*u}} ÷ {{2*a}} = {{s}} m.",
+            "cue": [
+              {
+                "cue": "reveal"
+              },
+              {
+                "cue": "flag",
+                "args": {
+                  "x": "{{s}}",
+                  "label": "stops at {{s}} m",
+                  "tone": "good"
+                }
+              },
+              {
+                "cue": "area",
+                "args": {
+                  "t": "{{T}}"
+                }
+              },
+              {
+                "cue": "play"
+              }
+            ]
+          },
+          {
+            "text": "Check: it stops after t = u/a = {{T}} s at an average speed of {{half}} m/s, and {{half}} × {{T}} = {{s}} m."
+          }
+        ],
+        "alternativeSolution": {
+          "title": "Using the time to stop",
+          "steps": [
+            {
+              "text": "Time to stop: t = u ÷ a = {{u}} ÷ {{a}} = {{T}} s.",
+              "cue": [
+                {
+                  "cue": "reveal"
+                },
+                {
+                  "cue": "tangent",
+                  "args": {
+                    "t": "{{T/2}}"
+                  }
+                }
+              ]
+            },
+            {
+              "text": "Distance = area under the v–t graph = ½ × {{u}} × {{T}} = {{s}} m.",
+              "cue": [
+                {
+                  "cue": "area",
+                  "args": {
+                    "t": "{{T}}"
+                  }
+                },
+                {
+                  "cue": "play"
+                }
+              ]
+            }
+          ]
+        },
+        "flashcards": {
+          "missing-half": {
+            "front": "Braking from u to rest: is the distance u × t?",
+            "back": "No. The speed falls steadily, so the average speed is u/2 and the distance is u²/(2a)."
+          },
+          "dropped-square": {
+            "front": "If a car's speed doubles, what happens to its stopping distance at the same deceleration?",
+            "back": "It becomes four times as large: s = u²/(2a)."
+          },
+          "time-instead-of-distance": {
+            "front": "What do u/a and u²/(2a) give for a car braking to rest?",
+            "back": "u/a is the stopping time; u²/(2a) is the stopping distance."
+          },
+          "generic": {
+            "front": "Which equation gives stopping distance without the time?",
+            "back": "v² = u² − 2as with v = 0, so s = u²/(2a)."
+          }
+        },
+        "input": {
+          "label": "Stopping distance",
+          "placeholder": "for example 30 m",
+          "keypad": "none"
+        },
+        "accessibility": {
+          "altText": "A car on a straight road, starting at {{u}} m/s and braking at {{a}} m/s², with position–time and velocity–time graphs.",
+          "nonDragAlternative": "Use the Play, Step and timeline controls; nothing needs dragging."
+        }
+      },
+      "hash": "sha256:c5be2aa02cd6f12594a83a0a426b5e40e99f95fa3752e62747731fc4e3a34f6b",
+      "countsTowardMastery": false
+    },
+    {
+      "template": {
+        "id": "lim.derivative-rules.m.power-rule-tangent",
+        "version": 1,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "lim",
+        "skillIds": [
+          "lim.derivative-rules",
+          "lim.first-principles"
+        ],
+        "primarySkillId": "lim.derivative-rules",
+        "difficulty": "medium",
+        "format": "expression",
+        "estimatedSeconds": 90,
+        "parameters": {
+          "a": {
+            "kind": "choice",
+            "values": [
+              -3,
+              -2,
+              2,
+              3,
+              4
+            ]
+          },
+          "b": {
+            "kind": "int",
+            "min": -5,
+            "max": 5
+          }
+        },
+        "constraints": [
+          "b != 0"
+        ],
+        "solver": "lim.powerRule",
+        "answer": {
+          "variables": [
+            "x"
+          ],
+          "domain": {
+            "x": [
+              -4,
+              4
+            ]
+          }
+        },
+        "misconceptionRules": [
+          {
+            "tags": [
+              "power-rule-forgot-multiply"
+            ],
+            "match": {
+              "buggySolver": "forgotMultiply"
+            }
+          },
+          {
+            "tags": [
+              "dropped-linear-term"
+            ],
+            "match": {
+              "buggySolver": "droppedLinear"
+            }
+          },
+          {
+            "tags": [
+              "power-not-reduced"
+            ],
+            "match": {
+              "buggySolver": "keptPower"
+            }
+          }
+        ],
+        "acceptExamples": [],
+        "widget": {
+          "type": "graph-plot",
+          "config": {
+            "xRange": [
+              -4,
+              4
+            ],
+            "yRange": [
+              "{{ylo}}",
+              "{{yhi}}"
+            ],
+            "functions": [
+              {
+                "id": "f",
+                "expr": "{{a|raw}}*x^2 + {{b|raw}}*x"
+              }
+            ],
+            "points": [
+              {
+                "id": "P",
+                "label": "P",
+                "on": "f",
+                "x": 1,
+                "draggable": true,
+                "step": 0.25
+              }
+            ],
+            "tangent": {
+              "at": "P"
+            },
+            "equation": {
+              "fn": "f"
+            }
+          },
+          "instructions": "Drag point P along the curve, or focus it and use the arrow keys. The tangent and its slope update as you go: the derivative gives that slope at every x."
+        },
+        "consequence": [
+          {
+            "cue": "add-function",
+            "args": {
+              "id": "student",
+              "expr": "$input",
+              "tone": "bad",
+              "label": "your f′(x)"
+            }
+          },
+          {
+            "cue": "student-tangent",
+            "args": {
+              "point": "P",
+              "expr": "$input"
+            }
+          }
+        ],
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "f(x) = {{a}}x² {{b|signed}}x",
+          "Find f′(x)."
+        ],
+        "answerText": "f′(x) = {{dref}}",
+        "hints": [
+          {
+            "text": "Move P to a few places and note the slope of the tangent. What pattern do you see?",
+            "cue": [
+              {
+                "cue": "move-point",
+                "args": {
+                  "point": "P",
+                  "x": 2
+                }
+              },
+              {
+                "cue": "tangent",
+                "args": {
+                  "point": "P"
+                }
+              }
+            ]
+          },
+          {
+            "text": "The derivative's value at each x is the tangent's slope there. The dots mark those slopes.",
+            "cue": {
+              "cue": "derivative-dots",
+              "args": {
+                "fn": "f",
+                "count": 7
+              }
+            }
+          },
+          {
+            "text": "Use d/dx(xⁿ) = n xⁿ⁻¹ on each term."
+          }
+        ],
+        "feedback": {
+          "power-rule-forgot-multiply": {
+            "text": "When you differentiate x², bring the power down as a multiplier: d/dx(x²) = 2x. The dashed line uses your f′ as the tangent at P: it cuts across the curve instead of just touching it."
+          },
+          "dropped-linear-term": {
+            "text": "The term {{b}}x also changes with x; its derivative is {{b}}. The dashed line uses your f′ as the tangent at P: it doesn't just touch the curve."
+          },
+          "power-not-reduced": {
+            "text": "After bringing the power down, reduce it by one: d/dx(x²) = 2x¹, not 2x²."
+          },
+          "generic": {
+            "text": "The dashed line uses your f′(x) as the slope at P. A correct derivative gives a line that just touches the curve there. Move P and look again."
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "The derivative at each x is the slope of the tangent there.",
+            "cue": {
+              "cue": "tangent",
+              "args": {
+                "point": "P"
+              }
+            }
+          },
+          {
+            "text": "Power rule: d/dx({{a}}x²) = {{two_a}}x and d/dx({{b}}x) = {{b}}.",
+            "cue": {
+              "cue": "derivative-dots",
+              "args": {
+                "fn": "f",
+                "count": 7
+              }
+            }
+          },
+          {
+            "text": "So f′(x) = {{dref}}. Its graph passes through every slope dot.",
+            "cue": {
+              "cue": "add-function",
+              "args": {
+                "id": "true",
+                "expr": "{{dref}}",
+                "tone": "good",
+                "label": "f′(x)"
+              }
+            }
+          }
+        ],
+        "alternativeSolution": {
+          "title": "From first principles",
+          "steps": [
+            {
+              "text": "f′(x) = lim (h → 0) [f(x + h) − f(x)] ÷ h. Watch the secant become the tangent at x = 1.",
+              "cue": {
+                "cue": "secant-to-tangent",
+                "args": {
+                  "fn": "f",
+                  "x": 1,
+                  "h0": 2
+                }
+              }
+            },
+            {
+              "text": "[{{a}}(x + h)² + {{b}}(x + h) − {{a}}x² − {{b}}x] ÷ h = {{two_a}}x + {{b}} + {{a}}h → {{dref}} as h → 0."
+            }
+          ]
+        },
+        "flashcards": {
+          "power-rule-forgot-multiply": {
+            "front": "d/dx(ax²)?",
+            "back": "2ax: bring the power down and reduce it by one."
+          },
+          "dropped-linear-term": {
+            "front": "d/dx(bx)?",
+            "back": "b, a constant (the slope of the line y = bx)."
+          },
+          "power-not-reduced": {
+            "front": "Power rule?",
+            "back": "d/dx(xⁿ) = n xⁿ⁻¹."
+          },
+          "generic": {
+            "front": "What does f′(a) mean on the graph of f?",
+            "back": "The slope of the tangent at x = a."
+          }
+        },
+        "input": {
+          "label": "f′(x)",
+          "placeholder": "for example 6x − 2",
+          "keypad": "maths"
+        },
+        "accessibility": {
+          "altText": "Graph of f(x) = {{a}}x² {{b|signed}}x with a point P on the curve and its tangent line.",
+          "nonDragAlternative": "Type an x value for P in Precise controls, or focus P and use the arrow keys."
+        }
+      },
+      "hash": "sha256:055ff165788f09c451796de8986f53f723dab7cd15e521769ea3d124c0908692",
+      "countsTowardMastery": false
+    },
+    {
+      "template": {
+        "id": "lom.connected-bodies.m.who-exerts-each-force",
+        "version": 1,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "lom",
+        "skillIds": [
+          "lom.connected-bodies",
+          "lom.fbd"
+        ],
+        "primarySkillId": "lom.connected-bodies",
+        "difficulty": "medium",
+        "format": "mapping",
+        "estimatedSeconds": 90,
+        "parameters": {
+          "mA": {
+            "kind": "choice",
+            "values": [
+              1,
+              2,
+              3
+            ]
+          },
+          "mB": {
+            "kind": "choice",
+            "values": [
+              2,
+              3,
+              4
+            ]
+          },
+          "F": {
+            "kind": "int",
+            "min": 6,
+            "max": 18
+          }
+        },
+        "constraints": [],
+        "solver": "lom.connectedAgents",
+        "answer": {
+          "accepted": {
+            "wA": [
+              "earth"
+            ],
+            "nA": [
+              "table"
+            ],
+            "tA": [
+              "string"
+            ]
+          },
+          "rules": [
+            {
+              "item": "tA",
+              "target": "hand",
+              "tags": [
+                "tension-from-hand"
+              ]
+            },
+            {
+              "item": "tA",
+              "target": "blockB",
+              "tags": [
+                "tension-agent-confusion"
+              ]
+            },
+            {
+              "item": "nA",
+              "target": "earth",
+              "tags": [
+                "normal-from-earth"
+              ]
+            },
+            {
+              "item": "wA",
+              "target": "table",
+              "tags": [
+                "weight-from-surface"
+              ]
+            }
+          ]
+        },
+        "misconceptionRules": [],
+        "acceptExamples": [],
+        "widget": {
+          "type": "vector-board",
+          "config": {
+            "scene": "floor",
+            "body": {
+              "label": "A",
+              "mass": "{{mA}}"
+            },
+            "maxMagnitude": "{{WA+4}}",
+            "allowEdit": false,
+            "showAgents": false,
+            "predict": true,
+            "predictSeconds": 1.5,
+            "vectors": [
+              {
+                "id": "W",
+                "kind": "weight",
+                "label": "Weight",
+                "agent": "Earth",
+                "magnitude": "{{WA}}",
+                "angleDeg": -90,
+                "locked": true
+              },
+              {
+                "id": "N",
+                "kind": "normal",
+                "label": "Normal",
+                "agent": "table",
+                "magnitude": "{{WA}}",
+                "angleDeg": 90,
+                "locked": true
+              },
+              {
+                "id": "T",
+                "kind": "tension",
+                "label": "Tension",
+                "agent": "string",
+                "magnitude": "{{T}}",
+                "angleDeg": 0,
+                "locked": true
+              }
+            ]
+          },
+          "instructions": "The board shows the three forces on block A and the motion they predict. Press Play to watch block A accelerate."
+        },
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "Block A ({{mA}} kg) is tied by a light string to block B ({{mB}} kg). A hand pulls B with {{F}} N along a smooth table, so both blocks accelerate together.",
+          "Match each force acting on block A to the body that exerts it."
+        ],
+        "answerText": "Weight → the Earth; normal force → the table; tension → the string",
+        "hints": [
+          {
+            "text": "A force on A must come from something touching A, or from the Earth's gravity."
+          },
+          {
+            "text": "What is actually attached to block A? The hand isn't touching it.",
+            "cue": {
+              "cue": "highlight",
+              "args": {
+                "ids": [
+                  "T"
+                ]
+              }
+            }
+          },
+          {
+            "text": "The string pulls A with tension T = {{T}} N, which is less than the hand's {{F}} N."
+          }
+        ],
+        "feedback": {
+          "tension-from-hand": {
+            "text": "The hand touches block B, not A. Block A is pulled by the string, and that pull ({{T}} N) is smaller than the hand's {{F}} N because the string only has to accelerate A.",
+            "cue": {
+              "cue": "highlight",
+              "args": {
+                "ids": [
+                  "T"
+                ]
+              }
+            }
+          },
+          "tension-agent-confusion": {
+            "text": "Block B doesn't touch block A: the string between them does the pulling. The string pulls A forward and pulls B backward.",
+            "cue": {
+              "cue": "highlight",
+              "args": {
+                "ids": [
+                  "T"
+                ]
+              }
+            }
+          },
+          "normal-from-earth": {
+            "text": "The normal force is a contact force from the surface A rests on: the table.",
+            "cue": {
+              "cue": "highlight",
+              "args": {
+                "ids": [
+                  "N"
+                ]
+              }
+            }
+          },
+          "weight-from-surface": {
+            "text": "Weight is the Earth's gravitational pull. The table pushes up with the normal force instead.",
+            "cue": {
+              "cue": "highlight",
+              "args": {
+                "ids": [
+                  "W"
+                ]
+              }
+            }
+          },
+          "generic": {
+            "text": "For each force, name the one body in contact with A (or the Earth) that produces it."
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "Weight: the Earth's gravitational pull on A, {{WA}} N downward.",
+            "cue": {
+              "cue": "highlight",
+              "args": {
+                "ids": [
+                  "W"
+                ]
+              }
+            }
+          },
+          {
+            "text": "Normal force: the table pushes up on A.",
+            "cue": {
+              "cue": "highlight",
+              "args": {
+                "ids": [
+                  "N"
+                ]
+              }
+            }
+          },
+          {
+            "text": "Tension: the string pulls A forward. Both blocks share the acceleration a = {{F}} ÷ ({{mA}} + {{mB}}) = {{a}} m/s², so T = m_A a = {{T}} N. Press Play to watch A accelerate.",
+            "cue": [
+              {
+                "cue": "highlight",
+                "args": {
+                  "ids": [
+                    "T"
+                  ]
+                }
+              },
+              {
+                "cue": "predict"
+              }
+            ]
+          }
+        ],
+        "flashcards": {
+          "tension-from-hand": {
+            "front": "A hand pulls block B, which pulls block A by a string. Who exerts the forward force on A?",
+            "back": "The string. Its tension is smaller than the hand's pull (T = m_A a)."
+          },
+          "tension-agent-confusion": {
+            "front": "Two blocks joined by a string: does block B push or pull block A directly?",
+            "back": "No. They don't touch. The string pulls each block toward the other."
+          },
+          "normal-from-earth": {
+            "front": "Which body exerts the normal force on a block resting on a table?",
+            "back": "The table (a contact force from the surface)."
+          },
+          "weight-from-surface": {
+            "front": "Which body exerts a block's weight?",
+            "back": "The Earth, by gravity."
+          },
+          "generic": {
+            "front": "How do you name a force's agent?",
+            "back": "Find the one body in contact with it (or the Earth, for weight) that produces the force."
+          }
+        },
+        "items": [
+          {
+            "id": "wA",
+            "text": "Weight of A"
+          },
+          {
+            "id": "nA",
+            "text": "Normal force on A"
+          },
+          {
+            "id": "tA",
+            "text": "Tension on A"
+          }
+        ],
+        "targets": [
+          {
+            "id": "earth",
+            "text": "the Earth"
+          },
+          {
+            "id": "table",
+            "text": "the table"
+          },
+          {
+            "id": "string",
+            "text": "the string"
+          },
+          {
+            "id": "hand",
+            "text": "the hand"
+          },
+          {
+            "id": "blockB",
+            "text": "block B"
+          }
+        ],
+        "accessibility": {
+          "altText": "Block A on a table with its weight, the normal force and the string's tension ({{T}} N, to the right) drawn on it.",
+          "nonDragAlternative": "Each force has a list to choose its source from; dragging the cards is optional."
+        }
+      },
+      "hash": "sha256:896b377301392ff547891d9a0b6eeb45e84edfb48b180bbd9bfa77d37e8401ca",
+      "countsTowardMastery": false
+    },
+    {
+      "template": {
+        "id": "lom.fbd.m.box-pulled-by-rope",
+        "version": 1,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "lom",
+        "skillIds": [
+          "lom.fbd",
+          "lom.friction",
+          "lom.resolve-forces"
+        ],
+        "primarySkillId": "lom.fbd",
+        "difficulty": "medium",
+        "format": "diagram",
+        "estimatedSeconds": 180,
+        "parameters": {
+          "m": {
+            "kind": "choice",
+            "values": [
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "T": {
+            "kind": "int",
+            "min": 10,
+            "max": 20
+          },
+          "ang": {
+            "kind": "choice",
+            "values": [
+              20,
+              30,
+              40
+            ]
+          }
+        },
+        "constraints": [],
+        "solver": "lom.fbdRope",
+        "answer": {},
+        "misconceptionRules": [],
+        "acceptExamples": [],
+        "widget": {
+          "type": "vector-board",
+          "config": {
+            "scene": "floor",
+            "rope": {
+              "angleDeg": "{{ang}}"
+            },
+            "body": {
+              "label": "box",
+              "mass": "{{m}}"
+            },
+            "initialVelocity": {
+              "x": 1.5,
+              "y": 0
+            },
+            "predict": true,
+            "predictSeconds": 1.5,
+            "maxMagnitude": "{{maxF}}",
+            "magnitudeStep": 0.5,
+            "allowAdd": true,
+            "agents": [
+              "Earth",
+              "floor",
+              "rope",
+              "hand",
+              "none"
+            ],
+            "kinds": [
+              {
+                "kind": "weight",
+                "label": "Weight"
+              },
+              {
+                "kind": "normal",
+                "label": "Normal"
+              },
+              {
+                "kind": "tension",
+                "label": "Tension"
+              },
+              {
+                "kind": "friction",
+                "label": "Friction"
+              },
+              {
+                "kind": "applied",
+                "label": "Push"
+              },
+              {
+                "kind": "motion",
+                "label": "Force of motion"
+              }
+            ],
+            "vectors": []
+          },
+          "instructions": "Add each force with Precise controls, choose who exerts it, then drag its tip (or type its size and direction). The amber arrow is the net force; press Play to see the motion your diagram predicts."
+        },
+        "consequence": [
+          {
+            "cue": "compare",
+            "args": {
+              "vectors": [],
+              "label": "the real box: constant 1.5 m/s"
+            }
+          },
+          {
+            "cue": "predict"
+          }
+        ],
+        "resolution": {
+          "cue": "student-diagram",
+          "args": {
+            "correct": "{{correctVectors}}"
+          }
+        },
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "A {{m}} kg box is pulled across a rough floor by a rope at {{ang}}° above the horizontal. The rope's tension is {{T}} N and the box moves at a constant 1.5 m/s. Take g = 9.8 m/s².",
+          "Draw every force acting on the box, with its direction and size."
+        ],
+        "answerText": "Weight {{W}} N down (Earth); normal force {{N}} N up (floor); tension {{T}} N at {{ang}}° (rope); friction {{f}} N backwards (floor)",
+        "hints": [
+          {
+            "text": "List what touches the box: the floor and the rope. Gravity acts too. Each gives one or two forces."
+          },
+          {
+            "text": "Constant speed means the net force is zero. Watch the amber net-force arrow and press Play: the box should neither speed up nor slow down.",
+            "cue": {
+              "cue": "predict"
+            }
+          },
+          {
+            "text": "Vertically: N + T sin {{ang}}° = mg. Horizontally: friction = T cos {{ang}}°."
+          }
+        ],
+        "feedback": {
+          "missing-normal": {
+            "text": "Without the normal force, your diagram predicts the box sinks through the floor: watch it drift away from the real box. The floor pushes up on the box."
+          },
+          "missing-weight": {
+            "text": "Every body near the Earth has a weight, pulling straight down."
+          },
+          "missing-tension": {
+            "text": "The rope pulls the box along its own direction, {{ang}}° above the horizontal."
+          },
+          "missing-friction": {
+            "text": "Without friction, the rope's forward pull would make the box speed up, as your prediction shows. The rough floor opposes the sliding."
+          },
+          "extra-force-of-motion": {
+            "text": "The box keeps moving because of inertia; there is no separate 'force of motion', and nothing pushes it. Every force needs an agent touching the box (or gravity)."
+          },
+          "normal-equals-weight": {
+            "text": "The rope pulls partly upward, so the floor doesn't need to push as hard: N = mg − T sin {{ang}}° = {{N}} N."
+          },
+          "constant-velocity-unbalanced": {
+            "text": "At constant velocity the forces balance, so friction equals the rope's horizontal pull, T cos {{ang}}° = {{f}} N. Your prediction shows the box speeding up or slowing down."
+          },
+          "normal-direction": {
+            "text": "The normal force is perpendicular to the floor, straight up."
+          },
+          "tension-direction": {
+            "text": "Tension acts along the rope, at {{ang}}° above the horizontal."
+          },
+          "friction-direction": {
+            "text": "Friction on a sliding box points opposite its motion, backwards."
+          },
+          "weight-magnitude": {
+            "text": "Weight = mg = {{m}} × 9.8 = {{W}} N."
+          },
+          "double-counted-force": {
+            "text": "Each agent gives each kind of force only once. Remove the duplicate."
+          },
+          "force-direction": {
+            "text": "Check the direction of each force."
+          },
+          "force-magnitude": {
+            "text": "Check the sizes: constant speed means the forces balance."
+          },
+          "extra-force": {
+            "text": "One of your forces has no matching interaction. Check every force has a real agent."
+          },
+          "generic": {
+            "text": "Press Play: if the forces are right, the box keeps moving at a constant speed."
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "Weight: {{W}} N straight down, from the Earth.",
+            "cue": {
+              "cue": "add-vector",
+              "args": {
+                "vector": {
+                  "id": "sW",
+                  "kind": "weight",
+                  "label": "Weight",
+                  "agent": "Earth",
+                  "magnitude": "{{W}}",
+                  "angleDeg": -90
+                }
+              }
+            }
+          },
+          {
+            "text": "Tension: {{T}} N along the rope, {{ang}}° above the horizontal.",
+            "cue": {
+              "cue": "add-vector",
+              "args": {
+                "vector": {
+                  "id": "sT",
+                  "kind": "tension",
+                  "label": "Tension",
+                  "agent": "rope",
+                  "magnitude": "{{T}}",
+                  "angleDeg": "{{ang}}"
+                }
+              }
+            }
+          },
+          {
+            "text": "Normal force: the forces balance vertically, so N = mg − T sin {{ang}}° = {{N}} N, up.",
+            "cue": {
+              "cue": "add-vector",
+              "args": {
+                "vector": {
+                  "id": "sN",
+                  "kind": "normal",
+                  "label": "Normal",
+                  "agent": "floor",
+                  "magnitude": "{{N}}",
+                  "angleDeg": 90
+                }
+              }
+            }
+          },
+          {
+            "text": "Friction: the forces balance horizontally, so f = T cos {{ang}}° = {{f}} N, backwards. The net force is zero: press Play to see constant velocity.",
+            "cue": [
+              {
+                "cue": "add-vector",
+                "args": {
+                  "vector": {
+                    "id": "sF",
+                    "kind": "friction",
+                    "label": "Friction",
+                    "agent": "floor",
+                    "magnitude": "{{f}}",
+                    "angleDeg": 180
+                  }
+                }
+              },
+              {
+                "cue": "predict"
+              }
+            ]
+          }
+        ],
+        "flashcards": {
+          "missing-normal": {
+            "front": "A box on a floor: which force stops it sinking into the floor?",
+            "back": "The normal force from the floor, perpendicular to the surface."
+          },
+          "missing-friction": {
+            "front": "A box pulled at constant speed on a rough floor: what balances the pull?",
+            "back": "Kinetic friction from the floor, opposite the motion."
+          },
+          "extra-force-of-motion": {
+            "front": "Is there a 'force of motion' on a moving box?",
+            "back": "No. Motion continues by inertia; only forces with agents act."
+          },
+          "normal-equals-weight": {
+            "front": "A rope pulls a box partly upward. Is N = mg?",
+            "back": "No. N = mg − T sin θ: the rope carries part of the weight."
+          },
+          "constant-velocity-unbalanced": {
+            "front": "Constant velocity: what is the net force?",
+            "back": "Zero. All forces balance (Newton's first law)."
+          },
+          "missing-weight": {
+            "front": "Which force acts on every body near the Earth?",
+            "back": "Its weight, mg, straight down."
+          },
+          "missing-tension": {
+            "front": "Which way does a rope pull?",
+            "back": "Along the rope, away from the body."
+          },
+          "generic": {
+            "front": "Steps for a free-body diagram?",
+            "back": "Gravity first, then one force per contact; check the net force matches the motion."
+          }
+        },
+        "accessibility": {
+          "altText": "A box on a floor with a rope attached at {{ang}}° above the horizontal. The box is moving right at 1.5 m/s. No forces are drawn yet.",
+          "nonDragAlternative": "Use Add force with a type and an agent, then type each size and direction in Precise controls."
+        }
+      },
+      "hash": "sha256:a4a2ce357ad16bfecc06d7fda89fb253fe37438b717ecaee22a69c6cd6e5da6f",
+      "countsTowardMastery": false
+    },
+    {
+      "template": {
+        "id": "lom.first-law.m.after-the-push",
+        "version": 1,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "lom",
+        "skillIds": [
+          "lom.first-law",
+          "lom.fbd"
+        ],
+        "primarySkillId": "lom.first-law",
+        "difficulty": "medium",
+        "format": "single-choice",
+        "estimatedSeconds": 90,
+        "parameters": {
+          "m": {
+            "kind": "choice",
+            "values": [
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "v0": {
+            "kind": "choice",
+            "values": [
+              2,
+              3,
+              4
+            ]
+          },
+          "mu": {
+            "kind": "choice",
+            "values": [
+              0.2,
+              0.3,
+              0.4
+            ]
+          }
+        },
+        "constraints": [],
+        "solver": "lom.afterPush",
+        "answer": {},
+        "misconceptionRules": [],
+        "acceptExamples": [],
+        "widget": {
+          "type": "vector-board",
+          "config": {
+            "scene": "floor",
+            "body": {
+              "label": "box",
+              "mass": "{{m}}"
+            },
+            "initialVelocity": {
+              "x": "{{v0}}",
+              "y": 0
+            },
+            "predict": true,
+            "predictSeconds": "{{T}}",
+            "maxMagnitude": "{{W+6}}",
+            "allowAdd": true,
+            "agents": [
+              "floor",
+              "hand",
+              "none"
+            ],
+            "kinds": [
+              {
+                "kind": "friction",
+                "label": "Friction"
+              },
+              {
+                "kind": "applied",
+                "label": "Push"
+              },
+              {
+                "kind": "motion",
+                "label": "Force of motion"
+              }
+            ],
+            "vectors": [
+              {
+                "id": "W",
+                "kind": "weight",
+                "label": "Weight",
+                "agent": "Earth",
+                "magnitude": "{{W}}",
+                "angleDeg": -90,
+                "locked": true
+              },
+              {
+                "id": "N",
+                "kind": "normal",
+                "label": "Normal",
+                "agent": "floor",
+                "magnitude": "{{W}}",
+                "angleDeg": 90,
+                "locked": true
+              }
+            ]
+          },
+          "instructions": "The board shows the box's weight and the normal force. Add other forces with Precise controls, drag their tips, then press Play to see how the moving box would respond."
+        },
+        "resolution": {
+          "cue": "compare",
+          "args": {
+            "vectors": [
+              {
+                "kind": "weight",
+                "magnitude": "{{W}}",
+                "angleDeg": -90
+              },
+              {
+                "kind": "normal",
+                "magnitude": "{{W}}",
+                "angleDeg": 90
+              },
+              {
+                "kind": "friction",
+                "label": "Friction",
+                "agent": "floor",
+                "magnitude": "{{f}}",
+                "angleDeg": 180
+              }
+            ],
+            "label": "the forces acting now"
+          }
+        },
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "A {{m}} kg box slides to the right at {{v0}} m/s across a rough floor. Your push has already ended.",
+          "Which forces act on the box now?"
+        ],
+        "answerText": "Weight, the normal force and friction pointing left",
+        "hints": [
+          {
+            "text": "A force needs an agent: something touching the box, or the Earth's gravity. What is touching the box now?"
+          },
+          {
+            "text": "Add a Push to the right, press Play, and watch the speed. Does a sliding box on a rough floor really speed up?",
+            "cue": {
+              "cue": "predict"
+            }
+          },
+          {
+            "text": "The box is slowing down. Slowing down needs a net force pointing backwards."
+          }
+        ],
+        "feedback": {
+          "extra-force-of-motion": {
+            "text": "Once your hand leaves the box, your push stops acting. Nothing pushes the box forward: it keeps moving because of inertia. The dashed box shows what your choice predicts; a real box slows down."
+          },
+          "missing-friction": {
+            "text": "Without friction, nothing would slow the box: the dashed box keeps sliding at a constant speed. The rough floor exerts friction against the motion."
+          },
+          "generic": {
+            "text": "List only forces with an agent touching the box now, plus gravity. Then ask whether those forces explain the box slowing down."
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "Agents acting on the box now: the Earth (gravity) and the floor (contact). Your hand is no longer touching it."
+          },
+          {
+            "text": "The floor pushes up (normal force) and rubs against the motion (friction, pointing left).",
+            "cue": {
+              "cue": "add-vector",
+              "args": {
+                "vector": {
+                  "id": "F",
+                  "kind": "friction",
+                  "label": "Friction",
+                  "agent": "floor",
+                  "magnitude": "{{f}}",
+                  "angleDeg": 180
+                }
+              }
+            }
+          },
+          {
+            "text": "Net force: friction of {{f}} N to the left, so the box decelerates at {{f/m}} m/s² and slows down. Press Play to watch.",
+            "cue": {
+              "cue": "predict"
+            }
+          }
+        ],
+        "flashcards": {
+          "extra-force-of-motion": {
+            "front": "A box slides after you stop pushing. Is your push still a force on it?",
+            "back": "No. Every force needs an agent in contact (or a field). The box keeps moving because of inertia, and friction slows it."
+          },
+          "missing-friction": {
+            "front": "What slows a box sliding across a rough floor?",
+            "back": "Kinetic friction from the floor, pointing opposite the motion."
+          },
+          "generic": {
+            "front": "How do you decide which forces act on a body?",
+            "back": "Find each agent: things in contact with it, plus gravity. No agent, no force."
+          }
+        },
+        "options": [
+          {
+            "id": "a",
+            "text": "Its weight (from the Earth), the normal force (from the floor) and friction from the floor, pointing left"
+          },
+          {
+            "id": "b",
+            "text": "Its weight, the normal force, friction pointing left, and the force of your push pointing right",
+            "tags": [
+              "extra-force-of-motion"
+            ],
+            "cue": {
+              "cue": "compare",
+              "args": {
+                "vectors": [
+                  {
+                    "kind": "weight",
+                    "magnitude": "{{W}}",
+                    "angleDeg": -90
+                  },
+                  {
+                    "kind": "normal",
+                    "magnitude": "{{W}}",
+                    "angleDeg": 90
+                  },
+                  {
+                    "kind": "friction",
+                    "label": "Friction",
+                    "agent": "floor",
+                    "magnitude": "{{f}}",
+                    "angleDeg": 180
+                  },
+                  {
+                    "kind": "applied",
+                    "magnitude": "{{push}}",
+                    "angleDeg": 0
+                  }
+                ],
+                "label": "with a push still acting"
+              }
+            }
+          },
+          {
+            "id": "c",
+            "text": "Its weight, the normal force and a forward “force of motion” that keeps it going",
+            "tags": [
+              "extra-force-of-motion",
+              "missing-friction"
+            ],
+            "cue": {
+              "cue": "compare",
+              "args": {
+                "vectors": [
+                  {
+                    "kind": "weight",
+                    "magnitude": "{{W}}",
+                    "angleDeg": -90
+                  },
+                  {
+                    "kind": "normal",
+                    "magnitude": "{{W}}",
+                    "angleDeg": 90
+                  },
+                  {
+                    "kind": "motion",
+                    "magnitude": "{{f}}",
+                    "angleDeg": 0
+                  }
+                ],
+                "label": "with a forward force of motion"
+              }
+            }
+          },
+          {
+            "id": "d",
+            "text": "Only its weight and the normal force: nothing acts along the floor",
+            "tags": [
+              "missing-friction"
+            ],
+            "cue": {
+              "cue": "compare",
+              "args": {
+                "vectors": [
+                  {
+                    "kind": "weight",
+                    "magnitude": "{{W}}",
+                    "angleDeg": -90
+                  },
+                  {
+                    "kind": "normal",
+                    "magnitude": "{{W}}",
+                    "angleDeg": 90
+                  }
+                ],
+                "label": "with no friction"
+              }
+            }
+          }
+        ],
+        "accessibility": {
+          "altText": "A box on a floor moving right at {{v0}} m/s, with its weight drawn down and the normal force drawn up.",
+          "nonDragAlternative": "Use Add force, then type the size and direction of each force in Precise controls."
+        }
+      },
+      "hash": "sha256:eaa8510ee9a34d5894c5fd9839ac08733670b2098eaff82199b938487e18bdb4",
+      "countsTowardMastery": false
+    },
+    {
+      "template": {
+        "id": "lom.friction.h.incline-will-it-slide",
+        "version": 1,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "lom",
+        "skillIds": [
+          "lom.friction",
+          "lom.resolve-forces"
+        ],
+        "primarySkillId": "lom.friction",
+        "difficulty": "hard",
+        "format": "quantity",
+        "estimatedSeconds": 150,
+        "parameters": {
+          "m": {
+            "kind": "decimal",
+            "min": 2,
+            "max": 8,
+            "step": 0.5
+          },
+          "theta": {
+            "kind": "choice",
+            "values": [
+              20,
+              25,
+              30,
+              35,
+              40
+            ]
+          },
+          "muS": {
+            "kind": "decimal",
+            "min": 0.3,
+            "max": 0.8,
+            "step": 0.05
+          }
+        },
+        "constraints": [
+          "tan(theta*pi/180) < muS - 0.05"
+        ],
+        "solver": "lom.frictionIncline",
+        "answer": {
+          "dimension": "force",
+          "tolerance": {
+            "relative": 0.01
+          }
+        },
+        "misconceptionRules": [
+          {
+            "tags": [
+              "static-friction-always-max"
+            ],
+            "match": {
+              "buggySolver": "muTimesNormal"
+            }
+          },
+          {
+            "tags": [
+              "normal-equals-weight",
+              "static-friction-always-max"
+            ],
+            "match": {
+              "buggySolver": "muTimesWeight"
+            }
+          },
+          {
+            "tags": [
+              "sin-cos-swap-incline"
+            ],
+            "match": {
+              "buggySolver": "weightCosTheta"
+            }
+          }
+        ],
+        "acceptExamples": [
+          "{{f|raw}}N",
+          "{{f|raw}} kg m/s^2"
+        ],
+        "widget": {
+          "type": "vector-board",
+          "config": {
+            "scene": "incline",
+            "inclineDeg": "{{theta}}",
+            "body": {
+              "label": "block",
+              "mass": "{{m}}"
+            },
+            "predict": true,
+            "predictSeconds": 1.2,
+            "maxMagnitude": "{{W+10}}",
+            "allowAdd": true,
+            "allowAxesToggle": true,
+            "agents": [
+              "plank",
+              "Earth",
+              "none"
+            ],
+            "kinds": [
+              {
+                "kind": "normal",
+                "label": "Normal"
+              },
+              {
+                "kind": "friction",
+                "label": "Friction"
+              }
+            ],
+            "vectors": [
+              {
+                "id": "W",
+                "kind": "weight",
+                "label": "Weight",
+                "agent": "Earth",
+                "magnitude": "{{W}}",
+                "angleDeg": -90,
+                "locked": true
+              }
+            ]
+          },
+          "instructions": "Add the normal force and friction, adjust them, and press Play to see whether the block would stay still. Tilted axes split forces along and across the plank."
+        },
+        "consequence": [
+          {
+            "cue": "add-vector",
+            "args": {
+              "vector": {
+                "id": "N",
+                "kind": "normal",
+                "label": "Normal",
+                "agent": "plank",
+                "magnitude": "{{N}}",
+                "angleDeg": "{{angN}}"
+              }
+            }
+          },
+          {
+            "cue": "add-vector",
+            "args": {
+              "vector": {
+                "id": "fs",
+                "kind": "friction",
+                "label": "Friction (your value)",
+                "agent": "plank",
+                "magnitude": "$value",
+                "angleDeg": "{{theta}}"
+              }
+            }
+          },
+          {
+            "cue": "predict"
+          }
+        ],
+        "reasoning": {
+          "prompt": "In one or two sentences, explain why the friction force here is mg sin θ and not μs N.",
+          "rubric": [
+            "Says the block is at rest, so the net force along the plank is zero",
+            "Names mg sin θ as the component of the weight along the plank",
+            "Explains that μs N is only the maximum static friction",
+            "Compares the friction needed with the friction available"
+          ],
+          "modelAnswer": "The block isn't moving, so the forces along the plank balance and friction equals the component of the weight down the plank, mg sin θ. μs N is only the largest friction the surface can supply; here {{fmax}} N is available but only {{f}} N is needed."
+        },
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "A {{m}} kg block rests on a rough plank tilted at {{theta}}°. The coefficient of static friction is {{muS}}. Take g = 9.8 m/s².",
+          "What is the magnitude of the friction force acting on the block?"
+        ],
+        "answerText": "{{f}} N",
+        "hints": [
+          {
+            "text": "Is the block moving? What does that tell you about the net force along the plank?"
+          },
+          {
+            "text": "Turn on tilted axes. Which forces have a component along the plank?",
+            "cue": [
+              {
+                "cue": "tilted-axes"
+              },
+              {
+                "cue": "decompose",
+                "args": {
+                  "id": "W",
+                  "axes": "tilted",
+                  "values": false
+                }
+              }
+            ]
+          },
+          {
+            "text": "Along the plank, friction must exactly balance mg sin θ. μs N is only the most friction could be."
+          }
+        ],
+        "feedback": {
+          "static-friction-always-max": {
+            "text": "You found the maximum static friction, μs N. The block isn't slipping, so friction is only as large as it needs to be. With your value the block would accelerate, as the simulation shows. The meter compares what is needed with what is available.",
+            "cue": {
+              "cue": "meter",
+              "args": {
+                "needed": "{{f}}",
+                "available": "{{fmax}}",
+                "showValues": false
+              }
+            }
+          },
+          "normal-equals-weight": {
+            "text": "On an incline the plank pushes back only against the part of the weight pressing into it: N = mg cos θ, not mg.",
+            "cue": {
+              "cue": "decompose",
+              "args": {
+                "id": "W",
+                "axes": "tilted",
+                "values": false
+              }
+            }
+          },
+          "sin-cos-swap-incline": {
+            "text": "Check which component points along the plank. The angle between the weight and the plank's normal is θ, so the component along the plank is mg sin θ.",
+            "cue": [
+              {
+                "cue": "decompose",
+                "args": {
+                  "id": "W",
+                  "axes": "tilted",
+                  "values": false
+                }
+              },
+              {
+                "cue": "highlight",
+                "args": {
+                  "ids": [
+                    "W"
+                  ]
+                }
+              }
+            ]
+          },
+          "dimension-mismatch": {
+            "text": "Friction is a force. Check your units."
+          },
+          "generic": {
+            "text": "Compare the forces along the plank. What has to balance for the block to stay still? Watch what your value would do."
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "The block is at rest, so the net force along the plank is zero. Resolve the weight along tilted axes.",
+            "cue": [
+              {
+                "cue": "tilted-axes"
+              },
+              {
+                "cue": "decompose",
+                "args": {
+                  "id": "W",
+                  "axes": "tilted"
+                }
+              }
+            ]
+          },
+          {
+            "text": "Across the plank: N = mg cos θ = {{N}} N.",
+            "cue": {
+              "cue": "add-vector",
+              "args": {
+                "vector": {
+                  "id": "N",
+                  "kind": "normal",
+                  "label": "Normal",
+                  "agent": "plank",
+                  "magnitude": "{{N}}",
+                  "angleDeg": "{{angN}}"
+                }
+              }
+            }
+          },
+          {
+            "text": "Along the plank: static friction balances mg sin θ, so f = {{m}} × 9.8 × sin {{theta}}° = {{f}} N. Press Play: the block stays put.",
+            "cue": [
+              {
+                "cue": "add-vector",
+                "args": {
+                  "vector": {
+                    "id": "fs",
+                    "kind": "friction",
+                    "label": "Friction",
+                    "agent": "plank",
+                    "magnitude": "{{f}}",
+                    "angleDeg": "{{theta}}"
+                  }
+                }
+              },
+              {
+                "cue": "predict"
+              }
+            ]
+          },
+          {
+            "text": "Check: the most friction available is μs N = {{fmax}} N, more than the {{f}} N needed, so the block indeed doesn't slip.",
+            "cue": {
+              "cue": "meter",
+              "args": {
+                "needed": "{{f}}",
+                "available": "{{fmax}}"
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "static-friction-always-max": {
+            "front": "Is static friction always μs N?",
+            "back": "No. μs N is the maximum. Static friction is only as large as needed to prevent slipping."
+          },
+          "normal-equals-weight": {
+            "front": "On a θ incline, is the normal force on a resting block equal to its weight?",
+            "back": "No. It balances only the component of weight into the surface: N = mg cos θ."
+          },
+          "sin-cos-swap-incline": {
+            "front": "Which component of weight acts along a slope of angle θ?",
+            "back": "mg sin θ along the slope; mg cos θ perpendicular to it."
+          },
+          "generic": {
+            "front": "Friction on a block resting on an incline?",
+            "back": "f = mg sin θ (as long as that is no more than μs mg cos θ)."
+          }
+        },
+        "input": {
+          "label": "Friction force",
+          "placeholder": "for example 19.6 N",
+          "keypad": "none"
+        },
+        "accessibility": {
+          "altText": "A block on a plank tilted at {{theta}}°, with its weight ({{W}} N) drawn straight down.",
+          "nonDragAlternative": "Use Add force, then type each force's size and direction in Precise controls; tick Tilted axes to see components."
+        }
+      },
+      "hash": "sha256:6dc0ca08a61be62f72b82daf22bff9476e9d74450718e29993a05f97f66ad2f5",
+      "countsTowardMastery": false
+    },
+    {
+      "template": {
+        "id": "lom.second-law.m.rank-accelerations",
+        "version": 1,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "lom",
+        "skillIds": [
+          "lom.second-law"
+        ],
+        "primarySkillId": "lom.second-law",
+        "difficulty": "medium",
+        "format": "ordering",
+        "estimatedSeconds": 90,
+        "parameters": {
+          "k": {
+            "kind": "int",
+            "min": 1,
+            "max": 999999
+          }
+        },
+        "constraints": [],
+        "solver": "lom.rankAccelerations",
+        "answer": {},
+        "misconceptionRules": [
+          {
+            "tags": [
+              "ignores-mass"
+            ],
+            "match": {
+              "buggySolver": "byForce"
+            }
+          },
+          {
+            "tags": [
+              "ignores-force"
+            ],
+            "match": {
+              "buggySolver": "byLightest"
+            }
+          }
+        ],
+        "acceptExamples": [],
+        "widget": {
+          "type": "motion-track",
+          "config": {
+            "mode": "1d",
+            "lanes": [
+              {
+                "id": "P",
+                "label": "Cart P · {{FP}} N on {{mP}} kg",
+                "x0": 0,
+                "v0": 0,
+                "a": 0
+              },
+              {
+                "id": "Q",
+                "label": "Cart Q · {{FQ}} N on {{mQ}} kg",
+                "x0": 0,
+                "v0": 0,
+                "a": 0
+              },
+              {
+                "id": "R",
+                "label": "Cart R · {{FR}} N on {{mR}} kg",
+                "x0": 0,
+                "v0": 0,
+                "a": 0
+              },
+              {
+                "id": "S",
+                "label": "Cart S · {{FS}} N on {{mS}} kg",
+                "x0": 0,
+                "v0": 0,
+                "a": 0
+              }
+            ],
+            "duration": 2,
+            "xRange": [
+              0,
+              14
+            ]
+          },
+          "instructions": "Each lane holds one cart, waiting at the start. After you answer, the carts are released so you can compare your order with the race."
+        },
+        "consequence": [],
+        "resolution": [
+          {
+            "cue": "set-lane",
+            "args": {
+              "lane": "P",
+              "key": "a",
+              "value": "{{aP}}"
+            }
+          },
+          {
+            "cue": "set-lane",
+            "args": {
+              "lane": "Q",
+              "key": "a",
+              "value": "{{aQ}}"
+            }
+          },
+          {
+            "cue": "set-lane",
+            "args": {
+              "lane": "R",
+              "key": "a",
+              "value": "{{aR}}"
+            }
+          },
+          {
+            "cue": "set-lane",
+            "args": {
+              "lane": "S",
+              "key": "a",
+              "value": "{{aS}}"
+            }
+          },
+          {
+            "cue": "play"
+          }
+        ],
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "Four carts start from rest on a smooth track. Each is pulled by a steady force.",
+          "Put them in order of acceleration, greatest first."
+        ],
+        "answerText": "{{order}}",
+        "hints": [
+          {
+            "text": "Newton's second law links force, mass and acceleration. Which one do you need to compare?"
+          },
+          {
+            "text": "Work out a = F ÷ m for each cart."
+          },
+          {
+            "text": "Cart P: {{FP}} ÷ {{mP}}. Do the same for Q, R and S, then order them."
+          }
+        ],
+        "feedback": {
+          "ignores-mass": {
+            "text": "You ordered the carts by force alone. The race now gives every cart the same mass, so only the force matters: that is the world your order describes. Real carts differ in mass, and a heavier cart needs more force for the same acceleration: compare F ÷ m.",
+            "cue": [
+              {
+                "cue": "set-lane",
+                "args": {
+                  "lane": "P",
+                  "key": "a",
+                  "value": "{{FP/2}}"
+                }
+              },
+              {
+                "cue": "set-lane",
+                "args": {
+                  "lane": "Q",
+                  "key": "a",
+                  "value": "{{FQ/2}}"
+                }
+              },
+              {
+                "cue": "set-lane",
+                "args": {
+                  "lane": "R",
+                  "key": "a",
+                  "value": "{{FR/2}}"
+                }
+              },
+              {
+                "cue": "set-lane",
+                "args": {
+                  "lane": "S",
+                  "key": "a",
+                  "value": "{{FS/2}}"
+                }
+              },
+              {
+                "cue": "note",
+                "args": {
+                  "text": "Race with every cart given the same 2 kg mass."
+                }
+              }
+            ]
+          },
+          "ignores-force": {
+            "text": "You ordered the carts by mass alone. The race now pulls every cart with the same force, so only the mass matters: that is the world your order describes. Real carts are pulled by different forces, and a bigger force can outweigh a bigger mass: compare F ÷ m.",
+            "cue": [
+              {
+                "cue": "set-lane",
+                "args": {
+                  "lane": "P",
+                  "key": "a",
+                  "value": "{{6/mP}}"
+                }
+              },
+              {
+                "cue": "set-lane",
+                "args": {
+                  "lane": "Q",
+                  "key": "a",
+                  "value": "{{6/mQ}}"
+                }
+              },
+              {
+                "cue": "set-lane",
+                "args": {
+                  "lane": "R",
+                  "key": "a",
+                  "value": "{{6/mR}}"
+                }
+              },
+              {
+                "cue": "set-lane",
+                "args": {
+                  "lane": "S",
+                  "key": "a",
+                  "value": "{{6/mS}}"
+                }
+              },
+              {
+                "cue": "note",
+                "args": {
+                  "text": "Race with every cart pulled by the same 6 N force."
+                }
+              }
+            ]
+          },
+          "reversed-order": {
+            "text": "That's the reverse order: greatest acceleration goes first."
+          },
+          "generic": {
+            "text": "Compare a = F ÷ m for each cart, then order them."
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "Newton's second law: a = F ÷ m."
+          },
+          {
+            "text": "P: {{aP}} m/s²; Q: {{aQ}} m/s²; R: {{aR}} m/s²; S: {{aS}} m/s².",
+            "cue": [
+              {
+                "cue": "set-lane",
+                "args": {
+                  "lane": "P",
+                  "key": "a",
+                  "value": "{{aP}}"
+                }
+              },
+              {
+                "cue": "set-lane",
+                "args": {
+                  "lane": "Q",
+                  "key": "a",
+                  "value": "{{aQ}}"
+                }
+              },
+              {
+                "cue": "set-lane",
+                "args": {
+                  "lane": "R",
+                  "key": "a",
+                  "value": "{{aR}}"
+                }
+              },
+              {
+                "cue": "set-lane",
+                "args": {
+                  "lane": "S",
+                  "key": "a",
+                  "value": "{{aS}}"
+                }
+              },
+              {
+                "cue": "play"
+              }
+            ]
+          },
+          {
+            "text": "Greatest first: {{order}}."
+          }
+        ],
+        "flashcards": {
+          "ignores-mass": {
+            "front": "Cart X: 8 N on 4 kg. Cart Y: 6 N on 2 kg. Which accelerates faster?",
+            "back": "Y: 3 m/s² against 2 m/s². Compare F/m, not F alone."
+          },
+          "ignores-force": {
+            "front": "Does the lightest cart always accelerate fastest?",
+            "back": "No. a = F/m: a larger force can beat a smaller mass."
+          },
+          "generic": {
+            "front": "Newton's second law for acceleration?",
+            "back": "a = F_net / m."
+          }
+        },
+        "items": [
+          {
+            "id": "P",
+            "text": "Cart P: {{FP}} N on {{mP}} kg"
+          },
+          {
+            "id": "Q",
+            "text": "Cart Q: {{FQ}} N on {{mQ}} kg"
+          },
+          {
+            "id": "R",
+            "text": "Cart R: {{FR}} N on {{mR}} kg"
+          },
+          {
+            "id": "S",
+            "text": "Cart S: {{FS}} N on {{mS}} kg"
+          }
+        ],
+        "accessibility": {
+          "altText": "Four lanes, each with a cart at the start line, labelled with its force and mass.",
+          "nonDragAlternative": "Use the Move up and Move down buttons beside each cart."
+        }
+      },
+      "hash": "sha256:fb4f05286140841cfb4469f36ff9a9bc9e1504bfd7c76e0f25fdb78d4dcf62a7",
+      "countsTowardMastery": false
+    },
+    {
+      "template": {
+        "id": "lom.third-law.m.action-reaction-pairs",
+        "version": 1,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "lom",
+        "skillIds": [
+          "lom.third-law",
+          "lom.fbd"
+        ],
+        "primarySkillId": "lom.third-law",
+        "difficulty": "medium",
+        "format": "multi-choice",
+        "estimatedSeconds": 90,
+        "parameters": {
+          "m": {
+            "kind": "choice",
+            "values": [
+              0.5,
+              1,
+              1.5,
+              2
+            ]
+          }
+        },
+        "constraints": [],
+        "solver": "lom.thirdLaw",
+        "answer": {},
+        "misconceptionRules": [],
+        "acceptExamples": [],
+        "widget": {
+          "type": "vector-board",
+          "config": {
+            "scene": "floor",
+            "body": {
+              "label": "book",
+              "mass": "{{m}}"
+            },
+            "maxMagnitude": "{{W+4}}",
+            "allowEdit": false,
+            "vectors": [
+              {
+                "id": "W",
+                "kind": "weight",
+                "label": "Weight",
+                "agent": "Earth",
+                "magnitude": "{{W}}",
+                "angleDeg": -90,
+                "locked": true
+              },
+              {
+                "id": "N",
+                "kind": "normal",
+                "label": "Normal",
+                "agent": "table",
+                "magnitude": "{{W}}",
+                "angleDeg": 90,
+                "locked": true
+              }
+            ]
+          },
+          "instructions": "The board shows the two forces acting on the book. Both act on the same body."
+        },
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "A {{m}} kg book rests on a table.",
+          "Which of these are Newton's third-law (action–reaction) pairs? Choose every correct pair."
+        ],
+        "answerText": "The Earth–book gravitational pair and the table–book contact pair",
+        "hints": [
+          {
+            "text": "An action–reaction pair comes from one interaction between two bodies."
+          },
+          {
+            "text": "The two forces of a pair act on different bodies, so they can never cancel each other.",
+            "cue": {
+              "cue": "highlight",
+              "args": {
+                "ids": [
+                  "W",
+                  "N"
+                ]
+              }
+            }
+          },
+          {
+            "text": "Gravity pair: Earth on book and book on Earth. Contact pair: table on book and book on table."
+          }
+        ],
+        "feedback": {
+          "third-law-pair-on-same-body": {
+            "text": "The weight and the normal force both act on the book, so they are not a third-law pair. They balance here because the book is at rest, by Newton's first law."
+          },
+          "third-law-different-interaction": {
+            "text": "A third-law pair is one interaction seen from both sides: the same kind of force, acting on the two bodies involved. These two forces come from different interactions."
+          },
+          "missed-correct-option": {
+            "text": "There is more than one pair. Look for each interaction: gravity between the Earth and the book, and contact between the table and the book."
+          },
+          "generic": {
+            "text": "For each option, ask: is it one interaction between two bodies, with one force on each?"
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "Gravity: the Earth pulls the book down and the book pulls the Earth up, with equal size {{W}} N. That is one pair."
+          },
+          {
+            "text": "Contact: the table pushes the book up and the book pushes the table down, with equal size. That is the second pair."
+          },
+          {
+            "text": "The weight and the normal force both act on the book. They balance because the book is at rest, not because of the third law.",
+            "cue": {
+              "cue": "highlight",
+              "args": {
+                "ids": [
+                  "W",
+                  "N"
+                ]
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "third-law-pair-on-same-body": {
+            "front": "Are weight and normal force on a book an action–reaction pair?",
+            "back": "No. Third-law pairs act on different bodies. The pair of the book's weight is the book's pull on the Earth."
+          },
+          "third-law-different-interaction": {
+            "front": "What do the two forces of a third-law pair have in common?",
+            "back": "Same interaction and type, equal size, opposite directions, acting on the two different bodies."
+          },
+          "generic": {
+            "front": "How do you find a force's third-law partner?",
+            "back": "Swap the bodies: 'A on B' pairs with 'B on A', same kind of force."
+          }
+        },
+        "options": [
+          {
+            "id": "a",
+            "text": "The Earth pulls the book down; the book pulls the Earth up"
+          },
+          {
+            "id": "b",
+            "text": "The table pushes the book up; the book pushes the table down"
+          },
+          {
+            "id": "c",
+            "text": "The Earth pulls the book down; the table pushes the book up",
+            "tags": [
+              "third-law-pair-on-same-body"
+            ],
+            "cue": [
+              {
+                "cue": "highlight",
+                "args": {
+                  "ids": [
+                    "W",
+                    "N"
+                  ]
+                }
+              },
+              {
+                "cue": "note",
+                "args": {
+                  "text": "Both highlighted forces act on the book."
+                }
+              }
+            ]
+          },
+          {
+            "id": "d",
+            "text": "The book pushes the table down; the Earth pulls the table down",
+            "tags": [
+              "third-law-different-interaction"
+            ]
+          }
+        ],
+        "accessibility": {
+          "altText": "A book on a table with its weight ({{W}} N) drawn down and the normal force from the table drawn up.",
+          "nonDragAlternative": "Nothing needs dragging: choose pairs with the checkboxes. The forces on the board are fixed and described in text."
+        }
+      },
+      "hash": "sha256:1cb499bc1a3c606372900bb8f9d665be8aa83996b88dff48932ebab7566808a5",
+      "countsTowardMastery": false
+    },
+    {
+      "template": {
+        "id": "mip.projectile.m.range",
+        "version": 1,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "mip",
+        "skillIds": [
+          "mip.projectile",
+          "mip.resolution"
+        ],
+        "primarySkillId": "mip.projectile",
+        "difficulty": "medium",
+        "format": "quantity",
+        "estimatedSeconds": 90,
+        "parameters": {
+          "v": {
+            "kind": "int",
+            "min": 10,
+            "max": 25
+          },
+          "ang": {
+            "kind": "choice",
+            "values": [
+              15,
+              30,
+              40,
+              50,
+              60,
+              75
+            ]
+          }
+        },
+        "constraints": [],
+        "solver": "mip.projectileRange",
+        "answer": {
+          "dimension": "length",
+          "tolerance": {
+            "relative": 0.01
+          }
+        },
+        "misconceptionRules": [
+          {
+            "tags": [
+              "forgot-double-angle"
+            ],
+            "match": {
+              "buggySolver": "forgotDoubleAngle"
+            }
+          },
+          {
+            "tags": [
+              "used-time-to-apex"
+            ],
+            "match": {
+              "buggySolver": "usedTimeToApex"
+            }
+          },
+          {
+            "tags": [
+              "ignored-horizontal-component"
+            ],
+            "match": {
+              "buggySolver": "ignoredHorizontalComponent"
+            }
+          }
+        ],
+        "acceptExamples": [],
+        "widget": {
+          "type": "motion-track",
+          "config": {
+            "mode": "2d",
+            "projectile": {
+              "x0": 0,
+              "y0": 0,
+              "speed": "{{v}}",
+              "angleDeg": "{{ang}}",
+              "g": 9.8
+            },
+            "hideNumbers": true
+          },
+          "instructions": "Press Play to launch the ball. Pause, step or scrub to follow its velocity arrow; the graphs show the horizontal and vertical parts separately."
+        },
+        "consequence": [
+          {
+            "cue": "flag",
+            "args": {
+              "x": "$value",
+              "label": "your answer",
+              "tone": "bad"
+            }
+          },
+          {
+            "cue": "land-at",
+            "args": {
+              "x": "$value"
+            }
+          }
+        ],
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "A ball is kicked from level ground at {{v}} m/s, {{ang}}° above the horizontal. Ignore air resistance and take g = 9.8 m/s².",
+          "How far away does it land?"
+        ],
+        "answerText": "{{R}} m",
+        "hints": [
+          {
+            "text": "Treat the horizontal and vertical motions separately. Which one decides how long the ball is in the air? Watch the two graphs as the ball flies.",
+            "cue": {
+              "cue": "play"
+            }
+          },
+          {
+            "text": "Time of flight: t = 2u sin θ ÷ g. Horizontal speed stays u cos θ."
+          },
+          {
+            "text": "Range = u cos θ × 2u sin θ ÷ g = u² sin 2θ ÷ g."
+          }
+        ],
+        "feedback": {
+          "forgot-double-angle": {
+            "text": "The range uses sin 2θ, not sin θ: it comes from 2 sin θ cos θ, the time of flight times the horizontal speed."
+          },
+          "used-time-to-apex": {
+            "text": "That's the distance covered while rising to the top: half the flight. The ball takes as long again to come down."
+          },
+          "ignored-horizontal-component": {
+            "text": "Only the horizontal component u cos θ carries the ball sideways. The full speed u points partly upward."
+          },
+          "dimension-mismatch": {
+            "text": "Range is a distance. Check your unit."
+          },
+          "generic": {
+            "text": "Split the motion: the time in the air comes from the vertical part, the distance from the horizontal part. The coral flag marks your answer."
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "Horizontal speed: u cos θ = {{v}} cos {{ang}}° = {{vx}} m/s. It doesn't change.",
+            "cue": {
+              "cue": "play"
+            }
+          },
+          {
+            "text": "Time of flight: t = 2u sin θ ÷ g = {{tf}} s."
+          },
+          {
+            "text": "Range = {{vx}} × {{tf}} = {{R}} m.",
+            "cue": [
+              {
+                "cue": "reveal"
+              },
+              {
+                "cue": "flag",
+                "args": {
+                  "x": "{{R}}",
+                  "label": "lands at {{R}} m",
+                  "tone": "good"
+                }
+              },
+              {
+                "cue": "play"
+              }
+            ]
+          }
+        ],
+        "alternativeSolution": {
+          "title": "Using the range formula",
+          "steps": [
+            {
+              "text": "R = u² sin 2θ ÷ g = {{v}}² × sin {{2*ang}}° ÷ 9.8.",
+              "cue": {
+                "cue": "reveal"
+              }
+            },
+            {
+              "text": "= {{R}} m.",
+              "cue": [
+                {
+                  "cue": "flag",
+                  "args": {
+                    "x": "{{R}}",
+                    "label": "lands at {{R}} m",
+                    "tone": "good"
+                  }
+                },
+                {
+                  "cue": "play"
+                }
+              ]
+            }
+          ]
+        },
+        "flashcards": {
+          "forgot-double-angle": {
+            "front": "Range of a projectile on level ground?",
+            "back": "R = u² sin 2θ / g."
+          },
+          "used-time-to-apex": {
+            "front": "Is the time to the top the whole flight time?",
+            "back": "No, it's half of it (on level ground)."
+          },
+          "ignored-horizontal-component": {
+            "front": "Which velocity component carries a projectile sideways?",
+            "back": "The horizontal one, u cos θ, constant without air resistance."
+          },
+          "generic": {
+            "front": "How do you find a projectile's range?",
+            "back": "Horizontal speed × time of flight."
+          }
+        },
+        "input": {
+          "label": "Horizontal range",
+          "placeholder": "for example 25.5 m",
+          "keypad": "none"
+        },
+        "accessibility": {
+          "altText": "A ball launched from the ground at {{v}} m/s and {{ang}}°, with its path drawn as it flies.",
+          "nonDragAlternative": "Use the Play, Step and timeline controls; nothing needs dragging."
+        }
+      },
+      "hash": "sha256:c7cf7a88b76c815a63e9fcea64d67a9dd257007131486ec841c550f492e64915",
+      "countsTowardMastery": false
+    },
+    {
+      "template": {
+        "id": "set.intervals.m.inequality-to-interval",
+        "version": 2,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "migratedFrom": "src/questions/templates.ts set.intervals.m.inequality-to-interval@1 (Phase 1 diagnostic; same review status)",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "set",
+        "skillIds": [
+          "set.intervals"
+        ],
+        "primarySkillId": "set.intervals",
+        "difficulty": "medium",
+        "format": "interval",
+        "estimatedSeconds": 90,
+        "parameters": {
+          "a": {
+            "kind": "int",
+            "min": -6,
+            "max": 4
+          },
+          "w": {
+            "kind": "int",
+            "min": 2,
+            "max": 7
+          },
+          "pattern": {
+            "kind": "choice",
+            "values": [
+              "lt-le",
+              "le-lt",
+              "lt-lt",
+              "le-le",
+              "gt",
+              "le-only"
+            ]
+          }
+        },
+        "constraints": [],
+        "solver": "set.intervalFromInequality",
+        "answer": {},
+        "misconceptionRules": [],
+        "acceptExamples": [],
+        "widget": {
+          "type": "number-line",
+          "config": {
+            "range": [
+              -10,
+              12
+            ],
+            "step": 1,
+            "maxPieces": 2,
+            "pieces": [
+              {
+                "lo": -9,
+                "hi": -8,
+                "loClosed": true,
+                "hiClosed": true
+              }
+            ]
+          },
+          "instructions": "Drag the endpoints, or focus one and use the arrow keys. Enter or Space switches between included and not included. Typing in the answer box moves the line too."
+        },
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "Write the set {x ∈ ℝ : {{cond}}} as an interval."
+        ],
+        "answerText": "{{text}}",
+        "hints": [
+          {
+            "text": "Mark the endpoints on the number line. Is each endpoint included or not?"
+          },
+          {
+            "text": "Use [ or ] when the endpoint is included (≤ or ≥) and ( or ) when it is not (< or >). Watch the test point: it lights up exactly where the condition holds.",
+            "cue": {
+              "cue": "test-point",
+              "args": {
+                "from": -10,
+                "to": 12
+              }
+            }
+          },
+          {
+            "text": "∞ is never included, so it always takes a round bracket."
+          }
+        ],
+        "feedback": {
+          "open-closed-confusion": {
+            "text": "The endpoints are right, but check which ones are included. ≤ and ≥ include the endpoint (square bracket, filled dot); < and > don't (round bracket, hollow dot). The ringed endpoint is the one to fix.",
+            "cue": {
+              "cue": "highlight-endpoints",
+              "args": {
+                "mismatches": "$details.endpointMismatches"
+              }
+            }
+          },
+          "infinity-closed": {
+            "text": "∞ is not a number you can reach, so it can never be included. Use a round bracket next to it."
+          },
+          "wrong-endpoints": {
+            "text": "Check the endpoints against the inequality. Each endpoint should be one of the numbers in the condition, or ±∞."
+          },
+          "missing-piece": {
+            "text": "This set is a single interval. Check your endpoints."
+          },
+          "extra-piece": {
+            "text": "This set is a single interval, without gaps."
+          },
+          "generic": {
+            "text": "Mark the endpoints first, then decide on each bracket."
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "The condition is {{cond}}.",
+            "cue": {
+              "cue": "show-target",
+              "args": {
+                "union": "{{union}}"
+              }
+            }
+          },
+          {
+            "text": "Endpoints: {{loText}} ({{loState}}) and {{hiText}} ({{hiState}}). Watch the test point: it is in the set exactly where the condition holds.",
+            "cue": {
+              "cue": "test-point",
+              "args": {
+                "from": -10,
+                "to": 12
+              }
+            }
+          },
+          {
+            "text": "As an interval: {{text}}."
+          }
+        ],
+        "flashcards": {
+          "open-closed-confusion": {
+            "front": "Which bracket goes with ≤ and which with <?",
+            "back": "≤ or ≥ → square bracket [ ]; < or > → round bracket ( )."
+          },
+          "infinity-closed": {
+            "front": "Can an interval be written [3, ∞]?",
+            "back": "No. ∞ is never included: write [3, ∞)."
+          },
+          "wrong-endpoints": {
+            "front": "Where do an interval's endpoints come from?",
+            "back": "From the numbers in the inequality, or ±∞ when one side is unbounded."
+          },
+          "generic": {
+            "front": "Convert a < x ≤ b to interval notation.",
+            "back": "(a, b]"
+          }
+        },
+        "input": {
+          "label": "Interval",
+          "placeholder": "for example (−1, 4]",
+          "keypad": "interval"
+        },
+        "accessibility": {
+          "altText": "A number line from −10 to 12 with one interval you can move and resize.",
+          "nonDragAlternative": "Type the interval in the answer box, or use From, To and included in Precise controls."
+        }
+      },
+      "hash": "sha256:14abfabcb7eb83fc911188d544bd67476b1eea9dfc2dae905900e4b83288e0a3",
+      "countsTowardMastery": false
+    },
+    {
+      "template": {
+        "id": "set.intervals.m.union-from-inequality",
+        "version": 1,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "set",
+        "skillIds": [
+          "set.intervals",
+          "set.operations"
+        ],
+        "primarySkillId": "set.intervals",
+        "difficulty": "medium",
+        "format": "interval",
+        "estimatedSeconds": 90,
+        "parameters": {
+          "a": {
+            "kind": "int",
+            "min": -6,
+            "max": -1
+          },
+          "gap": {
+            "kind": "int",
+            "min": 2,
+            "max": 4
+          },
+          "w": {
+            "kind": "int",
+            "min": 1,
+            "max": 4
+          },
+          "symA": {
+            "kind": "choice",
+            "values": [
+              "<",
+              "≤"
+            ]
+          },
+          "symB": {
+            "kind": "choice",
+            "values": [
+              "≤",
+              "<"
+            ]
+          }
+        },
+        "constraints": [],
+        "solver": "set.unionFromInequality",
+        "answer": {},
+        "misconceptionRules": [],
+        "acceptExamples": [],
+        "widget": {
+          "type": "number-line",
+          "config": {
+            "range": [
+              -10,
+              12
+            ],
+            "step": 1,
+            "maxPieces": 3,
+            "pieces": [
+              {
+                "lo": 9,
+                "hi": 11,
+                "loClosed": true,
+                "hiClosed": true
+              }
+            ]
+          },
+          "instructions": "Build the set from intervals: drag or type endpoints, toggle whether each is included, and add a second interval for the second part."
+        },
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "Write the set {x ∈ ℝ : {{cond}}} as a union of intervals."
+        ],
+        "answerText": "{{text}}",
+        "hints": [
+          {
+            "text": "“or” means a number is in the set if it satisfies either condition. Draw each part separately. Watch the test point light up wherever the condition holds.",
+            "cue": {
+              "cue": "test-point",
+              "args": {
+                "from": -10,
+                "to": 12
+              }
+            }
+          },
+          {
+            "text": "The first part has no lower bound, so it starts at −∞."
+          },
+          {
+            "text": "Join the two intervals with ∪."
+          }
+        ],
+        "feedback": {
+          "open-closed-confusion": {
+            "text": "The endpoints are right, but check which are included. The ringed endpoint is the one to fix.",
+            "cue": {
+              "cue": "highlight-endpoints",
+              "args": {
+                "mismatches": "$details.endpointMismatches"
+              }
+            }
+          },
+          "missing-piece": {
+            "text": "This set has two separate parts, joined by “or”. Add the missing interval."
+          },
+          "extra-piece": {
+            "text": "This set has exactly two parts."
+          },
+          "wrong-endpoints": {
+            "text": "Check each endpoint against the condition."
+          },
+          "infinity-closed": {
+            "text": "∞ can never be included. Use a round bracket next to it."
+          },
+          "generic": {
+            "text": "Draw each part of the condition on the number line, then join them with ∪."
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "First part: x {{symA}} {{a}}, everything to the left of {{a}}.",
+            "cue": {
+              "cue": "show-target",
+              "args": {
+                "union": "{{union}}"
+              }
+            }
+          },
+          {
+            "text": "Second part: {{b}} {{symB}} x ≤ {{c}}. Watch the test point move along the line.",
+            "cue": {
+              "cue": "test-point",
+              "args": {
+                "from": -10,
+                "to": 12
+              }
+            }
+          },
+          {
+            "text": "The set is {{text}}."
+          }
+        ],
+        "flashcards": {
+          "open-closed-confusion": {
+            "front": "x ≤ 3 or x < 3: which bracket at 3?",
+            "back": "≤ → ] (included); < → ) (not included)."
+          },
+          "missing-piece": {
+            "front": "How do you write “x < 1 or x > 4” as intervals?",
+            "back": "(−∞, 1) ∪ (4, ∞): two pieces joined by ∪."
+          },
+          "generic": {
+            "front": "What does ∪ mean for intervals?",
+            "back": "Union: a number is in the set if it is in either piece."
+          }
+        },
+        "input": {
+          "label": "Union of intervals",
+          "placeholder": "for example (−∞, 2) ∪ [3, 5]",
+          "keypad": "interval"
+        },
+        "accessibility": {
+          "altText": "A number line from −10 to 12 with one interval you can move, resize, and add to.",
+          "nonDragAlternative": "Type the union in the answer box, or use From, To, included and ∞ in Precise controls."
+        }
+      },
+      "hash": "sha256:ed2759896442e7ab013f22271ae7b24bc45e1fbfbbeef5d2c7264f428a2d165a",
+      "countsTowardMastery": false
+    },
+    {
+      "template": {
+        "id": "set.operations.m.difference-intersection",
+        "version": 2,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "migratedFrom": "src/questions/templates.ts set.operations.m.difference-intersection@1 (Phase 1 diagnostic; same review status)",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "set",
+        "skillIds": [
+          "set.operations",
+          "set.venn"
+        ],
+        "primarySkillId": "set.operations",
+        "difficulty": "medium",
+        "format": "set",
+        "estimatedSeconds": 90,
+        "parameters": {
+          "k": {
+            "kind": "int",
+            "min": 1,
+            "max": 999999
+          },
+          "op": {
+            "kind": "choice",
+            "values": [
+              "difference",
+              "intersection"
+            ]
+          }
+        },
+        "constraints": [],
+        "solver": "set.operations",
+        "answer": {},
+        "misconceptionRules": [
+          {
+            "tags": [
+              "difference-order-reversed"
+            ],
+            "match": {
+              "buggySolver": "reversed"
+            }
+          },
+          {
+            "tags": [
+              "difference-vs-intersection"
+            ],
+            "match": {
+              "buggySolver": "intersectionForDifference"
+            }
+          },
+          {
+            "tags": [
+              "union-instead"
+            ],
+            "match": {
+              "buggySolver": "unionInstead"
+            }
+          },
+          {
+            "tags": [
+              "difference-not-removed"
+            ],
+            "match": {
+              "buggySolver": "notRemoved"
+            }
+          },
+          {
+            "tags": [
+              "difference-instead"
+            ],
+            "match": {
+              "buggySolver": "differenceForIntersection"
+            }
+          }
+        ],
+        "acceptExamples": [],
+        "widget": {
+          "type": "figure",
+          "config": {
+            "figure": "venn",
+            "A": "{{A}}",
+            "B": "{{B}}",
+            "U": "{{U}}",
+            "op": "{{op}}"
+          },
+          "instructions": "The Venn diagram places every element in its region. After you answer, it marks which of your elements belong."
+        },
+        "consequence": {
+          "cue": "student",
+          "args": {
+            "value": "$value",
+            "tags": "$tags"
+          }
+        },
+        "variants": {
+          "param": "op",
+          "cases": {
+            "intersection": {
+              "stem": [
+                "Let A = {{Astr}} and B = {{Bstr}}.",
+                "Write A ∩ B in roster form."
+              ],
+              "hints": [
+                {
+                  "text": "A ∩ B contains elements that satisfy a condition about both sets. Which condition?"
+                },
+                {
+                  "text": "Keep only the elements that appear in A and in B.",
+                  "cue": {
+                    "cue": "solution-step",
+                    "args": {
+                      "step": 1
+                    }
+                  }
+                },
+                {
+                  "text": "Look at the overlap of the two circles."
+                }
+              ],
+              "workedSolution": [
+                {
+                  "text": "Go through A = {{Astr}} and keep each element that is also in B.",
+                  "cue": {
+                    "cue": "solution-step",
+                    "args": {
+                      "step": 0
+                    }
+                  }
+                },
+                {
+                  "text": "A ∩ B = {{ansStr}}.",
+                  "cue": {
+                    "cue": "solution-step",
+                    "args": {
+                      "step": 1
+                    }
+                  }
+                }
+              ],
+              "input": {
+                "label": "A ∩ B",
+                "placeholder": "for example {2, 5, 9}",
+                "keypad": "set"
+              }
+            }
+          }
+        },
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "Let A = {{Astr}} and B = {{Bstr}}.",
+          "Write A − B in roster form."
+        ],
+        "answerText": "{{ansStr}}",
+        "hints": [
+          {
+            "text": "A − B keeps the elements of one set and removes the others. Which set do you start from?"
+          },
+          {
+            "text": "Start with A. Remove every element that is also in B.",
+            "cue": {
+              "cue": "solution-step",
+              "args": {
+                "step": 0
+              }
+            }
+          },
+          {
+            "text": "Cross out {{interStr}} from A."
+          }
+        ],
+        "feedback": {
+          "difference-order-reversed": {
+            "text": "That's B − A: elements of B that are not in A. A − B starts from A."
+          },
+          "difference-vs-intersection": {
+            "text": "That's the overlap, A ∩ B. A − B is what's left of A after removing the overlap."
+          },
+          "union-instead": {
+            "text": "That's A ∪ B, everything in either set. This question asks for something smaller."
+          },
+          "difference-not-removed": {
+            "text": "That's all of A. Remove the elements that A shares with B."
+          },
+          "difference-instead": {
+            "text": "That's A − B. The intersection is the overlap: elements in both sets."
+          },
+          "generic": {
+            "text": "Place each element in the Venn diagram first, then read off the region you need."
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "Elements in both A and B: {{interStr}}.",
+            "cue": {
+              "cue": "solution-step",
+              "args": {
+                "step": 0
+              }
+            }
+          },
+          {
+            "text": "Remove them from A: {{Astr}} → {{ansStr}}.",
+            "cue": {
+              "cue": "solution-step",
+              "args": {
+                "step": 1
+              }
+            }
+          },
+          {
+            "text": "A − B = {{ansStr}}.",
+            "cue": {
+              "cue": "solution-step",
+              "args": {
+                "step": 2
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "difference-order-reversed": {
+            "front": "Is A − B the same as B − A?",
+            "back": "No. A − B: in A but not in B. B − A: in B but not in A."
+          },
+          "difference-vs-intersection": {
+            "front": "A − B vs A ∩ B?",
+            "back": "A ∩ B is the overlap. A − B is the part of A outside the overlap."
+          },
+          "union-instead": {
+            "front": "A ∪ B, A ∩ B, A − B: which is the largest?",
+            "back": "A ∪ B (everything in either set). A ∩ B and A − B are parts of it."
+          },
+          "difference-not-removed": {
+            "front": "Forming A − B, what do you remove from A?",
+            "back": "Every element that A shares with B."
+          },
+          "difference-instead": {
+            "front": "A ∩ B in words?",
+            "back": "Elements belonging to A and to B."
+          },
+          "generic": {
+            "front": "How do you read a set operation off a Venn diagram?",
+            "back": "Place every element in its region, then shade the region the operation describes."
+          }
+        },
+        "input": {
+          "label": "A − B",
+          "placeholder": "for example {2, 5, 9}",
+          "keypad": "set"
+        },
+        "accessibility": {
+          "altText": "Venn diagram of sets A = {{Astr}} and B = {{Bstr}} inside the universal set {1, …, 10}."
+        }
+      },
+      "hash": "sha256:5d7a60600710cc83194bbe023c3c6236195bb57095184e351b7049de86b9afa1",
+      "countsTowardMastery": false
+    },
+    {
+      "template": {
+        "id": "sl.forms.m.line-through-two-points",
+        "version": 1,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "sl",
+        "skillIds": [
+          "sl.forms",
+          "sl.slope"
+        ],
+        "primarySkillId": "sl.forms",
+        "difficulty": "medium",
+        "format": "equation",
+        "estimatedSeconds": 90,
+        "parameters": {
+          "x1": {
+            "kind": "int",
+            "min": -4,
+            "max": 0
+          },
+          "y1": {
+            "kind": "int",
+            "min": -3,
+            "max": 3
+          },
+          "m": {
+            "kind": "choice",
+            "values": [
+              -2,
+              -1.5,
+              -0.5,
+              0.5,
+              1.5,
+              2
+            ]
+          },
+          "dx": {
+            "kind": "choice",
+            "values": [
+              2,
+              4
+            ]
+          }
+        },
+        "constraints": [
+          "y1 - m*x1 != 0"
+        ],
+        "solver": "sl.lineThroughPoints",
+        "answer": {
+          "variables": [
+            "x",
+            "y"
+          ],
+          "box": {
+            "x": [
+              -6,
+              6
+            ],
+            "y": [
+              -6,
+              6
+            ]
+          }
+        },
+        "misconceptionRules": [
+          {
+            "tags": [
+              "slope-inverted"
+            ],
+            "match": {
+              "buggySolver": "slopeInverted"
+            }
+          },
+          {
+            "tags": [
+              "intercept-sign-error"
+            ],
+            "match": {
+              "buggySolver": "interceptSign"
+            }
+          }
+        ],
+        "acceptExamples": [
+          "{{-m|raw}}*x + y = {{c|raw}}"
+        ],
+        "widget": {
+          "type": "graph-plot",
+          "config": {
+            "xRange": [
+              -6,
+              6
+            ],
+            "yRange": [
+              -6,
+              6
+            ],
+            "functions": [
+              {
+                "id": "trial",
+                "expr": "m*x + c",
+                "label": "your line"
+              },
+              {
+                "id": "line",
+                "expr": "{{m|raw}}*x + {{c|raw}}",
+                "tone": "hidden"
+              }
+            ],
+            "params": {
+              "m": {
+                "value": 0,
+                "min": -3,
+                "max": 3,
+                "step": 0.5,
+                "label": "slope m"
+              },
+              "c": {
+                "value": 0,
+                "min": -6,
+                "max": 6,
+                "step": 0.5,
+                "label": "intercept c"
+              }
+            },
+            "points": [
+              {
+                "id": "A",
+                "label": "A",
+                "x": "{{x1}}",
+                "y": "{{y1}}"
+              },
+              {
+                "id": "B",
+                "label": "B",
+                "x": "{{x2}}",
+                "y": "{{y2}}"
+              }
+            ],
+            "equation": {
+              "fn": "trial"
+            }
+          },
+          "instructions": "Adjust the slope m and the intercept c with the sliders until the line passes through A and B. Its equation updates as you move it."
+        },
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "Find the equation of the line through A({{x1}}, {{y1}}) and B({{x2}}, {{y2}}).",
+          "Any correct form is accepted, for example y = mx + c or ax + by = d."
+        ],
+        "answerText": "y = {{m}}x {{c|signed}}",
+        "hints": [
+          {
+            "text": "Find the slope first: rise over run between A and B.",
+            "cue": {
+              "cue": "slope-triangle",
+              "args": {
+                "fn": "line",
+                "x1": "{{x1}}",
+                "x2": "{{x2}}"
+              }
+            }
+          },
+          {
+            "text": "m = ({{y2}} − {{y1}}) ÷ ({{x2}} − {{x1}}). Then use y − y₁ = m(x − x₁)."
+          },
+          {
+            "text": "y − {{y1}} = {{m}}(x − {{x1}}). Rearrange if you like."
+          }
+        ],
+        "feedback": {
+          "slope-inverted": {
+            "text": "You used run over rise. Slope is the change in y divided by the change in x.",
+            "cue": {
+              "cue": "slope-triangle",
+              "args": {
+                "fn": "line",
+                "x1": "{{x1}}",
+                "x2": "{{x2}}"
+              }
+            }
+          },
+          "intercept-sign-error": {
+            "text": "Check the sign of the intercept: substitute A into your equation and see whether it holds."
+          },
+          "generic": {
+            "text": "Test your equation with both points: substituting A and B must make it true."
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "Slope: m = ({{y2}} − {{y1}}) ÷ ({{x2}} − {{x1}}) = {{dy}} ÷ {{dx}} = {{m}}.",
+            "cue": [
+              {
+                "cue": "slope-triangle",
+                "args": {
+                  "fn": "line",
+                  "x1": "{{x1}}",
+                  "x2": "{{x2}}"
+                }
+              },
+              {
+                "cue": "set-param",
+                "args": {
+                  "name": "m",
+                  "value": "{{m}}"
+                }
+              }
+            ]
+          },
+          {
+            "text": "Point–slope form: y − {{y1}} = {{m}}(x − {{x1}}).",
+            "cue": {
+              "cue": "set-param",
+              "args": {
+                "name": "c",
+                "value": "{{c}}"
+              }
+            }
+          },
+          {
+            "text": "Slope–intercept form: y = {{m}}x {{c|signed}}. The line now passes through both points.",
+            "cue": {
+              "cue": "highlight",
+              "args": {
+                "ids": [
+                  "A",
+                  "B"
+                ]
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "slope-inverted": {
+            "front": "Slope through (x₁, y₁) and (x₂, y₂)?",
+            "back": "(y₂ − y₁) / (x₂ − x₁): rise over run."
+          },
+          "intercept-sign-error": {
+            "front": "How do you check a line's equation?",
+            "back": "Substitute the given points; each must satisfy it."
+          },
+          "generic": {
+            "front": "Line through two points?",
+            "back": "Find m, then y − y₁ = m(x − x₁)."
+          }
+        },
+        "input": {
+          "label": "Equation",
+          "placeholder": "for example y = 2x + 1",
+          "keypad": "maths"
+        },
+        "accessibility": {
+          "altText": "Coordinate grid with points A({{x1}}, {{y1}}) and B({{x2}}, {{y2}}) and an adjustable line.",
+          "nonDragAlternative": "Use the slope and intercept sliders, which work with the keyboard."
+        }
+      },
+      "hash": "sha256:5a6202867b456c1811cb55aa1c69b312424b979089299b7e994f97c204c2f726",
+      "countsTowardMastery": false
+    },
+    {
+      "template": {
+        "id": "trg.unit-circle.m.exact-value",
+        "version": 1,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "trg",
+        "skillIds": [
+          "trg.unit-circle",
+          "trg.allied-angles"
+        ],
+        "primarySkillId": "trg.unit-circle",
+        "difficulty": "medium",
+        "format": "number",
+        "estimatedSeconds": 90,
+        "parameters": {
+          "fn": {
+            "kind": "choice",
+            "values": [
+              "sin",
+              "cos"
+            ]
+          },
+          "k": {
+            "kind": "int",
+            "min": 0,
+            "max": 11
+          }
+        },
+        "constraints": [],
+        "solver": "trg.exactValue",
+        "answer": {
+          "exact": true
+        },
+        "misconceptionRules": [
+          {
+            "tags": [
+              "sin-cos-swap"
+            ],
+            "match": {
+              "buggySolver": "sinCosSwap"
+            }
+          },
+          {
+            "tags": [
+              "quadrant-sign"
+            ],
+            "match": {
+              "buggySolver": "quadrantSign"
+            }
+          }
+        ],
+        "acceptExamples": [
+          "{{exactText}}"
+        ],
+        "widget": {
+          "type": "graph-plot",
+          "config": {
+            "xRange": [
+              0,
+              6.5
+            ],
+            "yRange": [
+              -1.4,
+              1.4
+            ],
+            "xLabel": "x (radians)",
+            "functions": [
+              {
+                "id": "f",
+                "expr": "{{fn}}(x)"
+              }
+            ],
+            "points": [
+              {
+                "id": "P",
+                "label": "P",
+                "on": "f",
+                "x": 0.5,
+                "draggable": true,
+                "step": 0.01
+              }
+            ]
+          },
+          "instructions": "Drag point P along the curve (or use the arrow keys) to explore the graph. Decimals help you check, but the answer must be exact."
+        },
+        "consequence": {
+          "cue": "marker",
+          "args": {
+            "x": "{{thetaRad}}",
+            "y": "$value",
+            "label": "your answer",
+            "tone": "bad"
+          }
+        },
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "Find the exact value of {{fn}}({{thetaText}})."
+        ],
+        "answerText": "{{exactText}}",
+        "hints": [
+          {
+            "text": "{{thetaText}} is in the {{quadrant}} quadrant. Its reference angle is {{refDeg}}°.",
+            "cue": {
+              "cue": "move-point",
+              "args": {
+                "point": "P",
+                "x": "{{thetaRad}}"
+              }
+            }
+          },
+          {
+            "text": "Find {{fn}} of the reference angle, then decide the sign from the quadrant."
+          },
+          {
+            "text": "Use the standard values: sin 30° = 1/2, sin 45° = √2/2, sin 60° = √3/2 (and cos the other way round)."
+          }
+        ],
+        "feedback": {
+          "sin-cos-swap": {
+            "text": "That's the other function's value. Check which of sin and cos is 1/2 at a {{refDeg}}° reference angle."
+          },
+          "quadrant-sign": {
+            "text": "The size is right, but check the sign: in the {{quadrant}} quadrant, {{fn}} is negative. Look where P sits on the curve.",
+            "cue": {
+              "cue": "move-point",
+              "args": {
+                "point": "P",
+                "x": "{{thetaRad}}"
+              }
+            }
+          },
+          "sign-error": {
+            "text": "The size is right, but check the sign for the {{quadrant}} quadrant.",
+            "cue": {
+              "cue": "move-point",
+              "args": {
+                "point": "P",
+                "x": "{{thetaRad}}"
+              }
+            }
+          },
+          "generic": {
+            "text": "Use the reference angle and the quadrant. P marks x = {{thetaText}} on the curve."
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "{{thetaText}} = {{deg}}°, in the {{quadrant}} quadrant, with reference angle {{refDeg}}°.",
+            "cue": {
+              "cue": "move-point",
+              "args": {
+                "point": "P",
+                "x": "{{thetaRad}}"
+              }
+            }
+          },
+          {
+            "text": "{{fn}}({{thetaText}}) = {{exactText}}. P shows the same value on the graph.",
+            "cue": {
+              "cue": "marker",
+              "args": {
+                "x": "{{thetaRad}}",
+                "y": "{{value}}",
+                "label": "{{exactText}}"
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "sin-cos-swap": {
+            "front": "sin 30° and cos 30°?",
+            "back": "sin 30° = 1/2, cos 30° = √3/2."
+          },
+          "quadrant-sign": {
+            "front": "Signs of sin and cos in each quadrant?",
+            "back": "All positive in the first; sin in the second; tan in the third; cos in the fourth."
+          },
+          "generic": {
+            "front": "How do you find sin or cos of a non-acute angle?",
+            "back": "Use the reference angle's value, with the sign from the quadrant."
+          }
+        },
+        "input": {
+          "label": "Exact value",
+          "placeholder": "for example √3/2",
+          "keypad": "maths"
+        },
+        "accessibility": {
+          "altText": "Graph of y = {{fn}}(x) from 0 to 2π, with a movable point P on the curve.",
+          "nonDragAlternative": "Type an x value for P in Precise controls, or focus P and use the arrow keys."
+        }
+      },
+      "hash": "sha256:1df77e927438f21437b07ee23433c35a0ae85ffb7976b85d1486fafb77fa9296",
+      "countsTowardMastery": false
+    },
+    {
+      "template": {
+        "id": "vec.basics.m.magnitude-3d",
+        "version": 2,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "migratedFrom": "src/questions/templates.ts vec.basics.m.magnitude-3d@1 (Phase 1 diagnostic; same review status)",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "vec",
+        "skillIds": [
+          "vec.basics"
+        ],
+        "primarySkillId": "vec.basics",
+        "difficulty": "medium",
+        "format": "number",
+        "estimatedSeconds": 90,
+        "parameters": {
+          "p": {
+            "kind": "int",
+            "min": -6,
+            "max": 6
+          },
+          "q": {
+            "kind": "int",
+            "min": -6,
+            "max": 6
+          },
+          "r": {
+            "kind": "int",
+            "min": -6,
+            "max": 6
+          }
+        },
+        "constraints": [
+          "p != 0",
+          "q != 0",
+          "r != 0"
+        ],
+        "solver": "vec.magnitude3d",
+        "answer": {
+          "tolerance": {
+            "relative": 0.005
+          }
+        },
+        "misconceptionRules": [
+          {
+            "tags": [
+              "added-components"
+            ],
+            "match": {
+              "buggySolver": "addedComponents"
+            }
+          },
+          {
+            "tags": [
+              "added-components"
+            ],
+            "match": {
+              "buggySolver": "addedSigned"
+            }
+          },
+          {
+            "tags": [
+              "forgot-square-root"
+            ],
+            "match": {
+              "buggySolver": "forgotRoot"
+            }
+          },
+          {
+            "tags": [
+              "missed-k-component"
+            ],
+            "match": {
+              "buggySolver": "missedK"
+            }
+          }
+        ],
+        "acceptExamples": [
+          "{{exact}}",
+          "sqrt({{ss}})",
+          "{{mag|fixed2}}"
+        ],
+        "widget": {
+          "type": "figure",
+          "config": {
+            "figure": "box",
+            "p": "{{p}}",
+            "q": "{{q}}",
+            "r": "{{r}}"
+          },
+          "instructions": "The figure draws the vector as the diagonal of a box. It follows each step of the worked solution."
+        },
+        "consequence": {
+          "cue": "student",
+          "args": {
+            "value": "$value",
+            "tags": "$tags"
+          }
+        },
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "Find the magnitude of a = {{aStr}}.",
+          "Give an exact value (for example √29) or a decimal to 2 places."
+        ],
+        "answerText": "{{exact}} ≈ {{mag|fixed2}}",
+        "hints": [
+          {
+            "text": "Picture the vector as the diagonal of a box with sides along x, y and z."
+          },
+          {
+            "text": "Use Pythagoras twice: across the base, then up to the opposite corner.",
+            "cue": {
+              "cue": "solution-step",
+              "args": {
+                "step": 0
+              }
+            }
+          },
+          {
+            "text": "|a| = √(p² + q² + r²) with p = {{p}}, q = {{q}}, r = {{r}}."
+          }
+        ],
+        "feedback": {
+          "added-components": {
+            "text": "Lengths along perpendicular directions don't add directly. Use Pythagoras: square them, add, then take the square root."
+          },
+          "forgot-square-root": {
+            "text": "That's |a|², the sum of the squares. Take its square root."
+          },
+          "missed-k-component": {
+            "text": "That's the diagonal across the base only. Include the k̂ component to reach the far corner."
+          },
+          "generic": {
+            "text": "Treat the vector as a box diagonal and use Pythagoras in three dimensions."
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "Across the base: √({{p}}² + {{q}}²) = √{{base}}.",
+            "cue": {
+              "cue": "solution-step",
+              "args": {
+                "step": 0
+              }
+            }
+          },
+          {
+            "text": "Up to the far corner: |a| = √({{base}} + {{r*r}}) = √{{ss}}.",
+            "cue": {
+              "cue": "solution-step",
+              "args": {
+                "step": 1
+              }
+            }
+          },
+          {
+            "text": "|a| = {{exact}} ≈ {{mag|fixed2}}.",
+            "cue": {
+              "cue": "solution-step",
+              "args": {
+                "step": 2
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "added-components": {
+            "front": "Is |3î + 4ĵ| equal to 7?",
+            "back": "No. It is √(3² + 4²) = 5. Perpendicular components combine by Pythagoras."
+          },
+          "forgot-square-root": {
+            "front": "a₁² + a₂² + a₃² equals what?",
+            "back": "|a|². Take the square root for |a|."
+          },
+          "missed-k-component": {
+            "front": "Magnitude of a₁î + a₂ĵ + a₃k̂?",
+            "back": "√(a₁² + a₂² + a₃²): all three components."
+          },
+          "generic": {
+            "front": "How do you find a 3-D vector's magnitude?",
+            "back": "√(a₁² + a₂² + a₃²): Pythagoras twice."
+          }
+        },
+        "input": {
+          "label": "|a|",
+          "placeholder": "for example √29",
+          "keypad": "maths"
+        },
+        "accessibility": {
+          "altText": "A box with sides {{ax}}, {{ay}} and {{az}}; the vector a runs along its diagonal."
+        }
+      },
+      "hash": "sha256:af0d781ec63420c37abcef9f67104b64b1086026fdf1ee4c92d05033aa802ae3",
+      "countsTowardMastery": false
+    },
+    {
+      "template": {
+        "id": "vec.dot-product.m.components-2d",
+        "version": 2,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-27",
+          "migratedFrom": "src/questions/templates.ts vec.dot-product.m.components-2d@1 (Phase 1 diagnostic; same review status)",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "chapterId": "vec",
+        "skillIds": [
+          "vec.dot-product",
+          "vec.components"
+        ],
+        "primarySkillId": "vec.dot-product",
+        "difficulty": "medium",
+        "format": "number",
+        "estimatedSeconds": 90,
+        "parameters": {
+          "a1": {
+            "kind": "int",
+            "min": -5,
+            "max": 6
+          },
+          "a2": {
+            "kind": "int",
+            "min": -5,
+            "max": 6
+          },
+          "b1": {
+            "kind": "int",
+            "min": -5,
+            "max": 6
+          },
+          "b2": {
+            "kind": "int",
+            "min": -5,
+            "max": 6
+          }
+        },
+        "constraints": [
+          "a1 != 0",
+          "a2 != 0",
+          "b1 != 0",
+          "b2 != 0",
+          "a1*b1 + a2*b2 != a1*b2 + a2*b1"
+        ],
+        "solver": "vec.dotProduct",
+        "answer": {
+          "tolerance": {
+            "relative": 1e-9
+          }
+        },
+        "misconceptionRules": [
+          {
+            "tags": [
+              "cross-multiplied-components"
+            ],
+            "match": {
+              "buggySolver": "crossMultiplied"
+            }
+          },
+          {
+            "tags": [
+              "ignored-angle"
+            ],
+            "match": {
+              "buggySolver": "ignoredAngle"
+            }
+          },
+          {
+            "tags": [
+              "dropped-j-term"
+            ],
+            "match": {
+              "buggySolver": "droppedJ"
+            }
+          }
+        ],
+        "acceptExamples": [
+          "{{a1|raw}}*{{b1|raw}} + {{a2|raw}}*({{b2|raw}})"
+        ],
+        "widget": {
+          "type": "vector-board",
+          "config": {
+            "scene": "grid",
+            "unit": "",
+            "maxMagnitude": 9,
+            "showResultant": false,
+            "allowEdit": false,
+            "vectors": [
+              {
+                "id": "a",
+                "kind": "vector",
+                "label": "a",
+                "magnitude": "{{magA}}",
+                "angleDeg": "{{angA}}",
+                "locked": true,
+                "tone": "a"
+              },
+              {
+                "id": "b",
+                "kind": "vector",
+                "label": "b",
+                "magnitude": "{{magB}}",
+                "angleDeg": "{{angB}}",
+                "locked": true,
+                "tone": "b"
+              }
+            ]
+          },
+          "instructions": "The grid shows a and b. Turn on Show components to see each vector split into its î and ĵ parts."
+        },
+        "intro": "This question helps us find the best place for you to begin.",
+        "stem": [
+          "Let a = {{aStr}} and b = {{bStr}}.",
+          "Find the scalar product a · b."
+        ],
+        "answerText": "{{dot}}",
+        "hints": [
+          {
+            "text": "The scalar product pairs up matching components. Which component of a goes with which component of b?",
+            "cue": {
+              "cue": "components"
+            }
+          },
+          {
+            "text": "Multiply x with x and y with y, then add: a·b = a₁b₁ + a₂b₂."
+          },
+          {
+            "text": "({{a1}})({{b1}}) + ({{a2}})({{b2}})"
+          }
+        ],
+        "feedback": {
+          "cross-multiplied-components": {
+            "text": "You multiplied x with y. The scalar product pairs î with î and ĵ with ĵ, because î·ĵ = 0.",
+            "cue": {
+              "cue": "components"
+            }
+          },
+          "ignored-angle": {
+            "text": "|a||b| is the scalar product only when the vectors point the same way. In general it is |a||b| cos θ, which the components give directly. The highlighted projection shows how much of a lies along b.",
+            "cue": {
+              "cue": "project",
+              "args": {
+                "a": "a",
+                "b": "b"
+              }
+            }
+          },
+          "dropped-j-term": {
+            "text": "That's only the î part. Add the ĵ part too.",
+            "cue": {
+              "cue": "components"
+            }
+          },
+          "generic": {
+            "text": "Pair matching components, multiply each pair, then add."
+          }
+        },
+        "workedSolution": [
+          {
+            "text": "a·b = a₁b₁ + a₂b₂, because î·î = ĵ·ĵ = 1 and î·ĵ = 0.",
+            "cue": {
+              "cue": "components"
+            }
+          },
+          {
+            "text": "= ({{a1}})({{b1}}) + ({{a2}})({{b2}}) = {{xx}} + {{yy}}"
+          },
+          {
+            "text": "= {{dot}}. Geometrically, that is |b| times the projection of a onto b.",
+            "cue": {
+              "cue": "project",
+              "args": {
+                "a": "a",
+                "b": "b"
+              }
+            }
+          }
+        ],
+        "flashcards": {
+          "cross-multiplied-components": {
+            "front": "a = a₁î + a₂ĵ, b = b₁î + b₂ĵ. What is a·b?",
+            "back": "a₁b₁ + a₂b₂ (matching components), because î·ĵ = 0."
+          },
+          "ignored-angle": {
+            "front": "Is a·b = |a||b| always?",
+            "back": "No: a·b = |a||b| cos θ. It equals |a||b| only when θ = 0."
+          },
+          "dropped-j-term": {
+            "front": "How many terms does a·b have for 2-D vectors?",
+            "back": "Two: a₁b₁ + a₂b₂."
+          },
+          "generic": {
+            "front": "Scalar product from components?",
+            "back": "Multiply matching components and add."
+          }
+        },
+        "input": {
+          "label": "a · b",
+          "placeholder": "a number, for example −7",
+          "keypad": "maths"
+        },
+        "accessibility": {
+          "altText": "Grid with vector a = {{aStr}} and vector b = {{bStr}} drawn from the origin.",
+          "nonDragAlternative": "Nothing needs dragging: the vectors are fixed, Show components is a checkbox, and each vector is described in text."
+        }
+      },
+      "hash": "sha256:3a1b33b05905961613a2bb0a37068c053f27af4bdf18fd686dbbdb92d3938cb9",
+      "countsTowardMastery": false
+    }
+  ]
+}

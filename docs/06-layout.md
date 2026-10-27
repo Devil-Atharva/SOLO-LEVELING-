@@ -220,7 +220,7 @@ The panel becomes a collapsible drawer (toggle in the top bar). The canvas fills
 └───────────────────────────┘
 ```
 
-- The MathLive keyboard docks above the sticky bar. The stage collapses to a 120 px strip while the keyboard is open, with a tap to expand.
+- *As built in Phase 2:* the symbol keypad sits under the answer field (D-049). On phones the visual stacks above the question; the stage does not collapse yet while the system keyboard is open.
 - Feedback slides up as a sheet over the prompt area (not over the stage), so the visual consequence stays visible.
 
 ### Other session screens

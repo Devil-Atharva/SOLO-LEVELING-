@@ -37,4 +37,18 @@ test.describe("phone layout", () => {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(0);
   });
+
+  for (const id of ["lom.fbd.m.box-pulled-by-rope", "lom.second-law.m.rank-accelerations", "set.intervals.m.union-from-inequality", "lom.connected-bodies.m.who-exerts-each-force"]) {
+    test(`lesson player on a phone: ${id}`, async ({ page }) => {
+      await page.goto(`/chapter/${id.split(".")[0]}/try?q=${id}&seed=7`);
+      const stage = (await page.locator(".qstage").boundingBox())!;
+      const prompt = (await page.locator(".qprompt").boundingBox())!;
+      expect(prompt.y).toBeGreaterThan(stage.y + stage.height - 2); // visual above the question
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      expect(overflow).toBeLessThanOrEqual(0);
+      await expect(page.getByTestId("transport")).toBeVisible();
+      const small = await page.locator(".qshell button:visible, .qshell select:visible").evaluateAll((els) => els.filter((e) => e.getBoundingClientRect().height < 32).map((e) => e.textContent));
+      expect(small).toEqual([]);
+    });
+  }
 });

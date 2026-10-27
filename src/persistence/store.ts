@@ -46,6 +46,12 @@ export const progressStore = {
     }
     await refresh();
   },
+  /** Update an attempt already saved (the student's optional explanation). Never changes its outcome. */
+  async updateReasoning(a: AttemptRecord, reasoning: NonNullable<AttemptRecord["reasoning"]>) {
+    const r = await getRepo();
+    await r.addAttempt({ ...a, reasoning });
+    await refresh();
+  },
   async review(card: FlashcardRecord, knewIt: boolean, now = Date.now()) {
     const r = await getRepo();
     await r.putFlashcards([reviewCard(card, knewIt, now)]);

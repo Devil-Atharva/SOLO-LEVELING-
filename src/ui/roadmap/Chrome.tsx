@@ -64,7 +64,7 @@ export function Legend({ open, onToggle }: { open: boolean; onToggle(): void }) 
               <span className="legend__states">
                 <StatusRing state="unvisited" size={12} /> Unvisited <StatusRing state="learning" size={12} /> Learning <StatusRing state="needs-review" size={12} /> Needs review <StatusRing state="mastered" size={12} /> Mastered
               </span>
-              <span><span className="tag">Preview only</span> questions arrive later</span>
+              <span><span className="tag">Preview only</span> questions coming soon</span>
             </li>
           </ul>
         </>

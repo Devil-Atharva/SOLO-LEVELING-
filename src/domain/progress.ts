@@ -21,6 +21,12 @@ export const AttemptRecord = z.object({
   attemptsUsed: z.number().int().min(1).max(3),
   hintsUsed: z.number().int().min(0),
   tags: z.array(z.string()),
+  // Phase 2 additions (optional, so Phase 1 records still load)
+  format: z.string().optional(),
+  /** true only when the template was human-approved and unchanged since; in-review content never counts */
+  countsTowardMastery: z.boolean().optional(),
+  /** the student's own written explanation: advisory only, never scored and never used for mastery */
+  reasoning: z.object({ text: z.string().max(4000), selfCheck: z.array(z.number().int()), scored: z.literal(false) }).optional(),
 });
 export type AttemptRecord = z.infer<typeof AttemptRecord>;
 
@@ -70,7 +76,8 @@ export function skillState(skillId: string, attempts: AttemptRecord[]): SkillSta
   const last = mine[mine.length - 1]!;
   if (last.outcome === "exhausted") return "needs-review";
   // docs/04: independent = ≥ 2 independent correct at medium or above within the last 4 attempts
-  const recent = mine.slice(-4).filter((a) => a.outcome === "independent" && a.difficulty !== "easy");
+  // only attempts on human-approved content can show independence (in-review questions never count)
+  const recent = mine.slice(-4).filter((a) => a.outcome === "independent" && a.difficulty !== "easy" && a.countsTowardMastery === true);
   return recent.length >= 2 ? "independent" : "practising";
 }
 

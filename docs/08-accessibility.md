@@ -32,7 +32,7 @@
   - ordering uses Move up / Move down buttons.
 
   The content validator rejects a template whose drag input lacks `nonDragAlternative`.
-- Touch targets are ≥ 44 × 44 px. Widget handles have a 44 px hit area, even when drawn smaller.
+- Touch targets are ≥ 44 × 44 px for buttons, selects and form controls. SVG drag handles have a 40-unit hit area, about 24 px on a phone (the WCAG 2.2 AA minimum, D-060); every handle also has a 44 px form equivalent.
 
 ## Screen readers
 
@@ -41,7 +41,7 @@
   - Assertive: answer results only.
 - **Questions:**
   - The stem is a heading plus a paragraph. Maths is rendered with KaTeX's MathML output for screen readers.
-  - MathLive provides spoken maths for input.
+  - Maths input is plain text (D-049), so screen readers read it as typed; the KaTeX preview below it is hidden from them to avoid double reading.
   - Each diagram has `altText` from the template, with parameters substituted, and an expandable long description generated from the model state.
 - **Feedback** is linked to the input via `aria-describedby`. Focus does not jump on an incorrect answer; it moves to the result text only for correct answers and frame changes.
 - **Detours and returns** announce the change and move focus to the new question heading (docs/07).
@@ -71,3 +71,13 @@
 - `@axe-core/playwright` on: dashboard (map and list), chapter sheet, question screen (each format), feedback state, hint drawer, detour, stuck, mastery and settings.
 - A keyboard-only e2e path for each learner journey in docs/02.
 - Contrast script in CI.
+
+## Automated checks added in Phase 2
+
+- axe (WCAG 2.2 AA tags) on six lesson-player screens, before and after hints and the worked solution: no serious or critical violations.
+- Every one of the 20 questions is answered in the browser through its non-drag controls (text, choices, Move up/down, selects, Precise controls).
+- Keyboard routes: vector tips (arrows, Shift for fine steps), number-line endpoints (arrows, Enter/Space toggles, Home/End for ±∞), graph points (arrows), ordering (Alt + arrows). Pointer drag routes give the same answer as the keyboard and form routes.
+- Reduced motion: consequences jump to their end state, nothing animates, and the result is announced in the polite live region.
+- Phone layout: the visual stacks above the question with no horizontal scrolling and no button shorter than 32 px.
+- Live regions: widget descriptions at most once every 500 ms while dragging, with the final state always announced; answer results are assertive. Focus moves to the result only when the question ends.
+

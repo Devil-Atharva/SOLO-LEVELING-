@@ -299,7 +299,7 @@ export function Roadmap({ layout, snapshot, now, selected, recs, playable, lastS
             const label = [
               `${c.title}. ${subjectName(c.subject)}, Class ${c.class}.`,
               `${STATE_LABEL[state]}. ${prog.touched} of ${prog.total} skills tried.`,
-              isPlayable ? "Diagnostic question available." : "Preview only: questions not yet playable.",
+              isPlayable ? "Starting question available." : "Preview only: questions coming soon.",
               rec === "recommended" ? "Recommended next." : rec === "start-here" ? "Good place to start." : "",
             ].join(" ");
             return (
