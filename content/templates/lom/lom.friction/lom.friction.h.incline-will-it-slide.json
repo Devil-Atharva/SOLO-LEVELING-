@@ -1,0 +1,84 @@
+{
+  "$comment": "SCHEMA EXAMPLE written in Phase 0. Status 'draft' — it does not count toward mastery and is excluded from builds until reviewed and approved in Phase 3. Numbers are generated from parameters; the reference answer is computed by the named solver, never typed by hand or by AI.",
+  "id": "lom.friction.h.incline-will-it-slide",
+  "version": 1,
+  "status": "draft",
+  "provenance": { "origin": "human", "author": "content-dev", "createdAt": "2026-10-27", "reviewedBy": null, "reviewedAt": null, "contentHash": null },
+
+  "chapterId": "lom",
+  "skillIds": ["lom.friction", "lom.resolve-forces"],
+  "primarySkillId": "lom.friction",
+  "difficulty": "hard",
+  "format": "numeric",
+  "estimatedSeconds": 150,
+
+  "parameters": {
+    "m":     { "kind": "decimal", "min": 2, "max": 8, "step": 0.5, "unit": "kg" },
+    "theta": { "kind": "int", "min": 20, "max": 40, "step": 5, "unit": "deg" },
+    "mu_s":  { "kind": "decimal", "min": 0.30, "max": 0.80, "step": 0.05 },
+    "g":     { "kind": "const", "value": 9.8, "unit": "m/s^2" }
+  },
+  "constraints": [
+    "tan(theta) < mu_s",
+    "abs(mu_s - tan(theta)) > 0.05"
+  ],
+  "$constraintsNote": "The block must stay at rest (so the answer is the static friction actually needed, mg sin θ, not μs N), with a margin so rounding never flips the case.",
+
+  "stem": "A {{m}} kg block rests on a rough plank tilted at {{theta}}°. The coefficient of static friction is {{mu_s}}. Take g = 9.8 m/s². What is the magnitude of the friction force acting on the block?",
+  "widget": {
+    "type": "vector-board",
+    "mode": "explore",
+    "config": {
+      "scene": "incline",
+      "inclineAngleDeg": "{{theta}}",
+      "body": { "mass": "{{m}}", "label": "block" },
+      "givenForces": ["weight"],
+      "studentMay": ["addForce", "dragForce", "toggleTiltedAxes"],
+      "readouts": ["netForce", "componentsAlongIncline"],
+      "showMaxStaticFrictionMeter": true
+    }
+  },
+
+  "answer": {
+    "kind": "quantity",
+    "solver": "lom.friction.staticOnIncline",
+    "expectedDimension": "force",
+    "canonicalUnit": "N",
+    "tolerance": { "relative": 0.01 },
+    "requireUnit": true
+  },
+
+  "misconceptionRules": [
+    { "tags": ["static-friction-always-max"],                         "match": { "buggySolver": "lom.friction.muTimesNormal" } },
+    { "tags": ["normal-equals-weight", "static-friction-always-max"], "match": { "buggySolver": "lom.friction.muTimesWeight" } },
+    { "tags": ["sin-cos-swap-incline"],                               "match": { "buggySolver": "lom.friction.weightCosTheta" } },
+    { "tags": ["dimension-mismatch"],                                 "match": { "dimensionNot": "force" } }
+  ],
+
+  "hints": [
+    { "level": 1, "text": "Is the block moving? What does that tell you about the net force along the plank?", "cue": "vector-board:show-net-force-zero" },
+    { "level": 2, "text": "Turn on tilted axes. Which forces have a component along the plank?", "cue": "vector-board:toggle-tilted-axes" },
+    { "level": 3, "text": "Along the plank, friction must exactly balance mg sin θ. μs N is only the most friction could be." }
+  ],
+
+  "feedback": {
+    "static-friction-always-max": { "text": "You found the maximum static friction, μs N. The block isn't slipping, so friction is only as large as it needs to be.", "cue": "vector-board:friction-meter" },
+    "normal-equals-weight": { "text": "On an incline the plank pushes back only against the part of the weight pressing into it.", "cue": "vector-board:decompose-weight" },
+    "sin-cos-swap-incline": { "text": "Check which component points along the plank. The angle between the weight and the plank's normal is θ.", "cue": "vector-board:highlight-angle-between-weight-and-normal" },
+    "dimension-mismatch": { "text": "Friction is a force. Check your units." },
+    "generic": { "text": "Compare the forces along the plank. What has to balance for the block to stay still?" }
+  },
+
+  "workedSolution": [
+    { "text": "The block is at rest, so the net force along the plank is zero.", "cue": "vector-board:show-net-force-zero" },
+    { "text": "Resolve the weight: mg sin θ = {{m}} × 9.8 × sin {{theta}}° acts down the plank.", "cue": "vector-board:decompose-weight" },
+    { "text": "Static friction acts up the plank and balances it: f = mg sin θ = {{answer}}.", "cue": "vector-board:friction-meter" },
+    { "text": "Check: the maximum available is μs mg cos θ = {{maxStatic}}, which is larger, so the block indeed stays at rest." }
+  ],
+  "visualExplanation": { "widget": "vector-board", "timeline": ["decompose-weight", "show-net-force-zero", "friction-meter"] },
+
+  "accessibility": {
+    "altText": "Block on a plank tilted at {{theta}} degrees, with its weight drawn straight down.",
+    "nonDragAlternative": "Forces can be added from a menu and set with angle and magnitude inputs."
+  }
+}

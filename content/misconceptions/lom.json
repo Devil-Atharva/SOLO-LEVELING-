@@ -1,0 +1,56 @@
+{
+  "$comment": "Misconception catalogue for Laws of Motion (pilot sample written in Phase 0 to fix the schema; to be completed and reviewed in Phase 3). 'implicates' lists skills whose weakness this misconception is evidence of; the detour planner intersects it with the prerequisite closure. Each tag owns one flashcard.",
+  "chapter": "lom",
+  "status": "draft",
+  "misconceptions": [
+    {
+      "tag": "normal-equals-weight",
+      "description": "Assumes the normal force always equals mg, including on an incline or when other forces have perpendicular components.",
+      "implicates": ["lom.resolve-forces", "lom.fbd"],
+      "visualCue": "vector-board:decompose-weight",
+      "flashcard": { "front": "On a 30° incline, is the normal force on a resting block equal to its weight?", "back": "No. The normal force balances only the component of weight perpendicular to the surface: N = mg cos θ (when nothing else pushes into the surface)." }
+    },
+    {
+      "tag": "sin-cos-swap-incline",
+      "description": "Uses mg sin θ for the perpendicular component and mg cos θ for the component along the incline.",
+      "implicates": ["lom.resolve-forces", "mip.resolution", "f.trig-ratios"],
+      "visualCue": "vector-board:highlight-angle-between-weight-and-normal",
+      "flashcard": { "front": "Which component of weight acts along a slope of angle θ?", "back": "mg sin θ along the slope; mg cos θ perpendicular to it. The angle between the weight and the perpendicular to the slope equals θ." }
+    },
+    {
+      "tag": "extra-force-of-motion",
+      "description": "Adds a 'force of motion' or 'force of the push' that has no agent after contact has ended.",
+      "implicates": ["lom.fbd", "lom.first-law"],
+      "visualCue": "vector-board:ask-for-agent",
+      "flashcard": { "front": "A box slides after you stop pushing. Is your push still a force on it?", "back": "No. Every force needs an agent in contact (or a field). The box keeps moving because of inertia, and friction slows it." }
+    },
+    {
+      "tag": "static-friction-always-max",
+      "description": "Sets static friction equal to μs·N even when a smaller force would keep the body at rest.",
+      "implicates": ["lom.friction"],
+      "visualCue": "vector-board:friction-meter",
+      "flashcard": { "front": "Is static friction always μs N?", "back": "No. μs N is the maximum. Static friction is only as large as needed to prevent slipping, up to that maximum." }
+    },
+    {
+      "tag": "friction-direction-opposes-force",
+      "description": "Points friction opposite the applied force rather than opposite the (tendency of) relative motion.",
+      "implicates": ["lom.friction", "lom.fbd"],
+      "visualCue": "vector-board:show-relative-motion",
+      "flashcard": { "front": "Friction opposes what, exactly?", "back": "Relative motion (or the tendency of relative motion) between the surfaces in contact, not necessarily the applied force." }
+    },
+    {
+      "tag": "third-law-pair-on-same-body",
+      "description": "Treats weight and normal force as a Newton's third law pair acting on the same body.",
+      "implicates": ["lom.third-law", "lom.fbd"],
+      "visualCue": "vector-board:split-bodies",
+      "flashcard": { "front": "Are weight and normal force on a book an action–reaction pair?", "back": "No. Third-law pairs act on different bodies and are the same type of interaction. The pair of the book's weight is the book's pull on the Earth." }
+    },
+    {
+      "tag": "dimension-mismatch",
+      "description": "Answer has units of a different physical quantity (e.g. kg instead of N).",
+      "implicates": ["f.si-units"],
+      "visualCue": null,
+      "flashcard": { "front": "Weight in newtons or kilograms?", "back": "Mass is in kg; weight is a force, W = mg, in newtons." }
+    }
+  ]
+}
