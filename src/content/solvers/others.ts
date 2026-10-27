@@ -184,7 +184,97 @@ export const maths: Record<string, Solver> = {
       quadrantSign: (p) => { const v = Number(maths["trg.exactValue"]!.solve(p).derived!.value); return v < 0 ? exactOf(-v) : null; },
     },
   },
+  // ---------------------------------------------------------------- Phase 3: Straight Lines pack
+  "sl.perpendicularSlope": {
+    solve: (p) => {
+      const dx = num(p, "dx"), dy = num(p, "dy");
+      if (Math.abs(dx) === Math.abs(dy)) return reject();
+      const x1 = num(p, "x1"), y1 = num(p, "y1"), m1 = dy / dx, k = -dx / dy;
+      return { answer: { value: k }, derived: { x2: x1 + dx, y2: y1 + dy, m1, k, c1: y1 - m1 * x1, kText: frac(-dx, dy), m1Text: frac(dy, dx) } };
+    },
+    buggy: {
+      parallelInstead: (p) => num(p, "dy") / num(p, "dx"),
+      forgotNegative: (p) => num(p, "dx") / num(p, "dy"),
+      negatedNotInverted: (p) => -num(p, "dy") / num(p, "dx"),
+    },
+  },
+  "sl.acuteAngle": {
+    solve: (p) => {
+      const m1 = num(p, "m1"), m2 = num(p, "m2");
+      const den = 1 + m1 * m2;
+      if (Math.abs(den) < 1e-9 || m1 === m2) return reject();
+      const raw = (m2 - m1) / den;
+      if (raw >= 0 || Math.abs(Math.abs(raw) - Math.abs((m2 - m1) / (1 - m1 * m2))) < 1e-9 || Math.abs(1 - m1 * m2) < 1e-9) return reject();
+      return { answer: { value: Math.abs(raw) }, derived: { t: Math.abs(raw), raw, den, num: m2 - m1, deg: (Math.atan(Math.abs(raw)) * 180) / Math.PI, obtuse: 180 - (Math.atan(Math.abs(raw)) * 180) / Math.PI } };
+    },
+    buggy: {
+      missingModulus: (p) => (num(p, "m2") - num(p, "m1")) / (1 + num(p, "m1") * num(p, "m2")),
+      signInDenominator: (p) => Math.abs((num(p, "m2") - num(p, "m1")) / (1 - num(p, "m1") * num(p, "m2"))),
+    },
+  },
+  "sl.parallelK": {
+    solve: (p) => {
+      const a = num(p, "a"), b = num(p, "b"), c = num(p, "c");
+      const k = (3 * a) / b;
+      if (!Number.isInteger(k * 2) || k === 0) return reject();
+      return { answer: { value: k }, derived: { k, m: -a / b, mText: frac(-a, b), cy: -c / b, kText: String(k) } };
+    },
+    buggy: {
+      slopeSign: (p) => (-3 * num(p, "a")) / num(p, "b"),
+      slopeInverted: (p) => { const v = (3 * num(p, "b")) / num(p, "a"); return Math.abs(v - (3 * num(p, "a")) / num(p, "b")) < 1e-9 ? null : v; },
+    },
+  },
+  "sl.parallelDistance": {
+    solve: (p) => {
+      const [a, b] = String(p.ab).split(",").map(Number) as [number, number];
+      const c1 = num(p, "c1"), c2 = num(p, "c2");
+      if (c1 === c2) return reject();
+      const n = Math.hypot(a, b), d = Math.abs(c1 - c2) / n;
+      return { answer: { value: d }, derived: { a, b, n, d, diff: Math.abs(c1 - c2), y1: -c1 / b, y2: -c2 / b, slope: -a / b } };
+    },
+    buggy: {
+      missingDenominator: (p) => Math.abs(num(p, "c1") - num(p, "c2")),
+      missingRoot: (p) => { const [a, b] = String(p.ab).split(",").map(Number) as [number, number]; return Math.abs(num(p, "c1") - num(p, "c2")) / (a * a + b * b); },
+      constantSign: (p) => { const [a, b] = String(p.ab).split(",").map(Number) as [number, number]; const v = Math.abs(num(p, "c1") + num(p, "c2")) / Math.hypot(a, b); return v === 0 ? null : v; },
+    },
+  },
+  "sl.equalIntercepts": {
+    solve: (p) => {
+      const px = num(p, "px"), py = num(p, "py"), s = px + py;
+      if (s === 0 || px === 0 || py === 0) return reject();
+      return { answer: { reference: `x + y = ${raw(s)}` }, derived: { s, sText: String(s) } };
+    },
+    buggy: {
+      oppositeSigns: (p) => `x - y = ${raw(num(p, "px") - num(p, "py"))}`,
+      pointAsIntercepts: (p) => `x/${raw(num(p, "px"))} + y/${raw(num(p, "py"))} = 1`,
+    },
+  },
+  // ---------------------------------------------------------------- Phase 3: trigonometric-ratio foundation
+  "f.adjacentSide": { solve: (p) => ({ answer: { correct: p.at === "B" ? "BC" : "AC" }, derived: { angA: num(p, "angA"), angB: 90 - num(p, "angA") } }) },
+  "f.ratioValue": {
+    solve: (p) => {
+      const [a, b, c] = String(p.tri).split(",").map((x) => Number(x) * num(p, "k")) as [number, number, number];
+      const fn = String(p.fn);
+      const value = fn === "sin" ? b / c : fn === "cos" ? a / c : b / a;
+      const text = fn === "sin" ? `${b}/${c}` : fn === "cos" ? `${a}/${c}` : `${b}/${a}`;
+      return { answer: { value }, derived: { a, b, c, value, text, angA: (Math.atan2(b, a) * 180) / Math.PI } };
+    },
+    buggy: {
+      swapped: (p) => { const [a, b, c] = String(p.tri).split(",").map(Number) as [number, number, number]; const fn = String(p.fn); return fn === "sin" ? a / c : fn === "cos" ? b / c : b / c; },
+      inverted: (p) => { const [a, b, c] = String(p.tri).split(",").map(Number) as [number, number, number]; const fn = String(p.fn); return fn === "sin" ? c / b : fn === "cos" ? c / a : a / b; },
+    },
+  },
+  "f.componentRatio": { solve: (p) => ({ answer: { correct: "cos" }, derived: { ang: num(p, "ang") } }) },
 };
+
+/** A fraction p/q in lowest terms, as text with a proper minus sign. */
+function frac(p: number, q: number): string {
+  const g = (x: number, y: number): number => (y === 0 ? x : g(y, x % y));
+  const d = g(Math.abs(p), Math.abs(q)) || 1;
+  let n = p / d, m = q / d;
+  if (m < 0) { n = -n; m = -m; }
+  return `${n < 0 ? "−" : ""}${Math.abs(n)}${m === 1 ? "" : `/${m}`}`;
+}
 
 function exactOf(v: number): string {
   const s = v < 0 ? "-" : "";

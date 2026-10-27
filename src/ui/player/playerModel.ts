@@ -2,9 +2,11 @@
 // Only correct/incorrect results use up an attempt; invalid and indeterminate input never does.
 import type { CheckInput, CheckResult } from "@/src/checking/types";
 import { consumesAttempt } from "@/src/checking/types";
+import { CONFIG, maxAttempts } from "@/src/domain/config";
 import type { Outcome } from "@/src/domain/progress";
 
-export const MAX_ATTEMPTS = 3; // the first answer plus two retries (U-05)
+/** the first answer plus the configured retries (U-05; config attempts.retriesAfterFirst) */
+export const MAX_ATTEMPTS = maxAttempts();
 
 export type Phase = "answering" | "correct" | "exhausted";
 export interface Attempt { input: CheckInput; result: CheckResult }
@@ -34,7 +36,7 @@ export function playerReduce(s: PlayerState, a: PlayerAction): PlayerState {
   switch (a.type) {
     case "checking": return s.phase === "answering" ? { ...s, checking: true } : s;
     case "edit": return s.notice ? { ...s, notice: null } : s;
-    case "hint": return s.phase === "answering" && s.hintsShown < 3 ? { ...s, hintsShown: s.hintsShown + 1 } : s;
+    case "hint": return s.phase === "answering" && s.hintsShown < CONFIG.hints.maxLevels ? { ...s, hintsShown: s.hintsShown + 1 } : s;
     case "give-up": return s.phase === "answering" ? { ...s, phase: "exhausted", gaveUp: true, checking: false } : s;
     case "result": {
       if (s.phase !== "answering") return { ...s, checking: false };

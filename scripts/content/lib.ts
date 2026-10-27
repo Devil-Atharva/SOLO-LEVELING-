@@ -5,13 +5,19 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { PLAYABLE_STATUSES, type Template } from "@/src/content/schema";
 import { validateTemplate, type Issue } from "@/src/content/validate";
+import { validateLesson } from "@/src/content/validateLesson";
+import type { LessonEntry } from "@/src/content/lessons";
+import { CATALOGUES, knownTag } from "@/src/content/misconceptions";
 import type { Manifest } from "@/src/content/catalog";
+import { foundationById, skillById } from "@/src/domain/curriculum";
 
 export const ROOT = join(__dirname, "..", "..");
 export const TEMPLATE_DIR = join(ROOT, "content", "templates");
 export const MANIFEST_PATH = join(ROOT, "src", "content", "generated", "templates.json");
 /** Just the chapter ids with playable questions: the roadmap needs only this, not the whole manifest. */
 export const PLAYABLE_PATH = join(ROOT, "src", "content", "generated", "playable-chapters.json");
+export const LESSON_DIR = join(ROOT, "content", "lessons");
+export const LESSONS_PATH = join(ROOT, "src", "content", "generated", "lessons.json");
 export const playableChapters = (m: Manifest) => [...new Set(m.templates.map((e) => e.template.chapterId))].sort();
 
 export interface TemplateFile { file: string; rel: string; raw: Record<string, unknown> }
@@ -42,9 +48,14 @@ export function approvalState(raw: Record<string, unknown>): "approved" | "chang
   return prov?.reviewedBy && prov.contentHash === contentHash(raw) ? "approved" : "changed-since-approval";
 }
 
-export interface ValidationRun { issues: Issue[]; manifest: Manifest; files: number }
+export interface ValidationRun { issues: Issue[]; manifest: Manifest; files: number; lessons: { generatedBy: string; lessons: LessonEntry[] }; lessonFiles: number }
 
-export function validateAll(files = loadTemplateFiles()): ValidationRun {
+export const loadLessonFiles = (dir = LESSON_DIR): TemplateFile[] => { try { return loadTemplateFiles(dir); } catch { return []; } };
+const knownSkill = (id: string) => skillById.has(id) || foundationById.has(id);
+/** Chapters (and "f" for foundations) whose misconception catalogue the planner reads. */
+const CATALOGUED = new Set(CATALOGUES.map((c) => c.chapter));
+
+export function validateAll(files = loadTemplateFiles(), lessonFiles = loadLessonFiles()): ValidationRun {
   const issues: Issue[] = [];
   const entries: Manifest["templates"] = [];
   const ids = new Map<string, string>();
@@ -59,12 +70,32 @@ export function validateAll(files = loadTemplateFiles()): ValidationRun {
     if (state === "changed-since-approval") {
       issues.push({ level: "error", templateId: t.id, where: "status", message: "Marked approved, but the content has changed since it was reviewed (or the approval record is incomplete). Re-review it with npm run content:review." });
     }
-    if (res.issues.some((i) => i.level === "error") || state === "changed-since-approval") continue;
+    if (!knownSkill(t.primarySkillId)) issues.push({ level: "error", templateId: t.id, where: "primarySkillId", message: `Unknown skill or foundation ${t.primarySkillId}` });
+    if (CATALOGUED.has(t.chapterId)) {
+      // the detour planner can only use evidence it knows how to interpret
+      const tags = [...t.misconceptionRules.flatMap((r) => r.tags), ...(t.options ?? []).flatMap((o) => o.tags ?? [])];
+      for (const tag of new Set(tags)) if (!knownTag(tag) && tag !== "dimension-mismatch") issues.push({ level: "warning", templateId: t.id, where: `tags.${tag}`, message: `Tag "${tag}" is not in a misconception catalogue, so it can't guide a detour` });
+    }
+    if (res.issues.some((i) => i.level === "error") || state === "changed-since-approval" || !knownSkill(t.primarySkillId)) continue;
     if (!PLAYABLE_STATUSES.includes(t.status)) continue; // drafts and retired templates never ship
     entries.push({ template: t as Template, hash: contentHash(f.raw), countsTowardMastery: state === "approved" });
   }
   entries.sort((a, b) => a.template.id.localeCompare(b.template.id));
-  return { issues, manifest: { generatedBy: "npm run content:validate", templates: entries }, files: files.length };
+
+  const lessons: LessonEntry[] = [];
+  for (const f of lessonFiles) {
+    const res = validateLesson(f.raw, { file: f.rel, knownSkill });
+    issues.push(...res.issues);
+    const l = res.lesson;
+    if (!l) continue;
+    if (lessons.some((x) => x.lesson.skillId === l.skillId)) issues.push({ level: "error", templateId: l.id, where: "skillId", message: "Only one lesson per skill" });
+    const state = approvalState(f.raw);
+    if (state === "changed-since-approval") issues.push({ level: "error", templateId: l.id, where: "status", message: "Marked approved, but the lesson has changed since it was reviewed. Re-review it with npm run content:review." });
+    if (res.issues.some((i) => i.level === "error") || state === "changed-since-approval" || !PLAYABLE_STATUSES.includes(l.status)) continue;
+    lessons.push({ lesson: l, hash: contentHash(f.raw), approved: state === "approved" });
+  }
+  lessons.sort((a, b) => a.lesson.id.localeCompare(b.lesson.id));
+  return { issues, manifest: { generatedBy: "npm run content:validate", templates: entries }, files: files.length, lessons: { generatedBy: "npm run content:validate", lessons }, lessonFiles: lessonFiles.length };
 }
 
 // ---------------------------------------------------------------- human review decisions (content:review)
@@ -98,8 +129,9 @@ export function applyDecision(raw: Record<string, unknown>, d: Decision, reviewS
   if (!d.attested) throw new ReviewError("Confirm that you personally reviewed every variation and its visual.");
   const missing = reviewSeeds.filter((s) => !d.reviewedSeeds.includes(s));
   if (missing.length) throw new ReviewError(`Mark every variation as reviewed first (${missing.length} left).`);
-  const errors = validateTemplate(raw).issues.filter((i) => i.level === "error");
-  if (errors.length) throw new ReviewError(`This template has ${errors.length} validation errors; it can't be approved until they are fixed.`);
+  const isLesson = String(raw.id).endsWith(".lesson");
+  const errors = (isLesson ? validateLesson(raw).issues : validateTemplate(raw).issues).filter((i) => i.level === "error");
+  if (errors.length) throw new ReviewError(`This ${isLesson ? "lesson" : "template"} has ${errors.length} validation errors; it can't be approved until they are fixed.`);
   if (!PLAYABLE_STATUSES.includes(raw.status as never) && raw.status !== "auto-checked" && raw.status !== "draft") throw new ReviewError(`A ${String(raw.status)} template can't be approved.`);
   log.push({ at, by: reviewer, decision: "approved", note: d.note.trim() || "Approved." });
   const next = { ...raw, status: "approved" };

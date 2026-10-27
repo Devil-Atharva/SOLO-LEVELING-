@@ -1,0 +1,110 @@
+{
+  "$comment": "Misconception catalogue. 'implicates' lists skills whose weakness this misconception is evidence of; the detour planner (src/engine/planner.ts) intersects it with the prerequisite closure of the failed skill. Awaiting named human review with the templates that use these tags.",
+  "chapter": "mip",
+  "status": "in-review",
+  "misconceptions": [
+    {
+      "tag": "sin-cos-swap",
+      "description": "Uses sin for the component adjacent to the angle (and cos for the opposite one).",
+      "implicates": [
+        "mip.resolution",
+        "f.trig-ratios"
+      ],
+      "visualCue": null,
+      "flashcard": {
+        "front": "Force F at θ above the x-axis: x-component?",
+        "back": "F cos θ (adjacent). The y-component is F sin θ."
+      }
+    },
+    {
+      "tag": "tan-for-component",
+      "description": "Multiplies by tan θ to get a component.",
+      "implicates": [
+        "mip.resolution",
+        "f.trig-ratios"
+      ],
+      "visualCue": null,
+      "flashcard": {
+        "front": "Does F tan θ give a component of F?",
+        "back": "No. tan θ = F_y ÷ F_x relates the components to each other."
+      }
+    },
+    {
+      "tag": "component-sign-dropped",
+      "description": "Gives a component's size without its sign.",
+      "implicates": [
+        "mip.resolution",
+        "f.coord"
+      ],
+      "visualCue": null,
+      "flashcard": {
+        "front": "A force points west of north. Sign of its x-component (east positive)?",
+        "back": "Negative."
+      }
+    },
+    {
+      "tag": "magnitudes-added",
+      "description": "Adds vector magnitudes regardless of direction.",
+      "implicates": [
+        "mip.vector-addition",
+        "mip.vector-basics"
+      ],
+      "visualCue": null,
+      "flashcard": {
+        "front": "Do vector magnitudes add when the vectors are perpendicular?",
+        "back": "No. |a + b| = √(a² + b²) for perpendicular vectors."
+      }
+    },
+    {
+      "tag": "magnitudes-subtracted",
+      "description": "Subtracts magnitudes for vectors that are not opposite.",
+      "implicates": [
+        "mip.vector-addition"
+      ],
+      "visualCue": null,
+      "flashcard": {
+        "front": "When does |a + b| = |a| − |b|?",
+        "back": "Only when a and b point in opposite directions."
+      }
+    },
+    {
+      "tag": "forgot-double-angle",
+      "description": "Uses sin θ instead of sin 2θ in the range formula.",
+      "implicates": [
+        "mip.projectile",
+        "f.trig-identity"
+      ],
+      "visualCue": null,
+      "flashcard": {
+        "front": "Range of a projectile?",
+        "back": "R = u² sin 2θ ÷ g."
+      }
+    },
+    {
+      "tag": "used-time-to-apex",
+      "description": "Uses the time to the top instead of the whole flight time.",
+      "implicates": [
+        "mip.projectile",
+        "mip.velocity-2d"
+      ],
+      "visualCue": null,
+      "flashcard": {
+        "front": "Is the time to the top the whole flight time?",
+        "back": "No, it's half of it (on level ground)."
+      }
+    },
+    {
+      "tag": "ignored-horizontal-component",
+      "description": "Uses the launch speed instead of its horizontal component.",
+      "implicates": [
+        "mip.projectile",
+        "mip.resolution"
+      ],
+      "visualCue": null,
+      "flashcard": {
+        "front": "Which velocity component carries a projectile sideways?",
+        "back": "The horizontal one, u cos θ, constant without air resistance."
+      }
+    }
+  ]
+}

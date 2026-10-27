@@ -1,13 +1,14 @@
 "use client";
-// Chooses the question for a chapter and keeps it stable across refreshes in this tab.
-// `?q=<templateId>&seed=<n>` opens a specific question and variation (used by the content review tool and tests).
+// The chapter route. Normally it runs an adaptive session (SessionPlayer). `?q=<templateId>&seed=<n>`
+// opens one specific question and variation instead (used by the content review tool and tests).
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { entryById, pickEntry, templatesForChapter } from "@/src/content/catalog";
+import { entryById, pickEntry, playerChapterFor, templatesForChapter } from "@/src/content/catalog";
 import { newSeed } from "@/src/content/rng";
 import { getChapter, skillById, viewOfChapter } from "@/src/domain/curriculum";
 import { useProgress } from "@/src/persistence/store";
 import { applyStoredMotionSetting, useMotion } from "../motion";
+import { SessionPlayer } from "../session/SessionPlayer";
 import { LessonPlayer } from "./LessonPlayer";
 
 interface Choice { templateId: string; seed: number }
@@ -20,13 +21,18 @@ export function ChapterLesson({ chapterId }: { chapterId: string }) {
   useProgress(); // keeps the store warm for the return to the map
   const { reduced } = useMotion();
   const [choice, setChoice] = useState<Choice | null>(null);
+  const [mode, setMode] = useState<"pending" | "single" | "session">("pending");
   const key = `noesis:lesson:${chapterId}`;
 
   useEffect(() => {
     applyStoredMotionSetting();
     const qs = new URLSearchParams(window.location.search);
     const qId = qs.get("q"), qSeed = Number(qs.get("seed"));
-    if (qId && entryById.get(qId)?.template.chapterId === chapterId) {
+    if (!qId) { setMode("session"); return; }
+    setMode("single");
+    // a chapter's own templates, or a foundation template opened from a chapter that uses it (review tool links)
+    const asked = qId ? entryById.get(qId)?.template : undefined;
+    if (asked && (asked.chapterId === chapterId || playerChapterFor(asked) === chapterId)) {
       setChoice({ templateId: qId, seed: Number.isInteger(qSeed) && qSeed > 0 ? qSeed : newSeed() });
       return;
     }
@@ -53,8 +59,10 @@ export function ChapterLesson({ chapterId }: { chapterId: string }) {
       </main>
     );
   }
+  if (mode === "session") return <SessionPlayer chapterId={chapterId} />;
   if (!choice) return <main className="qshell" aria-busy="true" />;
-  const entry = entryById.get(choice.templateId)!;
+  const entry = entryById.get(choice.templateId);
+  if (!entry) return <main className="qshell" aria-busy="true" />;
   const others = list.filter((e) => e.template.id !== choice.templateId).map((e) => ({ id: e.template.id, label: skillById.get(e.template.primarySkillId)?.title ?? e.template.primarySkillId }));
   return (
     <LessonPlayer

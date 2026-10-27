@@ -5,7 +5,7 @@ An English-language, student-only web app for CBSE/NCERT Class 11–12 Physics a
 - **The roadmap:** a branching, pannable chapter map.
 - **The lesson:** question-first and highly interactive. Students manipulate models, see the consequences of their answers, and are guided down into prerequisite detours and back up again.
 
-**Status (2026-10-28):** Phase 0 is complete, Phase 1 roadmap is built with approval recorded, and the Phase 2 lesson player/checker/core widgets are built with product review pending. The adaptive engine, full pilot content and mastery completion remain future work. The sections below describe the target product; use the [current phase plan and implementation prompts](phase-plan.md) for built-versus-planned status and the [limited local review](current-state-review-2026-10-28.md) for fresh verification. Historical reports: [Phase 1](phase-1-report.md), [Phase 2](phase-2-report.md).
+**Status (2026-10-28):** Phase 0 is complete, Phase 1 roadmap is built with approval recorded, Phase 2 is built with product review pending, and the consolidated Phase 3 (pilot content, adaptive engine, mastery) is built with content and product review pending ([report](phase-3-report.md)). No content is human-approved yet. The sections below describe the target product; use the [current phase plan and implementation prompts](phase-plan.md) for built-versus-planned status and the [limited local review](current-state-review-2026-10-28.md) for fresh verification. Historical reports: [Phase 1](phase-1-report.md), [Phase 2](phase-2-report.md).
 
 ## Read in this order
 

@@ -1,5 +1,5 @@
 {
-  "$comment": "Initial, configurable thresholds for the adaptive engine. Every value is read at runtime by src/domain/config.ts (Phase 1). Changing a value must not require code changes. See docs/04-adaptive-engine.md for meaning.",
+  "$comment": "Configurable thresholds for the adaptive engine. Read and validated at runtime by src/domain/config.ts; an invalid file fails the build and the unit tests. Changing a value must not require code changes. See docs/04-adaptive-engine.md for meaning.",
   "version": 1,
   "difficulty": {
     "levels": ["easy", "medium", "hard"],
@@ -22,6 +22,7 @@
     "mainQuestionTarget": 10,
     "mainQuestionCap": 16,
     "avoidTemplateRepeatWithinSession": true,
+    "freshVariantWhenTemplatesRunOut": true,
     "minHardOpportunities": 3
   },
   "mastery": {
@@ -53,6 +54,9 @@
     "practiceQuestions": 3,
     "minIndependentCorrect": 2,
     "maxMicroLessonRepeatsPerVisit": 1
+  },
+  "stuck": {
+    "tryAgainPerVisit": 1
   },
   "flashcards": {
     "createOn": ["exhaustedAttempts", "misconceptionTagged"],

@@ -2,7 +2,7 @@
 
 Interactive, adaptive Physics and Mathematics for CBSE/NCERT Class 11–12, covering a curated 24-chapter subset.
 
-**Current state (2026-10-28):** roadmap and Phase 2 demonstration player/checker are built; Phase 2 product review is pending. Next recommended work is Phase 2.1 player reliability and usability, followed by pilot content, adaptive sessions and mastery. See the [updated phase plan and copy-ready prompts](docs/phase-plan.md) and [limited local review](docs/current-state-review-2026-10-28.md). Historical reports: [Phase 1](docs/phase-1-report.md), [Phase 2](docs/phase-2-report.md). The blueprint starts at [`docs/BLUEPRINT.md`](docs/BLUEPRINT.md).
+**Current state (2026-10-28):** the roadmap, player/checker and the consolidated **Phase 3** (Laws of Motion pilot content, adaptive sessions with recursive detours and exact resume, mastery and completion) are built. Phase 2 and Phase 3 product review and the **named human content review** are pending: no content is approved yet, so real mastery can't be earned until it is (a labelled reviewer preview demonstrates the journeys). See the [Phase 3 report](docs/phase-3-report.md) and the [phase plan](docs/phase-plan.md). Historical reports: [Phase 1](docs/phase-1-report.md), [Phase 2](docs/phase-2-report.md). The blueprint starts at [`docs/BLUEPRINT.md`](docs/BLUEPRINT.md).
 
 ## Run it
 
@@ -27,14 +27,14 @@ npm run build && npx playwright test   # browser tests (desktop + phone): naviga
 
 ## Content
 
-Current demonstrations: 20 templates in 10 chapters, all `in-review`; none currently counts toward mastery. The player is not yet an adaptive chapter session. Flashcard creation and review already work. See the phase plan for remaining content, detour, resume and mastery work.
+51 templates (25 Laws of Motion, plus small Motion in a Plane, trigonometric-foundation and Straight Lines packs) and 3 lessons, all `in-review`; none counts toward mastery until a named reviewer approves it. `/chapter/<id>/try` runs an adaptive session; `?q=<templateId>&seed=<n>` opens a single question, and `?preview=review` starts a clearly labelled reviewer-preview session in which in-review content counts for that session only.
 
 ```bash
 npm run content:validate   # validates every question template (50 seeds each) and writes the student manifest
 npm run content:review     # local review tool at http://127.0.0.1:4100 (run npm run dev alongside it)
 ```
 
-Question templates live in `content/templates/<chapter>/<skill>/<id>.json`. Approval is recorded only by a person through `content:review`; nothing approves itself. See docs/05 §4 and docs/phase-2-report.md.
+Question templates live in `content/templates/<chapter>/<skill>/<id>.json`, lessons in `content/lessons/<skill>.lesson.json`, misconception catalogues in `content/misconceptions/`. Approval is recorded only by a person through `content:review`; nothing approves itself. See docs/05 §4 and docs/phase-2-report.md.
 
 Browser tests need Playwright's Chromium. Run `npx playwright install chromium` once on a new machine.
 

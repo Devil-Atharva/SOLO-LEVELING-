@@ -1,0 +1,56 @@
+{
+  "$comment": "Misconception catalogue. 'implicates' lists skills whose weakness this misconception is evidence of; the detour planner (src/engine/planner.ts) intersects it with the prerequisite closure of the failed skill. Awaiting named human review with the templates that use these tags.",
+  "chapter": "f",
+  "status": "in-review",
+  "misconceptions": [
+    {
+      "tag": "opposite-adjacent-confusion",
+      "description": "Swaps the sides opposite and adjacent to an angle.",
+      "implicates": [
+        "f.trig-ratios"
+      ],
+      "visualCue": "triangle-explorer:mark-angle",
+      "flashcard": {
+        "front": "In a right triangle, which side is adjacent to an angle?",
+        "back": "The side that touches the angle and isn't the hypotenuse. The opposite side is across from it."
+      }
+    },
+    {
+      "tag": "hypotenuse-confusion",
+      "description": "Calls the hypotenuse the adjacent side.",
+      "implicates": [
+        "f.trig-ratios",
+        "f.pythagoras"
+      ],
+      "visualCue": null,
+      "flashcard": {
+        "front": "Is the hypotenuse ever 'adjacent'?",
+        "back": "No: the hypotenuse is the longest side, opposite the right angle."
+      }
+    },
+    {
+      "tag": "ratio-swap",
+      "description": "Uses sin for cos (or the reverse).",
+      "implicates": [
+        "f.trig-ratios"
+      ],
+      "visualCue": null,
+      "flashcard": {
+        "front": "sin θ or cos θ: which uses the side adjacent to θ?",
+        "back": "cos θ = adjacent ÷ hypotenuse; sin θ = opposite ÷ hypotenuse."
+      }
+    },
+    {
+      "tag": "ratio-inverted",
+      "description": "Writes a trigonometric ratio upside down.",
+      "implicates": [
+        "f.trig-ratios"
+      ],
+      "visualCue": null,
+      "flashcard": {
+        "front": "Is sin θ = hypotenuse ÷ opposite?",
+        "back": "No: sin θ = opposite ÷ hypotenuse (always at most 1)."
+      }
+    }
+  ]
+}

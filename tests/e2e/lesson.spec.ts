@@ -1,20 +1,21 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
-import { CATALOG, entryById } from "@/src/content/catalog";
+import { CATALOG, entryById, playerChapterFor } from "@/src/content/catalog";
 import { instantiate, type QuestionInstance } from "@/src/content/instantiate";
 import { check } from "@/src/checking/check";
 import type { CheckInput, DiagramForce } from "@/src/checking/types";
 
 const SEED = 7;
 const q = (id: string, seed = SEED) => instantiate(entryById.get(id)!.template, seed);
-const url = (id: string, seed = SEED) => `/chapter/${id.split(".")[0]}/try?q=${id}&seed=${seed}`;
+const url = (id: string, seed = SEED) => `/chapter/${playerChapterFor(entryById.get(id)!.template)}/try?q=${id}&seed=${seed}`;
 /** Development or review language must never reach a learner. */
 const DEV_LANGUAGE = /phase \d|later phase|awaiting|content review|in-review|not yet reviewed|\bdraft\b|lorem|todo/i;
 
 async function open(page: Page, id: string, seed = SEED) {
   await page.goto(url(id, seed));
   await expect(page.getByTestId("stage")).toBeVisible();
-  await expect(page.getByTestId("intro")).toHaveText("This question helps us find the best place for you to begin.");
+  // each template's own intro (the Phase 2 diagnostics all use the placement intro)
+  await expect(page.getByTestId("intro")).toHaveText(q(id, seed).intro);
 }
 
 /** Enter an answer through the ordinary (non-drag) controls for its format. */

@@ -7,6 +7,7 @@ import { layoutView } from "@/src/domain/roadmapLayout";
 import { useProgress } from "@/src/persistence/store";
 import { PLAYABLE_CHAPTERS } from "@/src/content/playable";
 import { applyStoredMotionSetting, useMotion } from "../motion";
+import { applyPreviewFromUrl, setPreview } from "../settings";
 import { ChapterPreview } from "./ChapterPreview";
 import { Legend, ListView, SearchBox, ViewTabs } from "./Chrome";
 import { ProgressPanel, ReviewDialog } from "./ProgressPanel";
@@ -44,13 +45,18 @@ export function Dashboard() {
   const [zoomK, setZoomK] = useState(1);
   const [announce, setAnnounce] = useState("");
   const [now, setNow] = useState(() => Date.now());
+  const [preview, setPreviewState] = useState(false);
   const roadmapRef = useRef<RoadmapHandle>(null);
   const pendingFocus = useRef<string | null>(null);
 
   // initial state: URL (?view=&chapter=) beats the remembered view
   useEffect(() => {
     applyStoredMotionSetting();
+    // reviewer preview shows preview-basis results; it is off unless someone turned it on
+    setPreviewState(applyPreviewFromUrl());
+    setNow(Date.now());
     const params = new URLSearchParams(window.location.search);
+    if (params.get("review") === "1") setReviewOpen(true);
     const qv = params.get("view"), qc = params.get("chapter");
     const remembered = ls.get(VIEW_KEY);
     if (qc && chapters.some((c) => c.id === qc)) {
@@ -181,6 +187,12 @@ export function Dashboard() {
 
       <div className="main">
         <section className="stage" id="roadmap" aria-label={`${currentView.label} roadmap`} tabIndex={-1} role="tabpanel" aria-labelledby={`tab-${view}`}>
+          {preview && (
+            <p className="banner" role="note" data-testid="preview-banner">
+              Reviewer preview is on: results from preview sessions (where questions awaiting review counted) show on this map.{" "}
+              <button className="link-btn" onClick={() => { setPreview(false); setPreviewState(false); setNow(Date.now()); }} data-testid="preview-off">Turn off reviewer preview</button>
+            </p>
+          )}
           {ready && !persistent && (
             <p className="banner" role="status">Progress can’t be saved in this browser (private browsing?). You can still practise; it will be lost when you close the tab.</p>
           )}

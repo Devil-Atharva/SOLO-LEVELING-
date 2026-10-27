@@ -144,7 +144,11 @@ test.describe("diagnostic attempt and persistence", () => {
   test("a weak-prerequisite student can try a question; progress survives refresh", async ({ page }) => {
     await page.goto("/?view=physics12");
     await page.getByTestId("node-cur").click();
+    await expect(page.getByTestId("try-question")).toHaveText("Start a session");
     await page.getByTestId("try-question").click();
+    // first launch asks the class once (used only to prevent forward routing)
+    await page.getByTestId("class-11").click();
+    await expect(page.getByTestId("role-label")).toContainText("Main question 1");
     await expect(page.getByTestId("intro")).toHaveText("This question helps us find the best place for you to begin.");
     // invalid input does not use a try
     await page.getByTestId("answer-input").fill("3");

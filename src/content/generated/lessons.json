@@ -1,0 +1,409 @@
+{
+  "generatedBy": "npm run content:validate",
+  "lessons": [
+    {
+      "lesson": {
+        "id": "f.trig-ratios.lesson",
+        "version": 1,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-28",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "skillId": "f.trig-ratios",
+        "kind": "micro-lesson",
+        "title": "Trigonometric ratios in a right triangle",
+        "minutes": 6,
+        "widget": {
+          "type": "triangle-explorer",
+          "config": {
+            "mode": "triangle",
+            "hypotenuse": 5,
+            "angleDeg": 37,
+            "marked": "A",
+            "editable": true,
+            "showRoles": true
+          },
+          "instructions": "Drag corner B (or use the slider) to change the angle, and mark θ at A or B to see which sides are opposite and adjacent."
+        },
+        "steps": [
+          {
+            "text": "This is a right triangle with the right angle at C. The longest side, AB, is across from the right angle: it is always the **hypotenuse**.",
+            "cue": {
+              "cue": "highlight-side",
+              "args": {
+                "sides": [
+                  "hypotenuse"
+                ]
+              }
+            }
+          },
+          {
+            "text": "θ is the angle at A. The side across from θ is **opposite**. The other side that touches θ is **adjacent**.",
+            "cue": {
+              "cue": "highlight-side",
+              "args": {
+                "sides": [
+                  "opposite",
+                  "adjacent"
+                ]
+              }
+            }
+          },
+          {
+            "text": "Now move θ to corner B. Watch the labels: opposite and adjacent swap places, while the hypotenuse stays the same.",
+            "cue": [
+              {
+                "cue": "mark-angle",
+                "args": {
+                  "at": "B"
+                }
+              },
+              {
+                "cue": "highlight-side",
+                "args": {
+                  "sides": [
+                    "opposite",
+                    "adjacent"
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "text": "Back at A, the ratios: sin θ = opposite ÷ hypotenuse, cos θ = adjacent ÷ hypotenuse, tan θ = opposite ÷ adjacent. Watch them change as θ sweeps.",
+            "cue": [
+              {
+                "cue": "mark-angle",
+                "args": {
+                  "at": "A"
+                }
+              },
+              {
+                "cue": "show-values"
+              },
+              {
+                "cue": "show-ratios"
+              },
+              {
+                "cue": "sweep",
+                "args": {
+                  "from": 20,
+                  "to": 60
+                }
+              }
+            ]
+          },
+          {
+            "text": "Your turn: drag corner B or use the slider, and mark θ at A or at B. Say which side is adjacent before you look at the labels.",
+            "cue": [
+              {
+                "cue": "highlight-side",
+                "args": {
+                  "sides": []
+                }
+              },
+              {
+                "cue": "note",
+                "args": {
+                  "text": "Your turn: mark θ, then name the sides."
+                }
+              }
+            ]
+          }
+        ],
+        "alternate": {
+          "title": "Shadows of a vector",
+          "widget": {
+            "type": "triangle-explorer",
+            "config": {
+              "mode": "vector",
+              "hypotenuse": 5,
+              "angleDeg": 37,
+              "marked": "A",
+              "editable": true,
+              "showRoles": true
+            },
+            "instructions": "A lamp shines straight down and straight across. Drag the vector's tip (or use the slider) and watch its shadows on the axes."
+          },
+          "steps": [
+            {
+              "text": "Here is a vector of length r at θ above the x-axis. Its shadow on the x-axis (lamp overhead) and on the y-axis (lamp to the side) are its two components.",
+              "cue": {
+                "cue": "shadows"
+              }
+            },
+            {
+              "text": "The x-shadow touches the angle θ at the origin: it is **adjacent**. So x = r cos θ.",
+              "cue": {
+                "cue": "highlight-side",
+                "args": {
+                  "sides": [
+                    "adjacent"
+                  ]
+                }
+              }
+            },
+            {
+              "text": "The y-shadow sits across from θ: it is **opposite**. So y = r sin θ. Sweep θ and watch the two shadows trade length.",
+              "cue": [
+                {
+                  "cue": "highlight-side",
+                  "args": {
+                    "sides": [
+                      "opposite"
+                    ]
+                  }
+                },
+                {
+                  "cue": "sweep",
+                  "args": {
+                    "from": 15,
+                    "to": 75
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "recap": [
+          {
+            "text": "Recap: the hypotenuse is across from the right angle, the opposite side is across from θ, and the adjacent side touches θ. sin = opposite ÷ hypotenuse, cos = adjacent ÷ hypotenuse, tan = opposite ÷ adjacent.",
+            "cue": [
+              {
+                "cue": "highlight-side",
+                "args": {
+                  "sides": [
+                    "opposite",
+                    "adjacent",
+                    "hypotenuse"
+                  ]
+                }
+              },
+              {
+                "cue": "show-ratios"
+              }
+            ]
+          }
+        ],
+        "accessibility": {
+          "altText": "A right triangle ABC with the right angle at C and the angle θ marked at A. Each side is labelled opposite, adjacent or hypotenuse.",
+          "nonDragAlternative": "Use the angle slider and the Mark θ at A or Mark θ at B buttons; the description below the figure names each side."
+        }
+      },
+      "hash": "sha256:3465829fde62b90feb139b3a7e1ec846baa18ac9b3e0575e81bc932eaee0f27e",
+      "approved": false
+    },
+    {
+      "lesson": {
+        "id": "lom.fbd.lesson",
+        "version": 1,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-28",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "skillId": "lom.fbd",
+        "kind": "explainer",
+        "title": "Every arrow needs an agent",
+        "minutes": 1,
+        "widget": {
+          "type": "vector-board",
+          "config": {
+            "scene": "floor",
+            "body": {
+              "label": "box",
+              "mass": 2
+            },
+            "initialVelocity": {
+              "x": 2,
+              "y": 0
+            },
+            "predict": true,
+            "predictSeconds": 1.2,
+            "maxMagnitude": 26,
+            "vectors": []
+          },
+          "instructions": "Step through the explanation, then press Play to see what the forces do to the sliding box."
+        },
+        "steps": [
+          {
+            "text": "A box slides to the right after a push has ended. Before drawing any arrow, ask: what is pushing or pulling, and is it touching the box?",
+            "cue": {
+              "cue": "note",
+              "args": {
+                "text": "No agent, no force."
+              }
+            }
+          },
+          {
+            "text": "Gravity acts without touching: the Earth pulls the box down with its weight.",
+            "cue": {
+              "cue": "add-vector",
+              "args": {
+                "vector": {
+                  "id": "W",
+                  "kind": "weight",
+                  "label": "Weight (Earth)",
+                  "agent": "Earth",
+                  "magnitude": 19.6,
+                  "angleDeg": -90
+                }
+              }
+            }
+          },
+          {
+            "text": "The floor touches the box: it pushes up (the normal force) and rubs against the sliding box (friction, backwards).",
+            "cue": [
+              {
+                "cue": "add-vector",
+                "args": {
+                  "vector": {
+                    "id": "N",
+                    "kind": "normal",
+                    "label": "Normal (floor)",
+                    "agent": "floor",
+                    "magnitude": 19.6,
+                    "angleDeg": 90
+                  }
+                }
+              },
+              {
+                "cue": "add-vector",
+                "args": {
+                  "vector": {
+                    "id": "f",
+                    "kind": "friction",
+                    "label": "Friction (floor)",
+                    "agent": "floor",
+                    "magnitude": 5.9,
+                    "angleDeg": 180
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "text": "Nothing else touches the box, so there is no 'force of motion'. It keeps moving by inertia while friction slows it. Press Play.",
+            "cue": {
+              "cue": "predict"
+            }
+          }
+        ],
+        "accessibility": {
+          "altText": "A box sliding right on a floor. Forces are added one at a time: weight, normal force and friction.",
+          "nonDragAlternative": "Step through with Next; the description below the board lists each force and its agent."
+        }
+      },
+      "hash": "sha256:042db1913599759c2185732193939a9f8e7499415f5272aaa500906b99dd1da3",
+      "approved": false
+    },
+    {
+      "lesson": {
+        "id": "lom.resolve-forces.lesson",
+        "version": 1,
+        "status": "in-review",
+        "provenance": {
+          "origin": "human",
+          "author": "content-dev",
+          "createdAt": "2026-10-28",
+          "reviewedBy": null,
+          "reviewedAt": null,
+          "contentHash": null,
+          "reviewLog": []
+        },
+        "skillId": "lom.resolve-forces",
+        "kind": "explainer",
+        "title": "Resolving forces on a slope",
+        "minutes": 1,
+        "widget": {
+          "type": "vector-board",
+          "config": {
+            "scene": "incline",
+            "inclineDeg": 30,
+            "body": {
+              "label": "block",
+              "mass": 2
+            },
+            "maxMagnitude": 26,
+            "allowAxesToggle": true,
+            "showResultant": false,
+            "vectors": [
+              {
+                "id": "W",
+                "kind": "weight",
+                "label": "Weight",
+                "agent": "Earth",
+                "magnitude": 19.6,
+                "angleDeg": -90,
+                "locked": true
+              }
+            ]
+          },
+          "instructions": "Step through the explanation; tick Tilted axes at any time to compare the two sets of axes."
+        },
+        "steps": [
+          {
+            "text": "A block rests on a 30° slope. Its weight points straight down, but on a slope only two directions matter: along the slope and across it.",
+            "cue": {
+              "cue": "highlight",
+              "args": {
+                "ids": [
+                  "W"
+                ]
+              }
+            }
+          },
+          {
+            "text": "Turn the axes so that one runs along the slope and the other straight out of it.",
+            "cue": {
+              "cue": "tilted-axes"
+            }
+          },
+          {
+            "text": "Now the weight re-projects onto the new axes: mg sin θ along the slope and mg cos θ into it.",
+            "cue": {
+              "cue": "decompose",
+              "args": {
+                "id": "W",
+                "axes": "tilted"
+              }
+            }
+          },
+          {
+            "text": "The plank pushes back only against the part pressing into it, so the normal force is mg cos θ, not mg.",
+            "cue": {
+              "cue": "add-vector",
+              "args": {
+                "vector": {
+                  "id": "N",
+                  "kind": "normal",
+                  "label": "Normal",
+                  "agent": "plank",
+                  "magnitude": 16.97,
+                  "angleDeg": 120
+                }
+              }
+            }
+          }
+        ],
+        "accessibility": {
+          "altText": "A block on a slope at 30° with its weight drawn straight down.",
+          "nonDragAlternative": "Tick Tilted axes; the description below the board lists each force and its components."
+        }
+      },
+      "hash": "sha256:9a0fc240737135d992a5c3f47f9cf790449b7109108920ced61da0b4d4eb2b6a",
+      "approved": false
+    }
+  ]
+}

@@ -1,9 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { VIEWS } from "@/src/domain/curriculum";
 import { panelStats, type ProgressSnapshot } from "@/src/domain/progress";
 import { progressStore } from "@/src/persistence/store";
 import { setMotionSetting, type MotionSetting } from "../motion";
+import { setStoredClass, storedClass } from "../settings";
+import { ContinueCard } from "./ContinueCard";
 
 const dateFmt = (t: number) => new Date(t).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
 
@@ -22,6 +24,8 @@ export function ProgressPanel({
   const maxDiff = Math.max(1, ...Object.values(s.byDifficulty).map((d) => d.attempted));
   const maxDay = Math.max(1, ...s.activity.map((d) => d.count));
   const [confirmErase, setConfirmErase] = useState(false);
+  const [cls, setCls] = useState<ReturnType<typeof storedClass>>(null);
+  useEffect(() => { setCls(storedClass()); }, []);
   const [importMsg, setImportMsg] = useState<string | null>(null);
   const importData = async (file: File | undefined) => {
     if (!file) return;
@@ -50,6 +54,7 @@ export function ProgressPanel({
       </button>
       <div id="progress-panel-body" style={{ display: "grid", gap: 14 }} inert={compact && !open ? true : undefined} aria-hidden={compact && !open ? true : undefined}>
         <h2>Your progress</h2>
+        <ContinueCard snapshot={snapshot} />
 
         <section className="card" aria-labelledby="p-questions">
           <h3 id="p-questions">Questions attempted</h3>
@@ -112,6 +117,21 @@ export function ProgressPanel({
               <option value="full">Full</option>
             </select>
           </label>
+          <label style={{ display: "grid", gap: 6, fontSize: 14 }}>
+            Class
+            <select
+              value={cls === null ? "" : String(cls)}
+              onChange={(e) => { const v = e.target.value; const c = v === "11" ? 11 : v === "12" ? 12 : "skip"; setStoredClass(c); setCls(c); }}
+              style={{ minHeight: 40, borderRadius: 8, background: "#0d0e10", border: "1px solid var(--border-strong)", padding: "0 8px" }}
+              data-testid="class-setting"
+            >
+              {cls === null && <option value="">Not set (treated as Class 11)</option>}
+              <option value="11">Class 11</option>
+              <option value="12">Class 12</option>
+              <option value="skip">Prefer not to say (treated as Class 11)</option>
+            </select>
+          </label>
+          <p className="muted" style={{ margin: 0, fontSize: 13 }}>Class is used only so practice never sends a Class 11 student into Class 12 topics. Every chapter stays open.</p>
           <p className="muted" style={{ margin: 0, fontSize: 13 }}>Progress is saved only in this browser.</p>
           {importMsg && <p role="status" style={{ margin: 0, fontSize: 13.5 }}>{importMsg}</p>}
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>

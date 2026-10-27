@@ -10,10 +10,13 @@ import { createServer, type IncomingMessage, type ServerResponse } from "node:ht
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { check } from "@/src/checking/check";
+import { playerChapterFor } from "@/src/content/catalog";
 import { instantiate, type QuestionInstance } from "@/src/content/instantiate";
 import { TemplateSchema } from "@/src/content/schema";
 import { reviewSeedsFor, validateTemplate } from "@/src/content/validate";
-import { applyDecision, approvalState, contentHash, loadTemplateFiles, MANIFEST_PATH, PLAYABLE_PATH, playableChapters, ReviewError, ROOT, validateAll, type TemplateFile } from "./lib";
+import { lessonCues, lessonVariant, LessonSchema, type LessonVariant } from "@/src/content/lessons";
+import { validateLesson } from "@/src/content/validateLesson";
+import { applyDecision, approvalState, contentHash, LESSONS_PATH, loadLessonFiles, loadTemplateFiles, MANIFEST_PATH, PLAYABLE_PATH, playableChapters, ReviewError, ROOT, validateAll, type TemplateFile } from "./lib";
 
 const PORT = Number(process.env.REVIEW_PORT ?? 4100);
 const HOST = "127.0.0.1";
@@ -40,7 +43,51 @@ function page(title: string, body: string) {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><style>${CSS}</style></head><body><main>${body}</main></body></html>`;
 }
 
-function index(files: TemplateFile[]) {
+function lessonRows(lessons: TemplateFile[]) {
+  return lessons.map((f) => {
+    const id = String(f.raw.id);
+    const errs = validateLesson(f.raw, { file: f.rel }).issues.filter((i) => i.level === "error").length;
+    const state = approvalState(f.raw);
+    return `<tr><td><a href="/l/${encodeURIComponent(id)}">${esc(id)}</a><div class="muted">${esc(f.rel)}</div></td>
+      <td>${esc(f.raw.kind)}</td><td>${esc((f.raw.widget as { type: string }).type)}</td>
+      <td><span class="tag ${esc(f.raw.status)}">${esc(f.raw.status)}</span>${state === "changed-since-approval" ? ` <span class="tag err">changed since approval</span>` : ""}</td>
+      <td>${errs ? `<span class="tag err">${errs} errors</span>` : `<span class="ok">valid</span>`}</td></tr>`;
+  }).join("");
+}
+
+function lessonPage(f: TemplateFile, message = "") {
+  const id = String(f.raw.id);
+  const v = validateLesson(f.raw, { file: f.rel });
+  const errs = v.issues.filter((i) => i.level === "error");
+  let body = "";
+  try {
+    const l = LessonSchema.parse(f.raw);
+    const variants: LessonVariant[] = ["main", ...(l.alternate ? ["alternate" as const] : []), ...(l.recap ? ["recap" as const] : [])];
+    body = variants.map((name) => {
+      const x = lessonVariant(l, name);
+      return `<section class="var"><h2>${esc(name)} · ${esc(x.title)}</h2><p class="muted">Widget ${esc(x.widget.type)} · ${esc(x.widget.instructions)}</p>
+        <ol>${x.steps.map((st) => `<li>${esc(st.text)}${lessonCues(st.cue).length ? ` <span class="muted">[visual: ${esc(lessonCues(st.cue).map((c) => c.cue).join(", "))}]</span>` : ""}</li>`).join("")}</ol></section>`;
+    }).join("") + `<h3>Accessibility</h3><p>${esc(l.accessibility.altText)}</p><p class="muted">${esc(l.accessibility.nonDragAlternative ?? "")}</p>`;
+  } catch (e) { body = `<p class="bad">${esc((e as Error).message)}</p>`; }
+  const prov = f.raw.provenance as { reviewLog: { at: string; by: string; decision: string; note: string }[] };
+  return page(id, `<p><a href="/">← All content</a></p><h1>${esc(id)}</h1>${message}
+    <p>Status <span class="tag ${esc(f.raw.status)}">${esc(f.raw.status)}</span> · approval: ${esc(approvalState(f.raw))} · content hash <code>${esc(contentHash(f.raw).slice(0, 19))}…</code></p>
+    ${errs.length ? `<h2>Validation errors</h2><ul class="issues">${errs.map((i) => `<li>${esc(i.where)}: ${esc(i.message)}</li>`).join("")}</ul>` : `<p class="ok">Passes lesson validation.</p>`}
+    <p class="muted">Play each variant in a session (it opens when a detour or foundation frame starts) to check the visual.</p>
+    ${body}
+    <h2>Review history</h2><ul>${prov.reviewLog.map((l) => `<li>${esc(l.at)} · ${esc(l.by)} · ${esc(l.decision)} · ${esc(l.note)}</li>`).join("") || "<li class=muted>none yet</li>"}</ul>
+    <h2>Record your decision</h2>
+    <form method="post" action="/l/${encodeURIComponent(id)}/decision">
+      <label>Your name <input type="text" name="reviewer" required autocomplete="name"></label>
+      <label>Decision <select name="decision"><option value="changes-requested">Request changes</option><option value="approved">Approve</option></select></label>
+      <label>Note <textarea name="note" rows="3"></textarea></label>
+      <label><input type="checkbox" name="attested" value="yes"> I personally reviewed every step of every variant and its visual.</label>
+      <label>Session code (shown in the terminal running content:review) <input type="text" name="token" required autocomplete="off"></label>
+      <button type="submit">Record decision</button>
+    </form>`);
+}
+
+function index(files: TemplateFile[], lessons: TemplateFile[] = []) {
   const rows = files.map((f) => {
     const id = String(f.raw.id);
     const v = validateTemplate(f.raw, { file: f.rel, seeds: reviewSeeds(f).slice(0, 4) });
@@ -53,7 +100,9 @@ function index(files: TemplateFile[]) {
   }).join("");
   return page("Content review", `<h1>Content review</h1>
     <p class="muted">Every template must be reviewed by a person before it can count toward mastery. Open a template, read every variation, try each one in the player, then record your decision.</p>
-    <table><thead><tr><th>Template</th><th>Format</th><th>Widget</th><th>Status</th><th>Checks</th></tr></thead><tbody>${rows}</tbody></table>`);
+    <table><thead><tr><th>Template</th><th>Format</th><th>Widget</th><th>Status</th><th>Checks</th></tr></thead><tbody>${rows}</tbody></table>
+    <h2>Lessons</h2>
+    <table><thead><tr><th>Lesson</th><th>Kind</th><th>Widget</th><th>Status</th><th>Checks</th></tr></thead><tbody>${lessonRows(lessons)}</tbody></table>`);
 }
 
 const reviewSeeds = (f: TemplateFile) => { try { return reviewSeedsFor(TemplateSchema.parse(f.raw)); } catch { return []; } };
@@ -63,7 +112,7 @@ function steps(list: { text: string; cues: { cue: string }[] }[]) {
 }
 
 function variation(q: QuestionInstance, n: number) {
-  const playerUrl = `${PLAYER}/chapter/${q.chapterId}/try?q=${encodeURIComponent(q.templateId)}&seed=${q.seed}`;
+  const playerUrl = `${PLAYER}/chapter/${playerChapterFor({ chapterId: q.chapterId, primarySkillId: q.skillId })}/try?q=${encodeURIComponent(q.templateId)}&seed=${q.seed}`;
   const correct = q.selfTest.correct.map((c) => `<li><code>${esc(show(c))}</code> → <span class="${check(q.check, c).status === "correct" ? "ok" : "bad"}">${esc(check(q.check, c).status)}</span></li>`).join("");
   const buggy = q.selfTest.buggy.map((b) => { const r = check(q.check, b.input); return `<li><code>${esc(show(b.input))}</code> → ${esc(r.status)} ${r.status === "incorrect" ? `[${esc(r.tags.join(", "))}]` : ""} <span class="muted">expects ${esc(b.tags.join(", "))}</span></li>`; }).join("");
   return `<section class="var" id="seed-${q.seed}" data-seed="${q.seed}">
@@ -138,7 +187,33 @@ const server = createServer(async (req, res) => {
   try {
     const url = new URL(req.url ?? "/", `http://${HOST}:${PORT}`);
     const files = loadTemplateFiles();
-    if (req.method === "GET" && url.pathname === "/") return send(res, 200, index(files));
+    const lessons = loadLessonFiles();
+    if (req.method === "GET" && url.pathname === "/") return send(res, 200, index(files, lessons));
+    const lm = /^\/l\/([^/]+)(\/decision)?$/.exec(url.pathname);
+    const lf = lm ? lessons.find((x) => x.raw.id === decodeURIComponent(lm[1]!)) : undefined;
+    if (lm && !lf) return send(res, 404, page("Not found", "<p>Not found. <a href='/'>All content</a></p>"));
+    if (lm && lf && req.method === "GET" && !lm[2]) return send(res, 200, lessonPage(lf));
+    if (lm && lf && req.method === "POST" && lm[2]) {
+      const origin = req.headers.origin;
+      if (origin && origin !== `http://${HOST}:${PORT}` && origin !== `http://localhost:${PORT}`) return send(res, 403, page("Refused", "<p>Decisions can only be recorded from this review tool.</p>"));
+      const body = await readBody(req);
+      if (body.get("token") !== TOKEN) return send(res, 403, lessonPage(lf, `<p class="bad">The session code doesn't match the one in the terminal. Nothing was recorded.</p>`));
+      try {
+        const next = applyDecision(lf.raw, {
+          reviewer: body.get("reviewer") ?? "", decision: body.get("decision") === "approved" ? "approved" : "changes-requested",
+          note: body.get("note") ?? "", attested: body.get("attested") === "yes", reviewedSeeds: [], now: new Date(),
+        }, []);
+        writeFileSync(lf.file, JSON.stringify(next, null, 2) + "\n");
+        const run = validateAll();
+        if (!run.issues.some((i) => i.level === "error")) writeFileSync(LESSONS_PATH, JSON.stringify(run.lessons, null, 2) + "\n");
+        console.log(`${new Date().toISOString()} ${next.status === "approved" ? "APPROVED" : "changes requested"}: ${String(lf.raw.id)} by ${body.get("reviewer")}`);
+        const fresh = loadLessonFiles().find((x) => x.raw.id === lf.raw.id)!;
+        return send(res, 200, lessonPage(fresh, `<p class="ok">Decision recorded in ${esc(lf.rel)}. The lesson manifest was regenerated.</p>`));
+      } catch (e) {
+        if (e instanceof ReviewError) return send(res, 400, lessonPage(lf, `<p class="bad">${esc(e.message)} Nothing was recorded.</p>`));
+        throw e;
+      }
+    }
     const m = /^\/t\/([^/]+)(\/decision)?$/.exec(url.pathname);
     const f = m ? files.find((x) => x.raw.id === decodeURIComponent(m[1]!)) : undefined;
     if (!m || !f) return send(res, 404, page("Not found", "<p>Not found. <a href='/'>All templates</a></p>"));

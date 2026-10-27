@@ -5,6 +5,7 @@ import { laneAt, motionTrack, projectileAt, projectileFacts, type MTState } from
 import { areaOf, evalFn, extremaOf, graphPlot, lineThrough, pointAt, secantH, slopeAt, type GPState } from "@/src/widgets/graph-plot/model";
 import { contains, numberLine, testX, type NLState } from "@/src/widgets/number-line/model";
 import { WIDGETS } from "@/src/widgets/registry";
+import { angleAt, geometry, roleOf, type TEState } from "@/src/widgets/triangle-explorer/model";
 
 const near = (a: number, b: number, tol = 1e-9) => expect(Math.abs(a - b)).toBeLessThanOrEqual(tol * Math.max(1, Math.abs(b)));
 
@@ -212,8 +213,36 @@ describe("number line model", () => {
 
 describe("registry", () => {
   it("marks interactive models and figures correctly", () => {
-    expect(Object.entries(WIDGETS).filter(([, m]) => m.interactive).map(([k]) => k).sort()).toEqual(["graph-plot", "motion-track", "number-line", "vector-board"]);
+    expect(Object.entries(WIDGETS).filter(([, m]) => m.interactive).map(([k]) => k).sort()).toEqual(["graph-plot", "motion-track", "number-line", "triangle-explorer", "vector-board"]);
     expect(WIDGETS.figure!.interactive).toBe(false);
+  });
+});
+
+describe("triangle explorer (Phase 3 foundation widget)", () => {
+  const te = WIDGETS["triangle-explorer"]!;
+  const s0 = te.init({ mode: "triangle", hypotenuse: 5, angleDeg: 37 });
+  it("moving θ between the acute corners swaps opposite and adjacent", () => {
+    expect(roleOf("A", "BC")).toBe("opposite");
+    expect(roleOf("A", "AC")).toBe("adjacent");
+    expect(roleOf("B", "BC")).toBe("adjacent");
+    expect(roleOf("B", "AC")).toBe("opposite");
+    expect(roleOf("B", "AB")).toBe("hypotenuse");
+    const atB = te.reduce(s0, { type: "mark", at: "B" }) as TEState;
+    expect(geometry(atB).theta).toBeCloseTo(53, 6);
+    expect(te.describe(atB, 0)).toMatch(/Adjacent to θ: BC/);
+    expect(te.describe(s0, 0)).toMatch(/Adjacent to θ: AC/);
+  });
+  it("hides lengths and ratio values unless the lesson or solution shows them", () => {
+    expect(te.describe(s0, 0)).not.toMatch(/0\.6|0\.8/);
+    const shown = [{ cue: "show-values" }, { cue: "show-ratios" }].reduce((s, c) => te.reduce(s, { type: "cue", cue: c.cue }), s0);
+    expect(te.describe(shown, 0)).toMatch(/sin θ = 0\.6/);
+  });
+  it("a sweep is a pure function of time with a scrubbable timeline", () => {
+    const sw = te.reduce(s0, { type: "cue", cue: "sweep", args: { from: 20, to: 60 } }) as TEState;
+    expect(te.timeline(sw).duration).toBeGreaterThan(0);
+    expect(angleAt(sw, 0)).toBe(20);
+    expect(angleAt(sw, te.timeline(sw).duration)).toBe(60);
+    expect(te.describe(sw, 1.1)).toBe(te.describe(sw, 1.1));
   });
 });
 

@@ -1,6 +1,7 @@
 // Progress records and pure derivations: chapter/skill states, recommendations, panel stats.
 import { z } from "zod";
-import { chapters, chaptersInView, directPrereqChapters, getChapter, skillsOfChapter, viewIdOf, VIEWS, type ViewId } from "./curriculum";
+import { CONFIG, levelIndex } from "./config";
+import { chapters, chaptersInView, directPrereqChapters, directSuccessorChapters, getChapter, skillsOfChapter, viewIdOf, VIEWS, type ViewId } from "./curriculum";
 import { layoutView } from "./roadmapLayout";
 
 export const Difficulty = z.enum(["easy", "medium", "hard"]);
@@ -17,6 +18,11 @@ export const AttemptRecord = z.object({
   seed: z.number(),
   difficulty: Difficulty,
   kind: z.enum(["diagnostic", "main", "remediation"]),
+  /** Phase 3: the session this answer belongs to and its role there (main, diagnostic, probe, detour, foundation, return) */
+  sessionId: z.string().optional(),
+  role: z.enum(["main", "diagnostic", "probe", "detour", "foundation", "return"]).optional(),
+  /** counted toward the session's mastery window (an independent main answer on eligible content) */
+  countedForMastery: z.boolean().optional(),
   outcome: Outcome,
   attemptsUsed: z.number().int().min(1).max(3),
   hintsUsed: z.number().int().min(0),
@@ -47,6 +53,13 @@ export const ChapterRecord = z.object({
   chapterId: z.string(),
   mastered: z.boolean(),
   masteredAt: z.number().optional(),
+  /** Phase 3: how the latest result was reached */
+  sessionId: z.string().optional(),
+  lastResult: z.enum(["mastered", "notYet"]).optional(),
+  lastResultAt: z.number().optional(),
+  sessionsCompleted: z.number().int().min(0).optional(),
+  /** "reviewer-preview" records come from sessions where in-review content was allowed to count; they never show as mastered to students */
+  basis: z.enum(["approved", "reviewer-preview"]).optional(),
 });
 export type ChapterRecord = z.infer<typeof ChapterRecord>;
 
@@ -54,8 +67,18 @@ export interface ProgressSnapshot {
   attempts: AttemptRecord[];
   flashcards: FlashcardRecord[];
   chapterRecords: ChapterRecord[];
+  /** adaptive session records (src/engine/session.ts); typed loosely here to keep the domain layer engine-free */
+  sessions: { id: string; chapterId: string; status: string; updatedAt: number; preview?: boolean }[];
 }
-export const emptySnapshot = (): ProgressSnapshot => ({ attempts: [], flashcards: [], chapterRecords: [] });
+export const emptySnapshot = (): ProgressSnapshot => ({ attempts: [], flashcards: [], chapterRecords: [], sessions: [] });
+
+/** Reviewer preview (a labelled mode for walking through journeys before content approval) is on in this browser. */
+let previewVisible = false;
+export const setPreviewVisible = (on: boolean) => { previewVisible = on; };
+export const isPreviewVisible = () => previewVisible;
+
+/** A chapter record that counts as real mastery here: approved basis, or a preview record while preview is shown. */
+export const masteredRecord = (r: ChapterRecord) => r.mastered && (r.basis !== "reviewer-preview" || previewVisible);
 
 export type ChapterState = "unvisited" | "learning" | "needs-review" | "mastered";
 export type SkillState = "unseen" | "practising" | "needs-review" | "independent";
@@ -68,21 +91,24 @@ export const STATE_LABEL: Record<ChapterState, string> = {
 };
 
 const DAY = 86_400_000;
-export const LEITNER_DAYS = [1, 2, 4, 8, 16] as const;
+/** Leitner intervals per box (config flashcards.intervalsDays). */
+export const LEITNER_DAYS: readonly number[] = CONFIG.flashcards.intervalsDays;
+const BOXES = CONFIG.flashcards.leitnerBoxes;
 
 export function skillState(skillId: string, attempts: AttemptRecord[]): SkillState {
   const mine = attempts.filter((a) => a.skillId === skillId).sort((a, b) => a.at - b.at);
   if (!mine.length) return "unseen";
   const last = mine[mine.length - 1]!;
   if (last.outcome === "exhausted") return "needs-review";
-  // docs/04: independent = ≥ 2 independent correct at medium or above within the last 4 attempts
+  // docs/04: independent = ≥ 2 independent correct at medium or above within the last 4 attempts (config skillState)
   // only attempts on human-approved content can show independence (in-review questions never count)
-  const recent = mine.slice(-4).filter((a) => a.outcome === "independent" && a.difficulty !== "easy" && a.countsTowardMastery === true);
-  return recent.length >= 2 ? "independent" : "practising";
+  const rule = CONFIG.skillState.independentWhen;
+  const recent = mine.slice(-rule.lookback).filter((a) => a.outcome === "independent" && levelIndex(a.difficulty) >= levelIndex(rule.minDifficulty) && a.countsTowardMastery === true);
+  return recent.length >= rule.independentCorrect ? "independent" : "practising";
 }
 
 export function chapterState(chapterId: string, p: ProgressSnapshot, now: number): ChapterState {
-  if (p.chapterRecords.some((r) => r.chapterId === chapterId && r.mastered)) return "mastered";
+  if (p.chapterRecords.some((r) => r.chapterId === chapterId && masteredRecord(r))) return "mastered";
   const attempts = p.attempts.filter((a) => a.chapterId === chapterId);
   if (!attempts.length) return "unvisited";
   const skillIds = new Set(attempts.map((a) => a.skillId));
@@ -164,10 +190,32 @@ export function panelStats(p: ProgressSnapshot, now: number): PanelStats {
 
 /** Leitner scheduling for a reviewed card. */
 export function reviewCard(card: FlashcardRecord, knewIt: boolean, now: number): FlashcardRecord {
-  const box = knewIt ? Math.min(5, card.box + 1) : 1;
+  const box = knewIt ? Math.min(BOXES, card.box + 1) : 1;
   return { ...card, box, dueAt: now + LEITNER_DAYS[box - 1]! * DAY };
 }
 
 export function newFlashcard(args: { chapterId: string; skillId: string; tag: string; front: string; back: string }, now: number): FlashcardRecord {
-  return { id: `${args.chapterId}:${args.tag}`, ...args, box: 1, dueAt: now + LEITNER_DAYS[0] * DAY, createdAt: now };
+  return { id: `${args.chapterId}:${args.tag}`, ...args, box: 1, dueAt: now + LEITNER_DAYS[0]! * DAY, createdAt: now };
+}
+
+export interface Successor { chapterId: string; label: "Recommended" | "Next after"; missing: string[]; share: number }
+/**
+ * Chapters a mastered chapter leads to (docs/04 "Successor recommendation"), ranked by the share of
+ * their prerequisite chapters already mastered, then same subject, then the student's class. The top
+ * one or two fully-ready chapters are "Recommended"; the rest name what they still need. Nothing is locked.
+ */
+export function successorRecommendations(chapterId: string, p: ProgressSnapshot, now: number, studentClass: 11 | 12 = 11): Successor[] {
+  const from = getChapter(chapterId);
+  const ranked = directSuccessorChapters(chapterId).map((id) => {
+    const pre = directPrereqChapters(id);
+    const missing = pre.filter((c) => chapterState(c, p, now) !== "mastered");
+    const c = getChapter(id);
+    return { chapterId: id, missing, share: pre.length ? (pre.length - missing.length) / pre.length : 1, same: c.subject === from.subject ? 1 : 0, cls: c.class <= studentClass ? 1 : 0 };
+  }).sort((a, b) => b.share - a.share || b.same - a.same || b.cls - a.cls || a.chapterId.localeCompare(b.chapterId));
+  let recommended = 0;
+  return ranked.map((r) => {
+    const top = r.missing.length === 0 && recommended < 2;
+    if (top) recommended++;
+    return { chapterId: r.chapterId, label: top ? "Recommended" : "Next after", missing: r.missing, share: r.share };
+  });
 }

@@ -1,8 +1,8 @@
 # 04 · Adaptive engine: questions, detours and mastery
 
-**Implementation status (2026-10-28):** this document specifies the Phase 4–5 target engine. The current app plays seeded demonstration questions; it does not yet implement `practiceLoop`, a persisted detour stack, class routing or chapter mastery. Single-question retries, hints, attempts and basic flashcard review already exist. See [phase-plan.md](phase-plan.md) for implementation prompts and dependencies.
+**Implementation status (2026-10-28):** built in the consolidated Phase 3 as a pure, persisted session record (`src/engine/session.ts`, D-064) rather than an XState actor; the behaviour below is implemented except the Chocolate Problem and interactive guided-example steps (a worked-solution step-through is shown). Where this document and the build differ, the decision log records why (D-063–D-072). See [phase-3-report.md](phase-3-report.md).
 
-The target thresholds are defined in `config/learning.config.json`. A validated runtime config reader is still to be built in Phase 4; retry, skill-state and Leitner values are currently hard-coded. Config changes cannot yet be assumed to affect runtime behavior.
+Thresholds are read at runtime from `config/learning.config.json` through the validated reader `src/domain/config.ts`.
 
 **Content eligibility:** the current demonstration catalog permits validated in-review templates under proposed D-053; only unchanged human-approved content may count toward mastery. References below to approved-only sessions describe the target adaptive content policy, not the current demo catalog. D-053 remains unresolved.
 
