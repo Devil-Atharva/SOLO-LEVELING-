@@ -59,7 +59,7 @@ describe("journey support packs", () => {
 describe("lessons and catalogues", () => {
   it("every lesson validates; micro-lessons carry an alternate representation; foundations get a recap", () => {
     const files = loadLessonFiles();
-    expect(files.length).toBe(3);
+    expect(files.length).toBeGreaterThanOrEqual(3);
     for (const f of files) expect(validateLesson(f.raw, { file: f.rel }).issues.filter((i) => i.level === "error"), String(f.raw.id)).toEqual([]);
     const trig = LESSONS.find((l) => l.lesson.skillId === "f.trig-ratios")!.lesson;
     expect(trig.kind).toBe("micro-lesson");

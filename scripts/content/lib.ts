@@ -7,7 +7,7 @@ import { PLAYABLE_STATUSES, type Template } from "@/src/content/schema";
 import { validateTemplate, type Issue } from "@/src/content/validate";
 import { validateLesson } from "@/src/content/validateLesson";
 import type { LessonEntry } from "@/src/content/lessons";
-import { CATALOGUES, knownTag } from "@/src/content/misconceptions";
+import { Catalogue } from "@/src/content/misconceptions";
 import type { Manifest } from "@/src/content/catalog";
 import { foundationById, skillById } from "@/src/domain/curriculum";
 
@@ -18,6 +18,24 @@ export const MANIFEST_PATH = join(ROOT, "src", "content", "generated", "template
 export const PLAYABLE_PATH = join(ROOT, "src", "content", "generated", "playable-chapters.json");
 export const LESSON_DIR = join(ROOT, "content", "lessons");
 export const LESSONS_PATH = join(ROOT, "src", "content", "generated", "lessons.json");
+export const CATALOGUE_DIR = join(ROOT, "content", "misconceptions");
+export const CATALOGUES_PATH = join(ROOT, "src", "content", "generated", "misconceptions.json");
+
+/** Every misconception catalogue file, validated; the merged list ships to the planner. */
+export function loadCatalogues(): { catalogues: Catalogue[]; issues: Issue[] } {
+  const issues: Issue[] = [];
+  const catalogues: Catalogue[] = [];
+  for (const f of loadTemplateFiles(CATALOGUE_DIR)) {
+    const r = Catalogue.safeParse(f.raw);
+    if (!r.success) { for (const i of r.error.issues) issues.push({ level: "error", templateId: f.rel, where: i.path.join("."), message: i.message }); continue; }
+    for (const m of r.data.misconceptions) for (const s of m.implicates) {
+      if (!skillById.has(s) && !foundationById.has(s)) issues.push({ level: "error", templateId: f.rel, where: `misconceptions.${m.tag}`, message: `implicates unknown skill ${s}` });
+    }
+    catalogues.push(r.data);
+  }
+  catalogues.sort((a, b) => a.chapter.localeCompare(b.chapter));
+  return { catalogues, issues };
+}
 export const playableChapters = (m: Manifest) => [...new Set(m.templates.map((e) => e.template.chapterId))].sort();
 
 export interface TemplateFile { file: string; rel: string; raw: Record<string, unknown> }
@@ -48,15 +66,18 @@ export function approvalState(raw: Record<string, unknown>): "approved" | "chang
   return prov?.reviewedBy && prov.contentHash === contentHash(raw) ? "approved" : "changed-since-approval";
 }
 
-export interface ValidationRun { issues: Issue[]; manifest: Manifest; files: number; lessons: { generatedBy: string; lessons: LessonEntry[] }; lessonFiles: number }
+export interface ValidationRun { issues: Issue[]; manifest: Manifest; files: number; lessons: { generatedBy: string; lessons: LessonEntry[] }; lessonFiles: number; catalogues: Catalogue[] }
 
 export const loadLessonFiles = (dir = LESSON_DIR): TemplateFile[] => { try { return loadTemplateFiles(dir); } catch { return []; } };
 const knownSkill = (id: string) => skillById.has(id) || foundationById.has(id);
-/** Chapters (and "f" for foundations) whose misconception catalogue the planner reads. */
-const CATALOGUED = new Set(CATALOGUES.map((c) => c.chapter));
-
 export function validateAll(files = loadTemplateFiles(), lessonFiles = loadLessonFiles()): ValidationRun {
   const issues: Issue[] = [];
+  const cat = loadCatalogues();
+  issues.push(...cat.issues);
+  /** Chapters (and "f" for foundations) whose misconception catalogue the planner reads. */
+  const CATALOGUED = new Set(cat.catalogues.map((c) => c.chapter));
+  const tagSet = new Set(cat.catalogues.flatMap((c) => c.misconceptions.map((m) => m.tag)));
+  const knownTag = (t: string) => tagSet.has(t);
   const entries: Manifest["templates"] = [];
   const ids = new Map<string, string>();
   for (const f of files) {
@@ -82,6 +103,22 @@ export function validateAll(files = loadTemplateFiles(), lessonFiles = loadLesso
   }
   entries.sort((a, b) => a.template.id.localeCompare(b.template.id));
 
+  // duplicates across templates: the same wording, or the same solver and parameter space
+  const byStem = new Map<string, string>();
+  const bySolver = new Map<string, string>();
+  for (const f of files) {
+    const raw = f.raw as { id?: string; stem?: string[]; solver?: string; parameters?: unknown; options?: unknown; status?: string };
+    if (!raw.id || !Array.isArray(raw.stem) || raw.status === "retired") continue;
+    const stemKey = raw.stem.join(" ").toLowerCase().replace(/\s+/g, " ").trim();
+    const other = byStem.get(stemKey);
+    if (other) issues.push({ level: "error", templateId: raw.id, where: "stem", message: `Same wording as ${other}: write a distinct question` });
+    else byStem.set(stemKey, raw.id);
+    const solverKey = `${raw.solver}|${JSON.stringify(raw.parameters)}|${JSON.stringify(raw.options ?? null)}`;
+    const twin = bySolver.get(solverKey);
+    if (twin) issues.push({ level: "warning", templateId: raw.id, where: "parameters", message: `Same solver and parameter space as ${twin}: students would meet near-identical variations` });
+    else bySolver.set(solverKey, raw.id);
+  }
+
   const lessons: LessonEntry[] = [];
   for (const f of lessonFiles) {
     const res = validateLesson(f.raw, { file: f.rel, knownSkill });
@@ -95,7 +132,7 @@ export function validateAll(files = loadTemplateFiles(), lessonFiles = loadLesso
     lessons.push({ lesson: l, hash: contentHash(f.raw), approved: state === "approved" });
   }
   lessons.sort((a, b) => a.lesson.id.localeCompare(b.lesson.id));
-  return { issues, manifest: { generatedBy: "npm run content:validate", templates: entries }, files: files.length, lessons: { generatedBy: "npm run content:validate", lessons }, lessonFiles: lessonFiles.length };
+  return { issues, manifest: { generatedBy: "npm run content:validate", templates: entries }, files: files.length, lessons: { generatedBy: "npm run content:validate", lessons }, lessonFiles: lessonFiles.length, catalogues: cat.catalogues };
 }
 
 // ---------------------------------------------------------------- human review decisions (content:review)

@@ -6,6 +6,8 @@ import { graphPlot } from "./graph-plot/model";
 import { numberLine } from "./number-line/model";
 import { figure } from "./figures/model";
 import { triangleExplorer } from "./triangle-explorer/model";
+import { rigidBody } from "./rigid-body/model";
+import { oscillator } from "./oscillator/model";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyModel = WidgetModel<any, any, any>;
@@ -15,5 +17,7 @@ export const WIDGETS: Record<string, AnyModel> = {
   "graph-plot": graphPlot,
   "number-line": numberLine,
   "triangle-explorer": triangleExplorer,
+  "rigid-body": rigidBody,
+  oscillator,
   figure,
 };

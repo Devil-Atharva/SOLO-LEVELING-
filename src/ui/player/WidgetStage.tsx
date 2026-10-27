@@ -7,6 +7,8 @@ import { GraphPlotView } from "@/src/widgets/graph-plot/View";
 import { MotionTrackView } from "@/src/widgets/motion-track/View";
 import { NumberLineView } from "@/src/widgets/number-line/View";
 import { TriangleExplorerView } from "@/src/widgets/triangle-explorer/View";
+import { RigidBodyView } from "@/src/widgets/rigid-body/View";
+import { OscillatorView } from "@/src/widgets/oscillator/View";
 import { VectorBoardView } from "@/src/widgets/vector-board/View";
 import type { WidgetHost } from "./useWidgetHost";
 
@@ -21,6 +23,8 @@ function View({ type, host, reduced }: { type: string; host: WidgetHost; reduced
     case "graph-plot": return <GraphPlotView {...p} />;
     case "number-line": return <NumberLineView {...p} />;
     case "triangle-explorer": return <TriangleExplorerView {...p} />;
+    case "rigid-body": return <RigidBodyView {...p} />;
+    case "oscillator": return <OscillatorView {...p} />;
     case "figure": return <FigureView state={p.state} reduced={reduced} />;
     default: return null;
   }

@@ -2,10 +2,12 @@
 // Flags: --check (fail if the manifest on disk is out of date instead of rewriting it), --quiet.
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, relative } from "node:path";
-import { LESSONS_PATH, MANIFEST_PATH, PLAYABLE_PATH, playableChapters, ROOT, validateAll } from "./lib";
+import { join } from "node:path";
+import { coverage, coverageMarkdown, readinessJson } from "./coverage";
+import { CATALOGUES_PATH, LESSONS_PATH, MANIFEST_PATH, PLAYABLE_PATH, playableChapters, ROOT, validateAll } from "./lib";
 
 const args = new Set(process.argv.slice(2));
-const { issues, manifest, files, lessons, lessonFiles } = validateAll();
+const { issues, manifest, files, lessons, lessonFiles, catalogues } = validateAll();
 const errors = issues.filter((i) => i.level === "error");
 const warnings = issues.filter((i) => i.level === "warning");
 
@@ -24,6 +26,9 @@ const outputs: [string, string][] = [
   [MANIFEST_PATH, JSON.stringify(manifest, null, 2) + "\n"],
   [PLAYABLE_PATH, JSON.stringify(playableChapters(manifest)) + "\n"],
   [LESSONS_PATH, JSON.stringify(lessons, null, 2) + "\n"],
+  [CATALOGUES_PATH, JSON.stringify({ generatedBy: "npm run content:validate", catalogues }) + "\n"],
+  [join(ROOT, "src", "content", "generated", "readiness.json"), JSON.stringify(readinessJson(coverage(manifest, lessons.lessons))) + "\n"],
+  [join(ROOT, "docs", "generated", "content-coverage.md"), coverageMarkdown(coverage(manifest, lessons.lessons), manifest, lessons.lessons)],
 ];
 if (errors.length === 0) {
   for (const [path, out] of outputs) {

@@ -213,7 +213,9 @@ describe("number line model", () => {
 
 describe("registry", () => {
   it("marks interactive models and figures correctly", () => {
-    expect(Object.entries(WIDGETS).filter(([, m]) => m.interactive).map(([k]) => k).sort()).toEqual(["graph-plot", "motion-track", "number-line", "triangle-explorer", "vector-board"]);
+    // every model is an interactive one except the static figure adapter
+    expect(Object.entries(WIDGETS).filter(([, m]) => !m.interactive).map(([k]) => k)).toEqual(["figure"]);
+    for (const w of ["graph-plot", "motion-track", "number-line", "triangle-explorer", "vector-board", "rigid-body", "oscillator"]) expect(WIDGETS[w]?.interactive, w).toBe(true);
     expect(WIDGETS.figure!.interactive).toBe(false);
   });
 });

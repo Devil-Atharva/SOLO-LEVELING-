@@ -1,10 +1,9 @@
 // Misconception catalogues (docs/05): each tag lists the skills whose weakness it is evidence of.
 // The detour planner intersects `implicates` with the prerequisite closure of the failed skill.
+// `content:validate` validates every content/misconceptions/*.json file and merges them into
+// src/content/generated/misconceptions.json, so adding a chapter's catalogue needs no code change.
 import { z } from "zod";
-import f from "@/content/misconceptions/f.json";
-import lom from "@/content/misconceptions/lom.json";
-import mip from "@/content/misconceptions/mip.json";
-import sl from "@/content/misconceptions/sl.json";
+import generated from "./generated/misconceptions.json";
 
 export const Catalogue = z.object({
   chapter: z.string(),
@@ -19,7 +18,7 @@ export const Catalogue = z.object({
 });
 export type Catalogue = z.infer<typeof Catalogue>;
 
-export const CATALOGUES: Catalogue[] = [f, lom, mip, sl].map((c) => Catalogue.parse(c));
+export const CATALOGUES: Catalogue[] = (generated as { catalogues: unknown[] }).catalogues.map((c) => Catalogue.parse(c));
 
 const index = new Map<string, Set<string>>();
 for (const c of CATALOGUES) for (const m of c.misconceptions) {
