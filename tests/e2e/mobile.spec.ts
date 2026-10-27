@@ -31,6 +31,7 @@ test.describe("phone layout", () => {
 
   test("question screen stacks the visual above the prompt", async ({ page }) => {
     await page.goto("/chapter/vec/try");
+    await page.getByTestId("class-skip").click();
     const stage = (await page.locator(".qstage").boundingBox())!;
     const prompt = (await page.locator(".qprompt").boundingBox())!;
     expect(prompt.y).toBeGreaterThan(stage.y + stage.height - 2);

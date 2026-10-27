@@ -159,7 +159,7 @@
 
     { "id": "aoi.area-under-curve", "chapter": "aoi", "title": "Area between a curve and an axis", "required": true, "widget": "graph-plot", "prereqs": ["int.definite-ftc"] },
     { "id": "aoi.standard-curves", "chapter": "aoi", "title": "Areas bounded by circles, parabolas and ellipses", "required": true, "widget": "graph-plot", "prereqs": ["aoi.area-under-curve", "con.circle", "con.parabola", "con.ellipse", "int.special-forms"] },
-    { "id": "aoi.line-and-curve", "chapter": "aoi", "title": "Area between a line and a curve", "required": true, "widget": "graph-plot", "prereqs": ["aoi.area-under-curve", "sl.forms"] },
+    { "id": "aoi.line-and-curve", "chapter": "aoi", "title": "Area bounded by a straight line, the x-axis and ordinates", "required": true, "widget": "graph-plot", "prereqs": ["aoi.area-under-curve", "sl.forms"] },
 
     { "id": "vec.basics", "chapter": "vec", "title": "Vectors: magnitude, direction and types", "required": true, "widget": "vector-board", "prereqs": ["f.coord", "f.trig-ratios"] },
     { "id": "vec.components", "chapter": "vec", "title": "Addition, scalar multiplication, components and position vectors", "required": true, "widget": "vector-board", "prereqs": ["vec.basics"] },

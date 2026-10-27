@@ -3,8 +3,10 @@
 import { check } from "@/src/checking/check";
 import type { CheckInput, CheckResult } from "@/src/checking/types";
 import { WIDGETS } from "@/src/widgets/registry";
-import { instantiate, type Cues, type QuestionInstance } from "./instantiate";
-import { formatValue, hasPlaceholder } from "./placeholders";
+import { dimsOf, parseQuantity, sameDims } from "@/src/checking/units";
+import { instantiate, sampleParams, type Cues, type QuestionInstance } from "./instantiate";
+import { constraintHolds, formatValue, hasPlaceholder } from "./placeholders";
+import { rng } from "./rng";
 import { resolveCues } from "./runtime";
 import { TemplateSchema, type Template } from "./schema";
 import { SOLVERS } from "./solvers";
@@ -97,6 +99,23 @@ export function validateTemplate(raw: unknown, opts: { file?: string; seeds?: nu
     warn("misconceptionRules", "No wrong-method (buggy) solvers: wrong answers will only get generic feedback");
   }
 
+  // 2b. impossible parameters: how often a random draw satisfies the constraints and the solver
+  if (Object.keys(t.parameters).length) {
+    const r = rng(0x9e3779b9);
+    let ok = 0;
+    const draws = 300;
+    for (let i = 0; i < draws; i++) {
+      const p = sampleParams(t, r);
+      try {
+        if (!t.constraints.every((c) => constraintHolds(c, p))) continue;
+        solver.solve(p);
+        ok++;
+      } catch (e) { if ((e as Error).message !== "reject") { err("parameters", `Solver failed for ${JSON.stringify(p)}: ${(e as Error).message}`); break; } }
+    }
+    if (ok === 0) err("parameters", "No parameter values satisfy the constraints and the solver: the template can never be instantiated");
+    else if (ok / draws < 0.05) warn("parameters", `Only ${Math.round((ok / draws) * 100)}% of parameter draws are usable; narrow the ranges`);
+  }
+
   // 3. widget
   const model = WIDGETS[t.widget.type];
   if (!model) { err("widget.type", `Widget "${t.widget.type}" is not registered`); return { issues, template: t, instances: [] }; }
@@ -176,6 +195,26 @@ export function validateTemplate(raw: unknown, opts: { file?: string; seeds?: nu
   if (instances.length && seen.size < Math.min(5, seeds.length) && Object.keys(t.parameters).some((k) => t.parameters[k]!.kind !== "const")) {
     warn("parameters", `Only ${seen.size} distinct variations across ${seeds.length} seeds`);
   }
+
+  // 4b. answer sanity and unit consistency
+  const numeric = instances.map((q) => ("value" in q.check && typeof q.check.value === "number" ? q.check.value : null)).filter((v): v is number => v !== null);
+  if (numeric.some((v) => !Number.isFinite(v))) err("answer", "The solver produced a non-finite answer");
+  else if (numeric.length && numeric.some((v) => v !== 0 && (Math.abs(v) > 1e9 || Math.abs(v) < 1e-9))) warn("answer", "Some answers are extremely large or small; check the units and the parameter ranges");
+  if (numeric.length > 4 && new Set(numeric.map((v) => v.toPrecision(9))).size === 1 && t.format !== "single-choice") warn("answer", "The answer is the same for every variation");
+  if (t.format === "quantity" && instances[0]) {
+    const want = dimsOf((instances[0].check as { dimension: Parameters<typeof dimsOf>[0] }).dimension);
+    const unitDims = (text: string) => {
+      const m = /(-?\d[\d.,]*(?:e[-+]?\d+)?)\s*([^\d\s(][^()]*)$/i.exec(text.replace(/\(.*\)\s*$/, "").replace(/^for example\s+/i, "").replace(/−/g, "-").trim());
+      if (!m) return null;
+      const q = parseQuantity(`${m[1]!.replace(/,/g, "")} ${m[2]!.trim()}`);
+      return typeof q === "string" || !q.unit ? null : q.unit.dims;
+    };
+    const ph = t.input?.placeholder ? unitDims(t.input.placeholder) : null;
+    if (ph && !sameDims(ph, want)) err("input.placeholder", `The example answer's unit doesn't match the answer's dimension (${String((instances[0].check as { dimension: string }).dimension)})`);
+    const at = unitDims(instances[0].answerText);
+    if (at && !sameDims(at, want)) err("answerText", "The answer text's unit doesn't match the answer's dimension");
+  }
+  if (t.format === "number" && t.input?.placeholder && /\d\s*(m|s|kg|N|J|W|V|A|Ω)\b/.test(t.input.placeholder)) warn("input.placeholder", "A number answer's example shows a unit; use the quantity format for physical quantities");
 
   // 5. feedback and flashcards cover every declared misconception tag; worked solution drives the visual
   const q0 = instances[0];

@@ -404,3 +404,29 @@ a { color: var(--accent-amber); }
 html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-motion="reduced"] *::after { animation: none !important; transition-duration: 0ms !important; }
 html[data-motion="reduced"] .edge-flow { opacity: 0 !important; }
 .hint .link-btn { margin-left: 6px; }
+
+/* ---------- Phase 3: adaptive sessions ---------- */
+.notice-bar { margin: 0; padding: 8px 16px; background: var(--surface-raised); border-bottom: 1px solid var(--accent-amber); font-size: 14px; }
+.session-head { display: flex; flex: 1 1 auto; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; min-width: 0; }
+.session-bar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.session-dots { display: inline-flex; gap: 4px; align-items: center; }
+.session-dots i { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--accent-orange); background: transparent; }
+.session-dots i[data-outcome="independent"] { background: var(--accent-orange); }
+.session-dots i[data-outcome="assisted"] { background: linear-gradient(90deg, var(--accent-orange) 50%, transparent 50%); }
+.session-dots i[data-outcome="exhausted"] { border-color: var(--accent-coral); }
+.session-dots i[data-hard="true"] { box-shadow: 0 0 0 2px rgb(254 148 0 / 0.35); }
+.crumb { display: inline-flex; gap: 6px; align-items: center; }
+.crumb[data-mode="detour"] strong, .crumb[data-mode="foundation"] strong { color: var(--highlight-peach); }
+.tag--paused { border-color: var(--highlight-peach); color: var(--highlight-peach); }
+.tag--rec { border-color: var(--accent-orange); color: var(--accent-orange); }
+.role-label { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.02em; color: var(--accent-amber); text-transform: uppercase; }
+.role-label[data-role="probe"], .role-label[data-role="diagnostic"], .role-label[data-role="detour"], .role-label[data-role="foundation"] { color: var(--highlight-peach); }
+.qsolo { display: grid; justify-items: center; }
+.qsolo > .qprompt { width: 100%; }
+.qsolo .qprompt h1, .summary h1, .stuck h1, .detour-intro h1 { font-size: 22px; color: var(--text-primary); }
+.paused-card { display: inline-flex; gap: 8px; align-items: center; padding: 10px 14px; border: 1px dashed var(--highlight-peach); border-radius: var(--radius-m); background: var(--surface); transform-origin: left top; }
+.detour-path { width: 100%; max-width: 560px; height: auto; overflow: visible; }
+.te-controls { display: grid; gap: 8px; padding: 10px 12px; }
+.te-controls input[type="range"] { width: 100%; min-height: 44px; }
+.continue-card { border-color: var(--accent-orange); }
+.summary .card ul, .detour-intro .card ul { margin: 6px 0 0; padding-left: 20px; }

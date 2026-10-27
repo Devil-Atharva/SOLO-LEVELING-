@@ -56,9 +56,13 @@ export const SI_SYMBOL: Record<DimensionName, string> = {
   velocity: "m/s", acceleration: "m/s^2", force: "N", momentum: "kg m/s", energy: "J", power: "W", pressure: "Pa", frequency: "Hz",
   density: "kg/m^3", charge: "C", voltage: "V", resistance: "Ω", capacitance: "F", "magnetic-field": "T", "magnetic-flux": "Wb",
   inductance: "H", "electric-field": "N/C", torque: "N m", "angular-velocity": "rad/s", "spring-constant": "N/m",
+  "moment-of-inertia": "kg m^2", "angular-momentum": "kg m^2/s", "angular-acceleration": "rad/s^2", "dipole-moment": "C m",
+  "electric-flux": "N m^2/C", "magnetic-moment": "A m^2", resistivity: "Ω m", "optical-power": "D",
+  "surface-charge-density": "C/m^2", "linear-charge-density": "C/m",
 };
 
-function sampleParams(t: Template, r: ReturnType<typeof rng>): Record<string, number | string> {
+/** One random draw of a template's parameters (no constraints applied). */
+export function sampleParams(t: Template, r: ReturnType<typeof rng>): Record<string, number | string> {
   const out: Record<string, number | string> = {};
   for (const [name, p] of Object.entries(t.parameters)) {
     if (p.kind === "int") out[name] = r.int(p.min, p.max);

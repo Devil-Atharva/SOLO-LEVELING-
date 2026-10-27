@@ -15,6 +15,10 @@ export const NAMED_DIMENSIONS = {
   charge: D(0, 0, 1, 1), voltage: D(2, 1, -3, -1), resistance: D(2, 1, -3, -2), capacitance: D(-2, -1, 4, 2),
   "magnetic-field": D(0, 1, -2, -1), "magnetic-flux": D(2, 1, -2, -1), inductance: D(2, 1, -2, -2),
   "electric-field": D(1, 1, -3, -1), torque: D(2, 1, -2), "angular-velocity": D(0, 0, -1), "spring-constant": D(0, 1, -2),
+  // Phase 4 additions
+  "moment-of-inertia": D(2, 1), "angular-momentum": D(2, 1, -1), "angular-acceleration": D(0, 0, -2), "dipole-moment": D(1, 0, 1, 1),
+  "electric-flux": D(3, 1, -3, -1), "magnetic-moment": D(2, 0, 0, 1), resistivity: D(3, 1, -3, -2), "optical-power": D(-1),
+  "surface-charge-density": D(-2, 0, 1, 1), "linear-charge-density": D(-1, 0, 1, 1),
 } as const satisfies Record<string, Dims>;
 export type DimensionName = keyof typeof NAMED_DIMENSIONS;
 
@@ -25,6 +29,7 @@ const UNITS: Record<string, UnitDef> = {
   N: U(D(1, 1, -2)), J: U(D(2, 1, -2)), W: U(D(2, 1, -3)), Pa: U(D(-1, 1, -2)), Hz: U(D(0, 0, -1)), C: U(D(0, 0, 1, 1)),
   V: U(D(2, 1, -3, -1)), "Ω": U(D(2, 1, -3, -2)), F: U(D(-2, -1, 4, 2)), T: U(D(0, 1, -2, -1)), Wb: U(D(2, 1, -2, -1)), H: U(D(2, 1, -2, -2)),
   eV: U(D(2, 1, -2), 1.602176634e-19), L: U(D(3), 1e-3), l: U(D(3), 1e-3, false),
+  D: U(D(-1), 1, false), // dioptre, the unit of lens power (1/m)
   min: U(D(0, 0, 1), 60, false), h: U(D(0, 0, 1), 3600, false), hr: U(D(0, 0, 1), 3600, false),
   rad: U(D(), 1, false), deg: U(D(), Math.PI / 180, false), "°": U(D(), Math.PI / 180, false), rev: U(D(), 2 * Math.PI, false),
   "°C": U(D(0, 0, 0, 0, 1), 1, false, { offset: 273.15, temperature: true }), degC: U(D(0, 0, 0, 0, 1), 1, false, { offset: 273.15, temperature: true }),
@@ -36,7 +41,7 @@ const WORDS: Record<string, string> = {
   ohm: "Ω", ohms: "Ω", farad: "F", farads: "F", tesla: "T", weber: "Wb", henry: "H", ampere: "A", amperes: "A", amp: "A", amps: "A",
   kelvin: "K", minute: "min", minutes: "min", mins: "min", hour: "h", hours: "h", hrs: "hr",
   degree: "deg", degrees: "deg", radian: "rad", radians: "rad", litre: "L", litres: "L", liter: "L", liters: "L",
-  kmph: "km/h", kmh: "km/h", mps: "m/s",
+  kmph: "km/h", kmh: "km/h", mps: "m/s", dioptre: "D", dioptres: "D", diopter: "D", diopters: "D",
 };
 const PREFIX: Record<string, number> = {
   Y: 1e24, Z: 1e21, E: 1e18, P: 1e15, T: 1e12, G: 1e9, M: 1e6, k: 1e3, h: 1e2, da: 1e1,

@@ -17,9 +17,10 @@ export function foldCues(model: AnyModel, state: unknown, cues: Cues): unknown {
   }, state);
 }
 
-export function useWidgetHost(model: AnyModel, config: Record<string, unknown>, reduced: boolean) {
+/** `restored` is a saved state of the same widget (the student's own work), used once on mount. */
+export function useWidgetHost(model: AnyModel, config: Record<string, unknown>, reduced: boolean, restored?: unknown) {
   const initial = useMemo(() => model.init(model.configSchema.parse(config)), [model, config]);
-  const [state, setState] = useState<unknown>(initial);
+  const [state, setState] = useState<unknown>(() => restored ?? initial);
   const [transport, send] = useTransport(reduced);
   const lastToken = useRef(playTokenOf(initial));
   const lastTimeline = useRef("");

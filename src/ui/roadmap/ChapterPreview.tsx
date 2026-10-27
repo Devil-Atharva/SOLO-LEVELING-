@@ -37,6 +37,7 @@ export function ChapterPreview({
   const related = relatedOf(c.id);
   const foundations = foundationsUsedBy(c.id);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const openSession = snapshot.sessions.some((x) => x.chapterId === c.id && (x.status === "active" || x.status === "paused"));
 
   useEffect(() => {
     headingRef.current?.focus();
@@ -144,8 +145,10 @@ export function ChapterPreview({
       <footer className="preview__foot">
         {playable ? (
           <>
-            <Link className="btn btn--primary" href={`/chapter/${c.id}/try`} data-testid="try-question">Try a question</Link>
-            <p className="preview__note">This question helps us find the best place for you to begin. You can try it even if the earlier chapters are new to you.</p>
+            <Link className="btn btn--primary" href={`/chapter/${c.id}/try`} data-testid="try-question">{openSession ? "Resume session" : "Start a session"}</Link>
+            <p className="preview__note">{openSession
+              ? "Pick up exactly where you left off, including any detour."
+              : "The first question helps us find the best place for you to begin. You can start even if the earlier chapters are new to you."}</p>
           </>
         ) : (
           <>

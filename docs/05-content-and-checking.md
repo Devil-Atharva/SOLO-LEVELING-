@@ -212,4 +212,6 @@ flowchart LR
 - `content:review` (D-054) is a local tool, not an app route; it never ships. Approval needs a named reviewer, every variation ticked, an attestation and the session code shown in the terminal.
 - `content/drafts/` is excluded from production builds.
 
+**Lessons (Phase 3, D-068):** micro-lessons and detour explainers live in `content/lessons/<skill>.lesson.json`. They are validated by `content:validate` (schema, widget cues, development language, an alternate representation for every micro-lesson) and reviewed in `content:review` at `/l/<id>`, with the same named-reviewer gate as templates.
+
 **Ship rule for a chapter:** every skill has at least 2 approved templates at each difficulty that the selection rules can request (easy for remediation; medium and hard for main questions), plus a micro-lesson for each foundation the chapter's closure reaches. One Chocolate Problem is optional.

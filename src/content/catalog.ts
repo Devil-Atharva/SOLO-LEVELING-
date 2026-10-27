@@ -3,6 +3,7 @@
 import generated from "./generated/templates.json";
 import { rng } from "./rng";
 import { PLAYABLE_STATUSES, type Template } from "./schema";
+import { chapterById, chapters, foundationsUsedBy } from "@/src/domain/curriculum";
 
 export interface ManifestEntry {
   template: Template;
@@ -25,4 +26,10 @@ export const templatesForChapter = (chapterId: string) => CATALOG.filter((e) => 
 export function pickEntry(chapterId: string, seed: number): ManifestEntry | undefined {
   const list = templatesForChapter(chapterId);
   return list.length ? rng(seed ^ 0x5bd1e995).pick(list) : undefined;
+}
+
+/** The chapter page a template opens on: its own chapter, or for a foundation template the first chapter that uses that foundation. */
+export function playerChapterFor(t: Pick<Template, "chapterId" | "primarySkillId">): string {
+  if (chapterById.has(t.chapterId)) return t.chapterId;
+  return chapters.find((c) => foundationsUsedBy(c.id).some((f) => f.id === t.primarySkillId))?.id ?? chapters[0]!.id;
 }

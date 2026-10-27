@@ -3,7 +3,7 @@
 // misconception feedback with an animated consequence, worked and alternative solutions, saving.
 import "katex/dist/katex.min.css";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
 import { parseUnion } from "@/src/checking/check";
 import { getCheckClient } from "@/src/checking/client";
 import type { CheckInput, CheckResult } from "@/src/checking/types";
@@ -11,14 +11,15 @@ import type { ManifestEntry } from "@/src/content/catalog";
 import { instantiate, type Cues, type QuestionInstance, type Step } from "@/src/content/instantiate";
 import { rng } from "@/src/content/rng";
 import { feedbackFor, flashcardsFor, resolveCues } from "@/src/content/runtime";
-import { getChapter, skillById } from "@/src/domain/curriculum";
+import { chapterById, foundationById, skillById } from "@/src/domain/curriculum";
 import type { AttemptRecord } from "@/src/domain/progress";
+import type { Live, Role } from "@/src/engine/session";
 import { progressStore } from "@/src/persistence/store";
 import { formatUnion } from "@/src/widgets/number-line/model";
 import { WIDGETS } from "@/src/widgets/registry";
 import { RichText } from "@/src/widgets/shared";
 import { ChoiceAnswer, MappingAnswer, OrderingAnswer, TextAnswer } from "./answers";
-import { attemptsLeft, initialPlayer, MAX_ATTEMPTS, outcomeOf, playerReduce, tagsOf } from "./playerModel";
+import { attemptsLeft, initialPlayer, MAX_ATTEMPTS, outcomeOf, playerReduce, tagsOf, type PlayerState } from "./playerModel";
 import { foldCues, useWidgetHost } from "./useWidgetHost";
 import { WidgetStage } from "./WidgetStage";
 
@@ -39,26 +40,68 @@ function startOrder(q: QuestionInstance): string[] {
   return ids.reverse();
 }
 
-export function LessonPlayer({ entry, seed, reduced, backHref, onAnother, others }: {
+export type SaveState = "idle" | "pending" | "saved" | "error";
+/** How the player takes part in an adaptive session (absent for the single-question demonstration route). */
+export interface SessionBinding {
+  role: Role;
+  /** "Main question 3 of 10", "Quick check", "Detour practice" … */
+  roleLabel: string;
+  crumbs: ReactNode;
+  /** saved unfinished state of this question, restored exactly */
+  initial?: Live;
+  recordId: string;
+  sessionId: string;
+  /** may count toward mastery (approved content, or a labelled reviewer preview) */
+  eligible: boolean;
+  onLive(live: Live): void;
+  onFinish(r: { record: AttemptRecord; cards: { tag: string; front: string; back: string }[] }): void;
+  saveState: SaveState;
+  onRetrySave(): void;
+  onContinue(): void;
+  continueLabel: string;
+}
+
+/** Rebuild the attempt state from a saved one. Replaying the same results gives the same phase and outcome. */
+function restorePlayer(live?: Live): PlayerState {
+  let s = initialPlayer();
+  if (!live) return s;
+  for (let i = 0; i < live.hintsShown; i++) s = playerReduce(s, { type: "hint" });
+  for (const a of live.attempts) s = playerReduce(s, { type: "result", input: a.input as CheckInput, result: a.result as CheckResult });
+  if (live.gaveUp) s = playerReduce(s, { type: "give-up" });
+  return s;
+}
+
+const sameConfig = (a: unknown, b: unknown) => JSON.stringify((a as { config?: unknown })?.config) === JSON.stringify((b as { config?: unknown })?.config);
+const titleOfSkill = (id: string) => skillById.get(id)?.title ?? foundationById.get(id)?.title ?? id;
+
+export function LessonPlayer({ entry, seed, reduced, backHref, onAnother, others, session }: {
   entry: ManifestEntry; seed: number; reduced: boolean; backHref: string; onAnother(templateId?: string): void;
   others: { id: string; label: string }[];
+  session?: SessionBinding;
 }) {
   const q = useMemo(() => instantiate(entry.template, seed), [entry, seed]);
   const model = WIDGETS[q.widget.type]!;
-  const host = useWidgetHost(model, q.widget.config, reduced);
-  const chapter = getChapter(q.chapterId);
-  const skill = skillById.get(q.skillId);
-  const [ps, act] = useReducer(playerReduce, undefined, initialPlayer);
+  const live = session?.initial;
+  const restoredWidget = useMemo(() => {
+    if (!live?.widget) return undefined;
+    const fresh = model.init(model.configSchema.parse(q.widget.config));
+    return sameConfig(live.widget, fresh) ? live.widget : undefined;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const host = useWidgetHost(model, q.widget.config, reduced, restoredWidget);
+  const chapter = chapterById.get(q.chapterId);
+  const skillTitle = titleOfSkill(q.skillId);
+  const [ps, act] = useReducer(playerReduce, live, restorePlayer);
   const [view, setView] = useState<View>({ kind: "work" });
   const snapshot = useRef<unknown>(null);
 
   // answer state for each format
-  const [text, setText] = useState("");
-  const [choice, setChoice] = useState<string[]>([]);
-  const [order, setOrder] = useState<string[]>(() => startOrder(q));
-  const [mapping, setMapping] = useState<Record<string, string>>({});
-  const [reasoning, setReasoning] = useState("");
-  const [selfCheck, setSelfCheck] = useState<number[]>([]);
+  const [text, setText] = useState(live?.text ?? "");
+  const [choice, setChoice] = useState<string[]>(live?.choice ?? []);
+  const [order, setOrder] = useState<string[]>(() => live?.order ?? startOrder(q));
+  const [mapping, setMapping] = useState<Record<string, string>>(live?.mapping ?? {});
+  const [reasoning, setReasoning] = useState(live?.reasoning ?? "");
+  const [selfCheck, setSelfCheck] = useState<number[]>(live?.selfCheck ?? []);
   const [saved, setSaved] = useState<{ record: AttemptRecord; cards: { tag: string; front: string }[] } | null>(null);
   const resultRef = useRef<HTMLDivElement>(null);
   const startedAt = useRef(Date.now());
@@ -159,19 +202,30 @@ export function LessonPlayer({ entry, seed, reduced, backHref, onAnother, others
     if (!outcome || saved) return;
     const tags = tagsOf(ps);
     const record: AttemptRecord = {
-      id: `${q.templateId}@${q.version}:${seed}:${startedAt.current}`,
+      id: session ? session.recordId : `${q.templateId}@${q.version}:${seed}:${startedAt.current}`,
       at: Date.now(), chapterId: q.chapterId, skillId: q.skillId, templateId: `${q.templateId}@${q.version}`, seed,
-      difficulty: q.difficulty, kind: "diagnostic", outcome,
+      difficulty: q.difficulty, kind: !session ? "diagnostic" : session.role === "main" ? "main" : session.role === "diagnostic" ? "diagnostic" : "remediation",
+      outcome,
       attemptsUsed: Math.min(MAX_ATTEMPTS, Math.max(1, ps.attempts.length)), hintsUsed: ps.hintsShown, tags,
       format: q.format, countsTowardMastery: entry.countsTowardMastery,
+      ...(session ? { sessionId: session.sessionId, role: session.role, countedForMastery: session.role === "main" && outcome === "independent" && session.eligible } : {}),
       ...(q.reasoning && reasoning.trim() ? { reasoning: { text: reasoning.slice(0, 4000), selfCheck, scored: false as const } } : {}),
     };
     const cards = outcome === "independent" || (outcome === "assisted" && tags.length === 0) ? [] :
       flashcardsFor(q, tags).map((c) => ({ ...c, tag: c.tag === "generic" ? `${q.templateId}:generic` : c.tag }));
     setSaved({ record, cards });
-    void progressStore.recordAttempt(record, cards);
+    if (session) session.onFinish({ record, cards });
+    else void progressStore.recordAttempt(record, cards);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [outcome]);
+  // in a session, the unfinished state is saved as the student works (the parent debounces and persists it)
+  const workState = view.kind === "work" ? host.state : snapshot.current ?? host.state;
+  const onLive = session?.onLive;
+  useEffect(() => {
+    if (!onLive || outcome) return;
+    onLive({ attempts: ps.attempts.map((a) => ({ input: a.input, result: a.result })), hintsShown: ps.hintsShown, gaveUp: ps.gaveUp, text, choice, order, mapping, reasoning, selfCheck, widget: workState });
+  }, [onLive, outcome, ps.attempts, ps.hintsShown, ps.gaveUp, text, choice, order, mapping, reasoning, selfCheck, workState]);
+
   const saveReasoning = () => {
     if (!saved || !reasoning.trim()) return;
     void progressStore.updateReasoning(saved.record, { text: reasoning.slice(0, 4000), selfCheck, scored: false });
@@ -198,9 +252,11 @@ export function LessonPlayer({ entry, seed, reduced, backHref, onAnother, others
     <main className="qshell" id="main">
       <div className="qbar">
         <Link className="btn btn--quiet" href={backHref} data-testid="back-to-map">← Back to map</Link>
-        <nav className="crumbs" aria-label="You are here">
-          <span>{chapter.title}</span><span aria-hidden="true">›</span><strong>{skill?.title ?? q.skillId}</strong>
-        </nav>
+        {session ? session.crumbs : (
+          <nav className="crumbs" aria-label="You are here">
+            <span>{chapter?.title ?? "Foundations"}</span><span aria-hidden="true">›</span><strong>{skillTitle}</strong>
+          </nav>
+        )}
       </div>
       <div className="qmain">
         <WidgetStage
@@ -209,7 +265,8 @@ export function LessonPlayer({ entry, seed, reduced, backHref, onAnother, others
           onReset={() => { host.reset(); snapshot.current = null; setView({ kind: "work" }); if (q.format === "interval") setText(""); }}
         />
         <section className="qprompt" aria-labelledby="q-title">
-          <h1 id="q-title">{skill?.title ?? "Question"}</h1>
+          {session && <p className="role-label" data-testid="role-label" data-role={session.role}>{session.roleLabel}</p>}
+          <h1 id="q-title">{skillTitle}</h1>
           <p className="intro" data-testid="intro">{q.intro}</p>
           <div className="stem" data-testid="stem">{q.stem.map((p, i) => <p key={i}><RichText text={p} /></p>)}</div>
           {q.accessibility.nonDragAlternative && <p className="muted small" data-testid="non-drag">{q.accessibility.nonDragAlternative}</p>}
@@ -294,7 +351,16 @@ export function LessonPlayer({ entry, seed, reduced, backHref, onAnother, others
             />
           )}
 
-          {terminal && saved && (
+          {terminal && saved && session && (
+            <div className="after" data-testid="after">
+              <SaveNote state={session.saveState} onRetry={session.onRetrySave} cards={saved.cards} />
+              <div className="answer-row">
+                <button type="button" className="btn btn--primary" onClick={session.onContinue} disabled={session.saveState !== "saved"} data-testid="continue">{session.continueLabel}</button>
+                <Link className="btn" href={backHref}>Back to the map</Link>
+              </div>
+            </div>
+          )}
+          {terminal && saved && !session && (
             <div className="after" data-testid="after">
               <p className="muted small" data-testid="saved">
                 Saved to this device.{saved.cards.length > 0 && ` ${saved.cards.length === 1 ? "One flashcard" : `${saved.cards.length} flashcards`} added for review tomorrow: “${saved.cards[0]!.front}”${saved.cards.length > 1 ? " and more" : ""}.`}
@@ -305,7 +371,7 @@ export function LessonPlayer({ entry, seed, reduced, backHref, onAnother, others
               </div>
               {others.length > 0 && (
                 <details className="more-questions">
-                  <summary>More questions in {chapter.title}</summary>
+                  <summary>More questions in {chapter?.title ?? "this chapter"}</summary>
                   <ul>{others.map((o) => <li key={o.id}><button type="button" className="link-btn" onClick={() => onAnother(o.id)}>{o.label}</button></li>)}</ul>
                 </details>
               )}
@@ -314,6 +380,21 @@ export function LessonPlayer({ entry, seed, reduced, backHref, onAnother, others
         </section>
       </div>
     </main>
+  );
+}
+
+/** Saved only once the write has succeeded; a failed write offers a retry and nothing is lost. */
+export function SaveNote({ state, onRetry, cards }: { state: SaveState; onRetry(): void; cards: { front: string }[] }) {
+  if (state === "pending" || state === "idle") return <p className="muted small" data-testid="saving" role="status">Saving…</p>;
+  if (state === "error") return (
+    <p className="small" data-testid="save-error" role="alert">
+      Your answer couldn’t be saved on this device yet. <button type="button" className="link-btn" onClick={onRetry} data-testid="save-retry">Try saving again</button>
+    </p>
+  );
+  return (
+    <p className="muted small" data-testid="saved" role="status">
+      Saved to this device.{cards.length > 0 && ` ${cards.length === 1 ? "One flashcard" : `${cards.length} flashcards`} added for review tomorrow: “${cards[0]!.front}”${cards.length > 1 ? " and more" : ""}.`}
+    </p>
   );
 }
 

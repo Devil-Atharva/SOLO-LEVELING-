@@ -152,7 +152,10 @@
   "answerText": "{{order}}",
   "hints": [
     {
-      "text": "Newton's second law links force, mass and acceleration. Which one do you need to compare?"
+      "text": "Newton's second law links force, mass and acceleration. Which one do you need to compare?",
+      "cue": {
+        "cue": "play"
+      }
     },
     {
       "text": "Work out a = F ÷ m for each cart."
